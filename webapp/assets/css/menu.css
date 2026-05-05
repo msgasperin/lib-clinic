@@ -220,6 +220,9 @@
 
   .img-logo {
     width: 100%;
+    margin-top: 1px;
+    margin-bottom: 2px;
+    margin-left: 70px;
   }
 
   .align-menu {

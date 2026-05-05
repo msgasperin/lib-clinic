@@ -17,14 +17,13 @@
 
 		public function login(string $usuario, string $contrasenia) {	
 			try {
-				$sql = $this->dbh->prepare("SELECT id, id_fabrica_fk, nombre, usuario, celular, correo, foto, perfil FROM cat_usuarios WHERE usuario = ? AND AES_DECRYPT(contrasenia,?) = ?");
+				$sql = $this->dbh->prepare("SELECT id, nombre, usuario, celular, correo, foto, perfil FROM cat_usuarios WHERE usuario = ? AND AES_DECRYPT(contrasenia,?) = ?");
 				$sql->execute(array($usuario, $this->key, $contrasenia));
 
 				if($sql->rowCount() == 1) {
 					$row = $sql->fetch(PDO::FETCH_ASSOC);					
 					$datos = [
-						'id_usuario' 	 => $row["id"], 
-						'id_fabrica_fk' => $row["id_fabrica_fk"], 
+						'id_usuario' 	 => $row["id"],
 						'usuario'       => $row["usuario"],
 						'nombre'        => $row["nombre"], 
 						'celular'       => $row["celular"],

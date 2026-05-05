@@ -158,12 +158,12 @@ const pintarYInicializarPacientes = (containerId) => {
          <thead class="bg-light">
             <tr>
                <th>ID</th>
-               <th class="py-3 text-secondary">Paciente</th>
-               <th class="py-3 text-secondary">Fecha nacimiento</th>
-               <th class="py-3 text-secondary">Teléfono</th>
-               <th class="py-3 text-secondary">Correo</th>
-               <th class="py-3 text-secondary">Dirección</th>
-               <th class="py-3 text-center text-secondary">Acciones</th>
+               <th class="py-3 text-secondary" width="20%">Paciente</th>
+               <th class="py-3 text-secondary" width="10%">Fecha nacimiento</th>
+               <th class="py-3 text-secondary" width="10%">Teléfono</th>
+               <th class="py-3 text-secondary" width="15%">Correo</th>
+               <th class="py-3 text-secondary" width="30%">Dirección</th>
+               <th class="py-3 text-center text-secondary" width="15%">Acciones</th>
             </tr>
          </thead>
          <tbody>`;
@@ -187,6 +187,9 @@ const pintarYInicializarPacientes = (containerId) => {
                      <button class="btn btn-outline-dark fs-7" title="Editar"><i class="bi bi-pencil"></i></button>
                      <button class="btn btn-outline-dark fs-7" title="Expediente Clínico" onclick="ModalFormExpClinico();">
                         <i class="bi bi-person-rolodex"></i>
+                     </button>
+                     <button class="btn btn-outline-dark fs-7" title="Nota médica" onclick="ModalFormNotaMedica();">
+                        <i class="bi bi-clipboard-plus"></i>
                      </button>
                      <button class="btn btn-outline-danger fs-7" title="Eliminar"><i class="bi bi-trash"></i></button>
                   </td>
@@ -237,7 +240,7 @@ const ModalFormExpClinico = () => {
                   <ul class="nav nav-tabs-custom shadow-sm bg-white px-3" id="expedienteTab" role="tablist">
                      <li class="nav-item" role="presentation">
                         <button class="nav-link py-3 active text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesFamiliares();">
-                           <i class="bi bi-dna me-1"></i> Heredo-Fam
+                           <i class="bi bi-people"></i> Heredo-Fam
                         </button>
                      </li>
                      <li class="nav-item" role="presentation">
@@ -251,17 +254,17 @@ const ModalFormExpClinico = () => {
                         </button>
                      </li>
                      <li class="nav-item" role="presentation">
-                        <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab">
+                        <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesCronicos();">
                            <i class="bi bi-activity me-1"></i>Crónico/Degenerativos
                         </button>
                      </li>
                      <li class="nav-item" role="presentation">
-                        <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab">
+                        <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesCardiovasculares();">
                            <i class="bi bi-heart-pulse me-1"></i> Cardiovasculares
                         </button>
                      </li>
                      <li class="nav-item" role="presentation">
-                        <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab">
+                        <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesGinecoObstetra();">
                            <i class="bi bi-gender-female me-1"></i> Gineco-Obstétrico
                         </button>
                      </li>
@@ -298,7 +301,7 @@ const FormAntecedentesFamiliares = () => {
    `<div class="card p-3 border-0 shadow">
       <div class="row">
          <div class="col-12 fs-6 mb-3 fw-bold">
-            Antecedenes Heredo-Familiares
+           <i class="bi bi-people"></i> Antecedenes Heredo-Familiares
          </div>
          <div class="col-md-3 col-sm-4 col-6">
             <strong>Familiar *</strong>
@@ -394,7 +397,7 @@ const FormAntecedentesNoPatologicos = () => {
    `<div class="card p-3 border-0 shadow">
       <div class="row">
          <div class="col-12 fs-6 mb-3 fw-bold">
-            Antecedenes No Patológicos
+            <i class="bi bi-person-walking me-1"></i>Antecedenes No Patológicos
          </div>
          <div class="col-md-3 col-sm-4 col-6 mt-3">
             <strong>Hábitat *</strong>
@@ -480,7 +483,7 @@ const FormAntecedentesPatologicos = () => {
    `<div class="card p-3 border-0 shadow">
       <div class="row">
          <div class="col-12 fs-6 mb-3 fw-bold">
-            Antecedenes Patológicos
+           <i class="bi bi-virus me-1"></i>Antecedenes Patológicos
          </div>
          <div class="col-md-3 col-sm-4 col-6 mt-3">
             <strong>Tabaquismo *</strong>
@@ -582,10 +585,10 @@ const FormAntecedentesPatologicos = () => {
             <div id="listado_alergias p-2">
                <div class="row">
 
-                  <div class="col-md-3 col-sm-4 col-12">
+                  <div class="col-xxl-3 col-sm-4 col-12">
                      <div class="card shadow-sm">
                         <div class="card-body">
-                           <span class="fw-bol">Sulfa</span>
+                           <span class="fw-bold">Sulfa</span>
                            <div class="">Reacción: Ronchas</div>
                            <div class="text-end">
                               <button class="btn btn-outline-danger btn-redondo" title="Eliminar"><i class="bi bi-trash"></i></button>
@@ -593,10 +596,10 @@ const FormAntecedentesPatologicos = () => {
                         </div>
                      </div>
                   </div>
-                  <div class="col-md-3 col-sm-4 col-12">
+                  <div class="col-xxl-3 col-sm-4 col-12">
                      <div class="card shadow-sm">
                         <div class="card-body">
-                           <span class="fw-bol">Gato</span>
+                           <span class="fw-bold">Gato</span>
                            <div class="">Reacción: Rinitis, inflamación de la nariz</div>
                            <div class="text-end">
                               <button class="btn btn-outline-danger btn-redondo" title="Eliminar"><i class="bi bi-trash"></i></button>
@@ -766,11 +769,262 @@ const FormAntecedentesPatologicos = () => {
    $('#antecedente_gineco_obstetrico').hide();
 }
 
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-window.TabPacientes                  = TabPacientes;
-window.ModalFormPaciente             = ModalFormPaciente; 
-window.ModalFormExpClinico           = ModalFormExpClinico;
+const FormAntecedentesCronicos = () => {
+   let html = 
+   `<div class="card p-3 border-0 shadow">
+      <div class="row">
+         <div class="col-12 fs-6 fw-bold">
+            <i class="bi bi-activity me-1"></i>Antecedentes Crónico / Degenerativos
+         </div>
+         <div class="col-md-3 col-sm-4 col-6 mt-3">
+            <strong>Enfermedad</strong>
+            <select name="enfermedad" id="enfermedad" class="form-select">
+               <option value="0">Seleccionar</option>
+               <option value="Diabetes">Diabetes</option>
+               <option value="Hipertensión">Hipertensión</option>
+               <option value="Otra">Otra</option>
+            </select>
+         </div>
+         <div class="col-md-4 col-sm-4 col-6 mt-3">
+            <strong>Otra enfermedad</strong>
+            <input type="text" name="otraEnfermedad" id="otraEnfermedad" class="form-control" maxlength="100" disabled />
+         </div>
+         <div class="col-md-3 col-sm-4 col-6 mt-3">
+            <strong>Año diagnóstico</strong>
+            <input type="number" inputmode="numeric" name="anioEnfermedad" id="anioEnfermedad" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="4" disabled />
+         </div>
+         <div class="col-md-2 col-sm-4 col-6 mt-3">
+            <br>
+            <button type="button" class="btn btn-dark btn-lib btn-redondo w-100">Agregar</button>
+         </div>
+         <div class="col-12 mt-3">
+            <div id="listado_enfermedades_cronicas p-2">
 
-window.FormAntecedentesFamiliares    = FormAntecedentesFamiliares;
-window.FormAntecedentesNoPatologicos = FormAntecedentesNoPatologicos;
-window.FormAntecedentesPatologicos   = FormAntecedentesPatologicos;
+               <div class="row">
+                  <div class="col-md-3 col-sm-4 col-12">
+                     <div class="card shadow-sm">
+                        <div class="card-body">
+                           <span class="fw-bold">Hipertensión</span>
+                           <div class="">Año diagnóstico: 2000</div>
+                           <div class="text-end">
+                              <button class="btn btn-outline-danger btn-redondo" title="Eliminar"><i class="bi bi-trash"></i></button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-3 col-sm-4 col-12">
+                     <div class="card shadow-sm">
+                        <div class="card-body">
+                           <span class="fw-bold">Diabetes</span>
+                           <div class="">Año diagnóstico: 2010</div>
+                           <div class="text-end">
+                              <button class="btn btn-outline-danger btn-redondo" title="Eliminar"><i class="bi bi-trash"></i></button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+            </div>
+         </div>
+      </div>
+   </div>`;
+
+   $('#antecedente_cronico_degenerativo').html(html);
+   $('#antecedente_cronico_degenerativo').show();
+
+   $('#antecedente_heredo_familiar').hide();
+   $('#antecedente_no_patologico').hide();
+   $('#antecedente_patologico').hide();
+   $('#antecedente_cardiovascular').hide();
+   $('#antecedente_gineco_obstetrico').hide();
+}
+
+const FormAntecedentesCardiovasculares = () => {
+   let html = 
+   `<div class="card p-3 border-0 shadow mt-4">
+      <div class="row">
+         <div class="col-12 fs-6 fw-bold">
+            <i class="bi bi-heart-pulse me-1"></i>Antecedentes Cardiovasculares
+         </div>
+         <div class="col-md-2 col-sm-4 col-6 mt-3">
+            <strong>Enfermedad</strong>
+            <select name="enfermedadCardio" id="enfermedadCardio" class="form-select">
+               <option value="NA">Seleccionar</option>
+               <option value="Cardiopatía Coronaria">Cardiopatía Coronaria</option>
+               <option value="Accidente Cerebrovascular">Accidente Cerebrovascular</option>
+               <option value="Insuficiencia Cardíaca">Insuficiencia Cardíaca</option>
+               <option value="Otra">Otra</option>
+            </select>
+         </div>
+         <div class="col-md-3 col-sm-3 col-6 mt-3">
+            <strong>Otra enfermedad</strong>
+            <input type="text" name="otraEnfermedadCardio" id="otraEnfermedadCardio" class="form-control" maxlength="100" disabled />
+         </div>
+         <div class="col-md-2 col-sm-4 col-6 mt-3">
+            <strong>Año diagnóstico</strong>
+            <input type="number" inputmode="numeric" name="anioEnfermedadCardio" id="anioEnfermedadCardio" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="4" disabled />
+         </div>
+         <div class="col-md-3 col-sm-3 col-6 mt-3">
+            <strong>Proc / Estudio</strong>
+            <input type="text" name="procEnfermedadCardio" id="procEnfermedadCardio" class="form-control" maxlength="100" disabled />
+         </div>
+         <div class="col-md-2 col-sm-4 col-6 mt-3">
+            <br>
+            <button type="button" class="btn btn-dark btn-lib btn-redondo w-100">Agregar</button>
+         </div>
+         <div class="col-12 mt-3">
+            <div id="listado_enfermedades_cronicas p-2">
+
+               <div class="row">
+                  <div class="col-md-3 col-sm-4 col-12">
+                     <div class="card shadow-sm">
+                        <div class="card-body">
+                           <span class="fw-bold">Cardiopatía Coronaria</span>
+                           <div class="">Año diagnóstico: 2000</div>
+                           <div class="text-end">
+                              <button class="btn btn-outline-danger btn-redondo" title="Eliminar"><i class="bi bi-trash"></i></button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-3 col-sm-4 col-12">
+                     <div class="card shadow-sm">
+                        <div class="card-body">
+                           <span class="fw-bold">Insuficiencia Cardíaca</span>
+                           <div class="">Año diagnóstico: 2010</div>
+                           <div class="text-end">
+                              <button class="btn btn-outline-danger btn-redondo" title="Eliminar"><i class="bi bi-trash"></i></button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+            </div>
+         </div>
+      </div>
+   </div>`;
+
+   $('#antecedente_cardiovascular').html(html);
+   $('#antecedente_cardiovascular').show();
+
+   $('#antecedente_heredo_familiar').hide();
+   $('#antecedente_no_patologico').hide();
+   $('#antecedente_patologico').hide();
+   $('#antecedente_cronico_degenerativo').hide();
+   $('#antecedente_gineco_obstetrico').hide();
+}
+
+const FormAntecedentesGinecoObstetra = () => {
+   let html = 
+   `<div class="card p-3 border-0 shadow">
+      <div class="row">
+         <div class="col-12 fs-6 mb-3 fw-bold">
+            <i class="bi bi-gender-female me-1"></i> Antecedenes Gineco-Obstétrico
+         </div>
+         <div class="col-md-3 col-sm-4 col-6">
+            <strong>Menarca</strong>
+            <input type="text" name="menarca" id="menarca" class="form-control" maxlength="100">
+         </div>
+         <div class="col-12 mt-4 fs-6 fw-bold">
+            Ciclo menstrual
+         </div>
+         <div class="col-md-3 col-sm-4 col-6 mt-2">
+            <strong>Frecuencia</strong>
+            <input type="text" name="frecuenciaMenstruacion" id="frecuenciaMenstruacion" class="form-control" maxlength="50">
+         </div>
+         <div class="col-md-3 col-sm-4 col-6 mt-2">
+            <strong>Duración</strong>
+            <input type="text" name="duracionMenstruacion" id="duracionMenstruacion" class="form-control" maxlength="50">
+         </div>
+         <div class="col-md-3 col-sm-4 col-6 mt-2">
+            <strong>Cantidad</strong>
+            <input type="text" name="cantidadMenstruacion" id="cantidadMenstruacion" class="form-control" maxlength="50">
+         </div>
+         <div class="col-md-3 col-sm-4 col-6 mt-2">
+            <strong>Dismenorrea</strong>
+            <input type="text" name="dismenorreaMenstruacion" id="dismenorreaMenstruacion" class="form-control" maxlength="50">
+         </div>
+         <div class="col-md-4 col-sm-4 col-6 mt-3">
+            <strong>Inicio de vida sexual activa</strong>
+            <input type="text" name="inicioVidaSexual" id="inicioVidaSexual" class="form-control" maxlength="50">
+         </div>
+         <div class="col-md-2 col-sm-4 col-6 mt-3">
+            <strong>No. Embarazos</strong>
+            <input type="number" inputmode="numeric" name="noEmbarazos" id="noEmbarazos" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="2" />
+         </div>
+         <div class="col-md-2 col-sm-4 col-6 mt-3">
+            <strong>No. Partos</strong>
+            <input type="number" inputmode="numeric" name="noPartos" id="noPartos" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="2" />
+         </div>
+         <div class="col-md-2 col-sm-4 col-6 mt-3">
+            <strong>No. Abortos</strong>
+            <input type="number" inputmode="numeric" name="noAbortos" id="noAbortos" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="2" />
+         </div>
+         <div class="col-md-2 col-sm-4 col-6 mt-3">
+            <strong>No. Cesareas</strong>
+            <input type="number" inputmode="numeric" name="noCesareas" id="noCesareas" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="2" />
+         </div>
+         <div class="col-md-3 col-sm-4 col-6 mt-3">
+            <strong>Método anticonceptivo</strong>
+            <input type="text" name="metodoAnticonceptivo" id="metodoAnticonceptivo" class="form-control" maxlength="100" />
+         </div>
+         <div class="col-md-3 col-sm-4 col-6 mt-3">
+            <strong>Fecha última menstruación</strong>
+            <input type="date" name="ultimaMenstruacion" id="ultimaMenstruacion" class="form-control" />
+         </div>
+         <div class="col-md-3 col-sm-4 col-6 mt-3">
+            <strong>ETS</strong>
+            <input type="text" name="ets" id="ets" class="form-control" maxlength="100" />
+         </div>
+         <div class="col-md-3 col-sm-4 col-6 mt-3">
+            <strong>Menopausia</strong>
+            <input type="text" name="menopausia" id="menopausia" class="form-control" maxlength="100" />
+         </div>
+         <div class="col-md-4 col-sm-4 col-6 mt-3">
+            <strong>Climaterio</strong>
+            <input type="text" name="climaterio" id="climaterio" class="form-control" maxlength="100" />
+         </div>
+         <div class="col-md-3 col-sm-4 col-6 mt-3">
+            <strong>Fecha de último papanicolaou</strong>
+            <input type="date" name="ultimoPapanicolaou" id="ultimoPapanicolaou" class="form-control" />
+         </div>
+         <div class="col-md-5 col-sm-4 col-6 mt-3">
+            <strong>Resultado</strong>
+            <input type="text" name="resultadoPapanicolaou" id="resultadoPapanicolaou" class="form-control" maxlength="100" />
+         </div>
+         <div class="col-12 mt-3 text-center">
+            <br>
+            <button type="button" class="btn btn-dark btn-lib btn-redondo w-25">
+               Guardar
+            </button>
+         </div>
+      </div>
+   </div>
+   <div class="row mt-3">
+      <div class="col-12 mt-4">
+         <div id="listado_antecedentes_familiares"></div>
+      </div>
+   </div>`;
+   $('#antecedente_no_patologico').html(html);
+   $('#antecedente_no_patologico').show();
+
+   $('#antecedente_heredo_familiar').hide();
+   $('#antecedente_patologico').hide();
+   $('#antecedente_cronico_degenerativo').hide();
+   $('#antecedente_cardiovascular').hide();
+   $('#antecedente_gineco_obstetrico').hide();
+}
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+window.TabPacientes                     = TabPacientes;
+window.ModalFormPaciente                = ModalFormPaciente; 
+window.ModalFormExpClinico              = ModalFormExpClinico;
+
+window.FormAntecedentesFamiliares       = FormAntecedentesFamiliares;
+window.FormAntecedentesNoPatologicos    = FormAntecedentesNoPatologicos;
+window.FormAntecedentesPatologicos      = FormAntecedentesPatologicos;
+window.FormAntecedentesCronicos         = FormAntecedentesCronicos;
+window.FormAntecedentesCardiovasculares = FormAntecedentesCardiovasculares;
+window.FormAntecedentesGinecoObstetra   = FormAntecedentesGinecoObstetra;

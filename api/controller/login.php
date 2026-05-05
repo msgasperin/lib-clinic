@@ -68,7 +68,6 @@
             // ───
             $_SESSION["login_elao"]    = "SI";
             $_SESSION["id_usuario"]    = $res["data"]["id_usuario"];
-            $_SESSION["id_fabrica"]    = $res["data"]["id_fabrica_fk"];
             $_SESSION["usuario"]       = $res["data"]["usuario"];
             $_SESSION["nombre"]        = $res["data"]["nombre"];
             $_SESSION["perfil"]        = $res["data"]["perfil"];

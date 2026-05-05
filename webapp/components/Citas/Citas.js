@@ -154,6 +154,9 @@ const pintarYInicializarCitas = (containerId, tableId) => {
                   </td>
                   <td class="text-center">
                      <button class="btn btn-outline-dark fs-7" title="Editar"><i class="bi bi-pencil"></i></button>
+                     <button class="btn btn-outline-dark fs-7" title="Nota médica" onclick="ModalFormNotaMedica();">
+                        <i class="bi bi-clipboard-plus"></i>
+                     </button>
                      <button class="btn btn-outline-danger fs-7" title="Eliminar"><i class="bi bi-trash"></i></button>
                   </td>
                </tr>`;
@@ -175,72 +178,171 @@ const pintarYInicializarCitas = (containerId, tableId) => {
    }, 500);
 }
 
-const pintarTablaCitasDemo = (containerId) => {
-   const contenedor = document.getElementById(containerId);
-   
-   // Datos de ejemplo para la demo
-   const citas = [
-      { id: '001', hora: '08:30 AM', paciente: 'Ana García López', estudio: 'Perfil Bioquímico', estatus: 'Completado', color: 'success' },
-      { id: '002', hora: '09:15 AM', paciente: 'Roberto Valdez', estudio: 'Rayos X Tórax', estatus: 'En Proceso', color: 'primary' },
-      { id: '003', hora: '10:00 AM', paciente: 'Carla Méndez', estudio: 'Ultrasonido Abdominal', estatus: 'Pendiente', color: 'warning' },
-      { id: '004', hora: '11:30 AM', paciente: 'Luis Fernando Soler', estudio: 'Examen de Sangre', estatus: 'Pendiente', color: 'warning' },
-      { id: '005', hora: '12:45 PM', paciente: 'Mónica Ruiz', estudio: 'Mastografía', estatus: 'Cancelado', color: 'danger' },
-      { id: '006', hora: '02:00 PM', paciente: 'Jorge Huertas', estudio: 'Prueba COVID-19', estatus: 'Completado', color: 'success' },
-      { id: '007', hora: '04:20 PM', paciente: 'Elena Poniatowska', estudio: 'Resonancia Magnética', estatus: 'Pendiente', color: 'warning' }
-   ];
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ NOTA MÉDICA  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+const ModalFormNotaMedica = () => {
    let html = `
-   <div class="card shadow-sm border-0 mt-4" style="border-radius: 15px; overflow: hidden;">
-      <div class="table-responsive">
-         <table class="table table-hover align-middle mb-0">
-            <thead class="bg-light">
-               <tr>
-                  <th class="ps-4 py-3 text-secondary text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Hora</th>
-                  <th class="py-3 text-secondary text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Paciente</th>
-                  <th class="py-3 text-secondary text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Estudio / Motivo</th>
-                  <th class="py-3 text-secondary text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Estatus</th>
-                  <th class="py-3 text-center text-secondary text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Acciones</th>
-               </tr>
-            </thead>
-            <tbody>`;
-               citas.forEach(cita => {
-                  html += `
-                  <tr style="cursor: pointer;">
-                     <td class="ps-4">
-                        <span class="fw-bold text-dark">${cita.hora}</span>
-                     </td>
-                     <td>
-                        <div class="d-flex align-items-center">
-                           <div class="rounded-circle bg-soft-${cita.color} d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; background-color: #f0f2f5;">
-                                 <span class="text-secondary fw-bold" style="font-size: 0.7rem;">${cita.paciente.charAt(0)}</span>
+   <div class="modal fade modal-superior-blur" id="modalNotaMedica" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+      <div class="modal-dialog modal-fullscreen">
+         <div class="modal-content sombra-modal">
+            
+            <div class="modal-header modal-head-per">
+               <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-primary me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                        <i class="bi bi-person-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title mb-0">Nota Médica</h5>
+                        <small class="opacity-75">Paciente: Juan Pérez • 34 años • Veracruz, Ver.</small>
+                    </div>
+                </div>
+               <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal" aria-label="Close">
+                  <i class="bi bi-x-lg"></i>
+               </button>
+            </div>                        
+
+            <div class="modal-body bg-light">
+               <div class="row">
+                  <div class="col-12">
+                     <div class="card p-3 border-0 shadow">
+                        <div class="row">
+                           <div class="col-12 fs-6 fw-bold">
+                              Signos Vitales
                            </div>
-                           <span class="text-dark fw-medium">${cita.paciente}</span>
+                           <div class="col-md-1 col-sm-4 col-6 mt-3">
+                              <strong>T/A</strong>
+                              <input type="text" name="taMedica" id="taMedica" class="form-control" maxlength="50" />
+                           </div>
+                           <div class="col-md-1 col-sm-4 col-6 mt-3">
+                              <strong>SpO2</strong>
+                              <input type="text" name="spoMedica" id="spoMedica" class="form-control" maxlength="50" />
+                           </div>
+                           <div class="col-md-1 col-sm-4 col-6 mt-3">
+                              <strong>Temp.</strong>
+                              <input type="text" name="spoMedica" id="spoMedica" class="form-control" maxlength="50" />
+                           </div>
+                           <div class="col-md-1 col-sm-4 col-6 mt-3">
+                              <strong>Glucosa</strong>
+                              <input type="text" name="glucosaMedica" id="glucosaMedica" class="form-control" maxlength="50" />
+                           </div>
+                           <div class="col-md-2 col-sm-4 col-6 mt-3">
+                              <strong>FR</strong>
+                              <input type="text" name="frMedica" id="frMedica" class="form-control" maxlength="50" />
+                           </div>
+                           <div class="col-md-2 col-sm-4 col-6 mt-3">
+                              <strong>FC</strong>
+                              <input type="text" name="fcMedica" id="fcMedica" class="form-control" maxlength="50" />
+                           </div>
+                           <div class="col-md-2 col-sm-4 col-6 mt-3">
+                              <strong>Peso</strong>
+                              <input type="text" name="pedoMedica" id="pedoMedica" class="form-control" maxlength="50" />
+                           </div>
+                           <div class="col-md-2 col-sm-4 col-6 mt-3">
+                              <strong>Estatura</strong>
+                              <input type="text" name="estaturaMedica" id="estaturaMedica" class="form-control" maxlength="50" />
+                           </div>
                         </div>
-                     </td>
-                     <td><span class="text-muted">${cita.estudio}</span></td>
-                     <td>
-                        <span class="badge rounded-pill bg-${cita.color}-soft text-${cita.color} border border-${cita.color}" 
-                              style="font-weight: 500; padding: 0.5em 1em; background-color: rgba(var(--bs-${cita.color}-rgb), 0.1);">
-                           ${cita.estatus}
-                        </span>
-                     </td>
-                     <td class="text-center">
-                        <button class="btn btn-sm btn-light border-0 px-2" title="Editar"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-light border-0 px-2 text-danger" title="Eliminar"><i class="bi bi-trash"></i></button>
-                     </td>
-                  </tr>`;
-               });
-               html += `
-            </tbody>
-         </table>
+                     </div>
+                  </div>
+                  <div class="col-sm-6 col-12 mt-3">
+                     <div class="card p-3 border-0 shadow">
+                        <div class="row">
+                           <div class="col-12 fs-7 fw-bold">
+                              Padecimiento actual
+                           </div>
+                           <div class="col-12">
+                              <textarea name="padecimiento" id="padecimiento" class="form-control" rows="2"></textarea>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-sm-6 col-12 mt-3">
+                     <div class="card p-3 border-0 shadow">
+                        <div class="row">
+                           <div class="col-12 fs-7 fw-bold">
+                              Exploración física
+                           </div>
+                           <div class="col-12">
+                              <textarea name="exploracionFisica" id="exploracionFisica" class="form-control" rows="2"></textarea>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-sm-6 col-12 mt-3">
+                     <div class="card p-3 border-0 shadow">
+                        <div class="row">
+                           <div class="col-12 fs-7 fw-bold">
+                              Plan de manejo y tratamiento
+                           </div>
+                           <div class="col-12">
+                              <textarea name="tratamiento" id="tratamiento" class="form-control" rows="2"></textarea>
+                           </div>
+                        </div>
+                     </div>   
+                  </div>
+                  <div class="col-sm-6 col-12 mt-3">
+                     <div class="card p-3 border-0 shadow">
+                        <div class="row">
+                           <div class="col-12 fs-7 fw-bold">
+                              Pronóstico
+                           </div>
+                           <div class="col-12">
+                              <textarea name="pronostico" id="pronostico" class="form-control" rows="2"></textarea>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-sm-6 col-12 mt-3">
+                     <div class="card p-3 border-0 shadow">
+                        <div class="row">
+                           <div class="col-12 fs-7 fw-bold">
+                              Diagnóstico principal
+                           </div>
+                           <div class="col-12">
+                              <textarea name="diagnosticoPrincipal" id="diagnosticoPrincipal" class="form-control" rows="2"></textarea>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-sm-6 col-12 mt-3">
+                     <div class="card p-3 border-0 shadow">
+                        <div class="row">
+                           <div class="col-12 fs-7 fw-bold">
+                              Diagnóstico secundario
+                           </div>
+                           <div class="col-12">
+                              <textarea name="diagnosticoSecundario" id="diagnosticoSecundario" class="form-control" rows="2"></textarea>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row mt-4">
+                  <div class="col-12 text-center">
+                     <button type="button" class="btn btn-dark btn-lib btn-redondo w-25">
+                        Guardar
+                     </button>
+                  </div>
+               </div>
+
+            </div>                                                           
+            
+            <div class="modal-footer bg-light border-0" align="right">
+               <button type="buttton" class="btn btn-outline-dark btn-redondo" data-bs-dismiss="modal">
+                  Cerrar
+               </button>
+            </div>
+         </div>
       </div>
    </div>`;
-
-   contenedor.innerHTML = html;
+   $('#modalAdmin').html(html);
+   $('#modalNotaMedica').modal('show');
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-window.TabCitas      = TabCitas;
-window.ModalFormCita = ModalFormCita; 
+window.TabCitas            = TabCitas;
+window.ModalFormCita       = ModalFormCita; 
+window.ModalFormNotaMedica = ModalFormNotaMedica;
 
 
