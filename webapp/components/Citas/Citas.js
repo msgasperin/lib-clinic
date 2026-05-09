@@ -70,7 +70,7 @@ const ModalFormCita = () => {
                   </div>
                   <div class="col-12 mt-3">
                      <b>Observación</b>
-                     <textarea name="obsCita" id="obsCita" class="form-control" rows="2" maxlength="200"></textarea>
+                     <textarea name="obsCita" id="obsCita" class="form-control" rows="2" maxlength="250"></textarea>
                   </div>
                </div>                     
             </div>
@@ -244,81 +244,106 @@ const ModalFormNotaMedica = () => {
                         </div>
                      </div>
                   </div>
-                  <div class="col-sm-6 col-12 mt-3">
-                     <div class="card p-3 border-0 shadow">
-                        <div class="row">
-                           <div class="col-12 fs-7 fw-bold">
-                              Padecimiento actual
-                           </div>
-                           <div class="col-12">
-                              <textarea name="padecimiento" id="padecimiento" class="form-control" rows="2"></textarea>
-                           </div>
+
+                  <div class="col-12 mt-5">
+                     <nav>
+                        <div class="nav nav-tabs" id="nav-revision-medica" role="tablist">
+                           <button class="nav-link text-dark active" id="nav-padecimiento-tab" data-bs-toggle="tab" data-bs-target="#nav-padecimiento" type="button" role="tab" aria-controls="nav-padecimiento" aria-selected="true">
+                              <i class="bi bi-virus2"></i> Padecimiento actual
+                           </button>
+                           <button class="nav-link text-dark" id="nav-exploracion-tab" data-bs-toggle="tab" data-bs-target="#nav-exploracion" type="button" role="tab" aria-controls="nav-exploracion" aria-selected="false">
+                              <i class="bi bi-person-arms-up"></i> Exploración física
+                           </button>
+                           <button class="nav-link text-dark" id="nav-plan-tab" data-bs-toggle="tab" data-bs-target="#nav-plan" type="button" role="tab" aria-controls="nav-plan" aria-selected="false">
+                              <i class="bi bi-capsule"></i> Plan de manejo y tratamiento 
+                           </button>
+                           <button class="nav-link text-dark" id="nav-pronostico-tab" data-bs-toggle="tab" data-bs-target="#nav-pronostico" type="button" role="tab" aria-controls="nav-pronostico" aria-selected="false">
+                              <i class="bi bi-journal-medical"></i> Pronóstico
+                           </button>
+                           <button class="nav-link text-dark" id="nav-diagnostico-tab" data-bs-toggle="tab" data-bs-target="#nav-diagnostico" type="button" role="tab" aria-controls="nav-diagnostico" aria-selected="false">
+                              <i class="bi bi-clipboard-check"></i> Diagnóstico principal
+                           </button>
+                           <button class="nav-link text-dark" id="nav-secundario-tab" data-bs-toggle="tab" data-bs-target="#nav-secundario" type="button" role="tab" aria-controls="nav-secundario" aria-selected="false">
+                              <i class="bi bi-clipboard-minus"></i> Diagnóstico secundario
+                           </button>
                         </div>
+                     </nav>
+                     <div class="tab-content p-3 shadow-lg bg-white" id="nav-content-revision">        
+                        <div class="tab-pane fade show active" id="nav-padecimiento" role="tabpanel" aria-labelledby="nav-padecimiento-tab">
+                           <strong>Padecimiento actual</strong>
+                           <textarea name="padecimiento" id="padecimiento" class="form-control" rows="5"></textarea>
+                        </div>
+
+                        <div class="tab-pane fade" id="nav-exploracion" role="tabpanel" aria-labelledby="nav-exploracion-tab">
+                           <strong>Exploración física</strong>
+                           <textarea name="exploracionFisica" id="exploracionFisica" class="form-control" rows="5"></textarea>
+                        </div>
+
+                        <div class="tab-pane fade" id="nav-plan" role="tabpanel" aria-labelledby="nav-plan-tab">
+                           <strong>Plan de manejo y tratamiento</strong>
+                           <textarea name="tratamiento" id="tratamiento" class="form-control" rows="5"></textarea>
+                        </div>
+
+                        <div class="tab-pane fade" id="nav-pronostico" role="tabpanel" aria-labelledby="nav-pronostico-tab">
+                           <strong>Pronóstico</strong>
+                           <textarea name="pronostico" id="pronostico" class="form-control" rows="5"></textarea>
+                        </div>
+
+                        <div class="tab-pane fade" id="nav-diagnostico" role="tabpanel" aria-labelledby="nav-diagnostico-tab">
+                           <strong>Diagnóstico principal</strong>
+                           <textarea name="diagnosticoPrincipal" id="diagnosticoPrincipal" class="form-control" rows="5"></textarea>
+                        </div>
+
+                        <div class="tab-pane fade" id="nav-secundario" role="tabpanel" aria-labelledby="nav-secundario-tab">
+                           <strong>Diagnóstico secundario</strong>
+                           <textarea name="diagnosticoSecundario" id="diagnosticoSecundario" class="form-control" rows="5"></textarea>
+                        </div>
+
                      </div>
                   </div>
-                  <div class="col-sm-6 col-12 mt-3">
-                     <div class="card p-3 border-0 shadow">
-                        <div class="row">
-                           <div class="col-12 fs-7 fw-bold">
-                              Exploración física
-                           </div>
-                           <div class="col-12">
-                              <textarea name="exploracionFisica" id="exploracionFisica" class="form-control" rows="2"></textarea>
-                           </div>
+
+                  <div class="col-12 mt-5">
+                     <nav>
+                        <div class="nav nav-tabs" id="nav-estudios" role="tablist">
+                            <button class="nav-link text-dark active" id="nav-analisis-tab" data-bs-toggle="tab" data-bs-target="#nav-analisis" type="button" role="tab" aria-controls="nav-analisis" aria-selected="false">
+                              <i class="bi bi-droplet"></i>Análisis Clínicos
+                           </button>
+                           <button class="nav-link text-dark" id="nav-gabinete-tab" data-bs-toggle="tab" data-bs-target="#nav-gabinete" type="button" role="tab" aria-controls="nav-gabinete" aria-selected="true">
+                              <i class="bi bi-clipboard2-pulse"></i>Estudios de Gabinete
+                           </button>
                         </div>
-                     </div>
-                  </div>
-                  <div class="col-sm-6 col-12 mt-3">
-                     <div class="card p-3 border-0 shadow">
-                        <div class="row">
-                           <div class="col-12 fs-7 fw-bold">
-                              Plan de manejo y tratamiento
-                           </div>
-                           <div class="col-12">
-                              <textarea name="tratamiento" id="tratamiento" class="form-control" rows="2"></textarea>
-                           </div>
+                     </nav>
+                     <div class="tab-content p-3 shadow-lg bg-white" id="nav-content-estudios">        
+                        <div class="tab-pane fade show active" id="nav-analisis" role="tabpanel" aria-labelledby="nav-analisis-tab">
+                           <strong>Análisis Clínicos</strong>
+                           <textarea name="analsisiClinicos" id="analsisiClinicos" class="form-control" rows="5"></textarea>
                         </div>
-                     </div>   
-                  </div>
-                  <div class="col-sm-6 col-12 mt-3">
-                     <div class="card p-3 border-0 shadow">
-                        <div class="row">
-                           <div class="col-12 fs-7 fw-bold">
-                              Pronóstico
-                           </div>
-                           <div class="col-12">
-                              <textarea name="pronostico" id="pronostico" class="form-control" rows="2"></textarea>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-sm-6 col-12 mt-3">
-                     <div class="card p-3 border-0 shadow">
-                        <div class="row">
-                           <div class="col-12 fs-7 fw-bold">
-                              Diagnóstico principal
-                           </div>
-                           <div class="col-12">
-                              <textarea name="diagnosticoPrincipal" id="diagnosticoPrincipal" class="form-control" rows="2"></textarea>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-sm-6 col-12 mt-3">
-                     <div class="card p-3 border-0 shadow">
-                        <div class="row">
-                           <div class="col-12 fs-7 fw-bold">
-                              Diagnóstico secundario
-                           </div>
-                           <div class="col-12">
-                              <textarea name="diagnosticoSecundario" id="diagnosticoSecundario" class="form-control" rows="2"></textarea>
-                           </div>
+
+                        <div class="tab-pane fade" id="nav-gabinete" role="tabpanel" aria-labelledby="nav-gabinete-tab">
+                           <strong>Estudios de Gabinete</strong>
+                           <textarea name="estudiosGabinete" id="estudiosGabinete" class="form-control" rows="5"></textarea>
                         </div>
                      </div>
                   </div>
                </div>
 
-               <div class="row mt-4">
+               <div class="col-12 mt-5">
+                     <nav>
+                        <div class="nav nav-tabs" id="nav-receta-btn" role="tablist">
+                            <button class="nav-link text-dark active fw-bold" id="nav-receta-tab" data-bs-toggle="tab" data-bs-target="#nav-receta" type="button" role="tab" aria-controls="nav-receta" aria-selected="false">
+                              <i class="bi bi-prescription2"></i>Receta médica
+                           </button>
+                        </div>
+                     </nav>
+                     <div class="tab-content p-3 shadow-lg bg-white" id="nav-content-estudios">        
+                        <div class="tab-pane fade show active" id="nav-receta" role="tabpanel" aria-labelledby="nav-receta-tab">
+                           <textarea name="recetaMedica" id="recetaMedica" class="form-control border-secondary" rows="5" placeholder="Ingresa aquí la receta"></textarea>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row mt-5">
                   <div class="col-12 text-center">
                      <button type="button" class="btn btn-dark btn-lib btn-redondo w-25">
                         Guardar

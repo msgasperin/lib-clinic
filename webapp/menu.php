@@ -49,13 +49,6 @@
           <?php } ?>
 
           <?php if($_SESSION["perfil"] == 1) { ?>
-            <div class="opciones_menu align-menu text-white" id="opcionReportes" onclick="opcionActive('opcionReportes'), TabReportes(), cerrarMenu();">
-              <i class="bi bi-bar-chart icon-menu"></i>
-              <div>Reportes</div>
-            </div>
-          <?php } ?>
-
-          <?php if($_SESSION["perfil"] == 1) { ?>
             <div class="opciones_menu align-menu text-white" id="opcionUsuarios" onclick="opcionActive('opcionUsuarios'), TabUsuarios(), cerrarMenu();">
               <i class="bi bi-person-gear icon-menu"></i> 
               <div>Usuarios</div>

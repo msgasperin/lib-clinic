@@ -22,6 +22,10 @@
   src: url(fuentes/Montserrat-Regular.ttf) format("truetype");
 }
 
+.badge_nombre {
+  width: 32px; height: 32px; background-color: #a5b2e7;;
+}
+
 .thead {
   background-color: var(--primary-dark) !important;
   color: var(--blanco) !important;
@@ -129,9 +133,6 @@
   border-radius: 2px;
 }
 
-.btn {
-  border-radius: 2px !important;
-}
 
 .btn-lib {
   background-color: var(--primary-dark);
