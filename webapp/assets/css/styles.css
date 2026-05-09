@@ -23,7 +23,7 @@
 }
 
 .badge_nombre {
-  width: 32px; height: 32px; background-color: #a5b2e7;;
+  width: 32px; height: 32px; background-color: #d2d8ef;;
 }
 
 .thead {
@@ -296,6 +296,10 @@ tool-tip {
   margin-bottom: 10px;
 }
 
+.badge_cita {
+  width: 32px; height: 32px; background-color: #f0f2f5;
+}
+
 .stetic-btn {
   border-radius: 3px;
 }
@@ -546,11 +550,11 @@ tool-tip {
   }
 
   .mh-card-usuarios {
-    min-height: 300px;
+    min-height: 240px;
   } 
   
   .mt-index {
-    margin-top: 70px;
+    margin-top: 50px;
   }
 
   .card-login {
@@ -581,11 +585,11 @@ tool-tip {
   }
 
   .mh-card-usuarios {
-    min-height: 300px;
+    min-height: 280px;
   }
 
   .mt-index {
-    margin-top: 60px;
+    margin-top: 40px;
   }
   .card-login {
     padding: 10px;
@@ -907,3 +911,22 @@ background-image: linear-gradient(0deg,
   100% { height: 65%; opacity: 0;}
 }
       
+/* Estilo base para el div de información */
+.info-flotante {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    z-index: 100;
+    min-width: 300px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Solo se muestra si el padre (la celda) tiene el mouse encima */
+.celda-estatus:hover .info-flotante {
+    display: block;
+}
+
+/* Estilo opcional para asegurar que la celda sea el punto de referencia */
+.celda-estatus {
+    position: relative;
+    vertical-align: middle;
+}

@@ -1,16 +1,15 @@
 import { postJSON } from "../globals.js";   // ajusta ruta según tu proyecto
 
-
-export const actualizar_llave = async (clave) => {
+export const obtiene_doctores = async () => {
+   const datos = { func: 'obtiene_doctores' };
    let respuesta;
    try {
-      respuesta = await postJSON('../api/controller/usuarios.php', {func: 'actualizar_llave', clave});
-   } catch (err) {
+      respuesta = await postJSON('../api/controller/usuarios.php', datos);
+   } catch {
       respuesta = {estatus: 500, "mensaje": "Error del servidor", data: []};
    }
-
    return respuesta;
-};
+}
 
 export const guardar_usuario = async (objUser) => {
    let respuesta;

@@ -6,8 +6,7 @@
 		//Objeto principal del constructor de la clase
 		public function __construct() {
 	   	$this->conectar();
-	  	}
-	
+	  }	
 
 		public function obtiene_pacientes() {
 			try {
@@ -23,9 +22,9 @@
 			return $res;
 		}
 	
-    	public function guardar_paciente(array $post, string $user_cap) {
-      	$estatus = 500;
-      	$data    = [0];
+		public function guardar_paciente(array $post, string $user_cap) {
+			$estatus = 500;
+			$data    = [0];
 			$mensaje = 'Error al intentar insertar';
 			try {        		
 				$sql = $this->dbh->prepare("INSERT INTO cat_pacientes (ap_paterno, ap_materno, nombre, fecha_nac, sexo, estado_civil, escolaridad, ocupacion, telefono, correo, direccion, colonia, municipio, entidad_fed, religion, aseguradora, user_cap) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -61,12 +60,12 @@
 						$data    = [$id];
 						$mensaje = 'Registro guardado, pero no se pudo obtener el ID';
 					}
-        		}
+				}
 			} 
 			catch (Exception $error) {
-        		error_log($error->getMessage());
+						error_log($error->getMessage());
 			}
-						
+					
 			$res = array('estatus' => $estatus, 'mensaje' => $mensaje, 'data' => $data);
 			return $res;
 		}

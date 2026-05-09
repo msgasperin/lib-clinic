@@ -10,7 +10,7 @@ const TabPacientes = () => {
          <div class="fs-4"> <i class="bi bi-person-bounding-box"></i> Pacientes</div>
       </div>
       <div class="col-xl-2 col-lg-2 col-md-2 col-sm-4 col-6 mt-2">
-         <button class="btn btn-dark btn-lib btn-redondo w-100 fs-6" type="button" id="btnNuevaCita" onclick="ModalFormPaciente(0, '');"><i class="bi bi-plus-lg"></i> Nuevo paciente</button>
+         <button class="btn btn-dark btn-lib btn-redondo w-100 fs-6" type="button" id="btnNuevaCita" onclick="ModalFormPaciente(0, '', 1);"><i class="bi bi-plus-lg"></i> Nuevo paciente</button>
       </div>
    </div>
    <div class="mt-4">
@@ -24,7 +24,7 @@ const TabPacientes = () => {
    }, 500);
 }
 
-const ModalFormPaciente = (idPaciente, nomPaciente) => {
+const ModalFormPaciente = (idPaciente, nomPaciente, origen) => {
 
    let text_boton   = '';
    let nombre       = '';
@@ -173,7 +173,7 @@ const ModalFormPaciente = (idPaciente, nomPaciente) => {
             </div>
             
             <div class="modal-footer bg-light border-0" align="right">
-               <button type="button" class="btn btn-dark btn-redondo btn-lib" id="btnGuardarPaciente" onclick="fn_guardar_paciente(${idPaciente});">
+               <button type="button" class="btn btn-dark btn-redondo btn-lib" id="btnGuardarPaciente" onclick="fn_guardar_paciente(${idPaciente}, ${origen});">
                   ${text_boton}
                </button>
                <button type="buttton" class="btn btn-outline-dark btn-redondo" data-bs-dismiss="modal">
@@ -183,7 +183,7 @@ const ModalFormPaciente = (idPaciente, nomPaciente) => {
          </div>
       </div>
    </div>`;
-   $('#modalAdmin').html(html);
+   $('#modalAdminExt').html(html);
    $('#modalFormPaciente').modal('show');
 
    if(idPaciente > 0) {
@@ -196,7 +196,7 @@ const ModalFormPaciente = (idPaciente, nomPaciente) => {
    }
 }
 
-const fn_guardar_paciente = async (idPaciente) => {
+const fn_guardar_paciente = async (idPaciente, origen) => {
 
    let nomPaciente         = $('#nomPaciente').val().trim();
    let apPaciente          = $('#apPaciente').val().trim();
@@ -294,10 +294,20 @@ const fn_guardar_paciente = async (idPaciente) => {
       $('#coloniaPaciente').val('');
       $('#municipioPaciente').val('');
       $('#entidadPaciente').val('NA');
-      $('#religionPaciente').val('');  
-      listar_pacientes('listado_pacientes');
+      $('#religionPaciente').val('');        
       $('#modalFormPaciente').modal('hide');
       $('#btnGuardarPaciente').prop('disabled', false);
+      if(origen == 2) { //Viene desde la modal de registrar cita
+         combo_pacientes('pacienteCita');
+         console.log(respuesta.data[0]);
+         setTimeout(() => {
+            $('#pacienteCita').val(respuesta.data[0]);
+            $('#pacienteCita').trigger('change');
+         }, 500);
+      }
+      else {
+         listar_pacientes('listado_pacientes');
+      }
    }
    else {
       showMessageSwal('Ocurrio un error: ', respuesta.mensaje, 'error');
@@ -366,12 +376,12 @@ const pinta_listado_pacientes = (containerId, data) => {
          <thead class="bg-light">
             <tr>
                <th>ID</th>
-               <th class="py-3 text-secondary" width="20%">Paciente</th>
+               <th class="py-3 text-secondary" width="17%">Paciente</th>
                <th class="py-3 text-secondary" width="10%">Fecha nacimiento</th>
                <th class="py-3 text-secondary" width="10%">Teléfono</th>
                <th class="py-3 text-secondary" width="15%">Correo</th>
                <th class="py-3 text-secondary" width="25%">Dirección</th>
-               <th class="py-3 text-center text-secondary" width="20%">Acciones</th>
+               <th class="py-3 text-center text-secondary" width="23%">Acciones</th>
             </tr>
          </thead>
          <tbody>`;
@@ -381,7 +391,7 @@ const pinta_listado_pacientes = (containerId, data) => {
                   <td>${row.id_paciente}</td>
                   <td>
                      <div class="d-flex align-items-center">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center me-2 badge_nombre">
+                        <div class="btn-redondo d-flex align-items-center justify-content-center me-2 badge_nombre">
                            <span class="text-secondary fw-bold fs-7">${row.nombre.charAt(0)}</span>
                         </div>
                         <span class="text-dark fw-medium">${row.nombre} ${row.ap_paterno} ${row.ap_materno ?? ''}</span>
@@ -392,7 +402,7 @@ const pinta_listado_pacientes = (containerId, data) => {
                   <td class="text-center">${row.correo}</td>
                   <td>${row.direccion}</td>
                   <td class="text-center">
-                     <button class="btn btn-outline-dark fs-7 btnBloqTabpac" title="Editar" onclick="ModalFormPaciente(${row.id_paciente}, '${row.nombre} ${row.ap_paterno} ${row.ap_materno}');">
+                     <button class="btn btn-outline-dark fs-7 btnBloqTabpac" title="Editar" onclick="ModalFormPaciente(${row.id_paciente}, '${row.nombre} ${row.ap_paterno} ${row.ap_materno}', 1);">
                         <i class="bi bi-pencil"></i>
                      </button>
                      <button class="btn btn-outline-dark fs-7 btnBloqTabpac ms-1" title="Expediente Clínico" onclick="ModalFormExpClinico();">

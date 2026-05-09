@@ -8,18 +8,10 @@
   if(isset($_SESSION["id_usuario"]) && $_SESSION["id_usuario"] != '') {
     if(isset($_POST['func'])) {
       switch ($_POST['func']) {
-
-        case 'actualizar_llave':
-          if(!isset($_POST["clave"]) || $_POST["clave"] == '') {
-            $res = array('estatus' => 500, 'data'=>[], 'mensaje' => 'Debes ingresar una clave');
-          }
-          else {
-            $res = $u->actualizar_llave($_POST["clave"]);
-            if($res["estatus"] == 200) {
-              $g->bitacora('Llave de autorización actualizada', $_POST["clave"], $_SESSION["id_usuario"], $_SESSION["nombre"]);
-            }
-          }                              
-          echo json_encode($res);
+        
+        case 'obtiene_doctores':
+          $res = $u->obtiene_doctores();          
+          echo json_encode(["estatus" => 200, "mensaje" => "", "data" => $res]);
         break;
 
         // Funciones de CRUD de usuarios

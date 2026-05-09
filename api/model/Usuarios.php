@@ -7,36 +7,20 @@
 		public function __construct() {
 			$this->conectar();
 		}
-
-		public function actualizar_llave(int $llave) {
-			$estatus = 500;
-			$data    = [];
-			$mensaje = 'Error al intentar actualizar la llave';
-			try {
-				$sqlVal = $this->dbh->prepare("SELECT clave FROM clave_autorizacion WHERE clave = ?");
-				$sqlVal->execute(array($llave));
-				if($sqlVal->rowCount() <= 0) {
-					$sql = $this->dbh->prepare("UPDATE clave_autorizacion SET clave = ?	 WHERE id = ?");
-					if($sql->execute(array($llave, 1))) {
-						if($sql->rowCount() > 0) {
-							$estatus = 200;
-							$mensaje = 'ok';
-						}
-					}
-				}
-				else {					
-					$mensaje = 'Debes ingresar un código de autorización diferente al actual';
-				}
-			} 
-			catch (Exception $error) {
-        		error_log($error->getMessage());
+		
+		public function obtiene_doctores() {
+			$res = [];
+			try {				
+				$sql = $this->dbh->prepare("SELECT id, nombre, usuario, celular, correo, foto, perfil FROM cat_usuarios WHERE estatus = 1 AND perfil = 3");
+				$sql->execute();				
+				$res = $sql->fetchAll(PDO::FETCH_ASSOC);
+			} catch (Exception $error) {
+        	error_log($error->getMessage());
 			}
 			
-
-      	$res = array('estatus' => $estatus, 'data' => $data, 'mensaje' => $mensaje);
 			return $res;
 		}
-	
+
 		public function obtiene_usuarios() {
 			$res = [];
 			try {				
@@ -130,7 +114,7 @@
 			return $res;
 		}
 
-    	public function actualizar_foto_user(string $nom_foto, int $id_usuario) {
+    public function actualizar_foto_user(string $nom_foto, int $id_usuario) {
    		$res = false;
 			try {
 				$sql = $this->dbh->prepare("UPDATE cat_usuarios SET foto = ? WHERE id = ?");

@@ -1,29 +1,19 @@
-import { guardar_usuario, obtiene_usuarios, eliminar_usuario, actualizar_llave, consulta_log } from "./UsuariosServices.js";
+import { guardar_usuario, obtiene_usuarios, eliminar_usuario, consulta_log } from "./UsuariosServices.js";
 
 let arrUsuarios = [];
 
 const TabUsuarios = () => {
    let html =
    `<div class="row">
-      <div class="col-xl-6 col-lg-6 col-md-4 col-sm-4 col-6 mt-2">
+      <div class="col-xl-10 col-lg-10 col-md-9 col-sm-8 col-6 mt-2">
          <div class="fs-4"> <i class="bi bi-person-gear"></i> Usuarios</div>
-      </div>
+      </div>      
       <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6 mt-2">
-         <button class="btn btn-secondary btn-elao btn-redondo w-100" type="button" onclick="ModalLogsMovimientos();">
-            <i class="bi bi bi-journal-text"></i> Logs
-         </button>
-      </div>
-      <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6 mt-2">
-         <button class="btn btn-secondary btn-elao btn-redondo w-100" type="button" onclick="ModalActualizarLlave();">
-         <i class="bi bi-key-fill"></i> Actualizar Llave
-      </button>
-      </div>
-      <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6 mt-2">
-         <button class="btn btn-secondary btn-elao btn-redondo w-100" type="button" id="btnNuevoUsuario" onclick="ModalFormUsuario(0, 0,'');"><i class="bi bi-plus-lg"></i> Nuevo Usuario</button>
+         <button class="btn btn-secondary btn-lib btn-redondo w-100" type="button" id="btnNuevoUsuario" onclick="ModalFormUsuario(0, 0,'');"><i class="bi bi-plus-lg"></i> Nuevo Usuario</button>
       </div>
    </div>
    <div class="row mt-3">
-      <div class="col-xl-3 offset-xl-9 col-lg-3 offset-lg-9 col-md-4 offset-lg-8 col-sm-12 col-12" align="right">
+      <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12">
          <div class="input-group">
             <input type="text" name="inpBusquedaUsuario" id="inpBusquedaUsuario" class="form-control border-end-0" placeholder="Buscar usuario" onkeyUp="fn_buscar_usuario();">
             <span class="input-group-text border-start-0 bg-white"><i class="bi bi-search"></i></span>
@@ -230,92 +220,6 @@ const pinta_listado_log = (data) => {
    }  
 }
 
-const ModalActualizarLlave = () => {
-   let html = `
-   <div class="modal fade modal-superior-blur" id="modalActualizarLlave" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-      <div class="modal-dialog modal-fullscreen-sm-down">
-         <div class="modal-content sombra-modal">
-            <div class="modal-body">
-               <div class="row mb-4">
-                  <div class="col-12" align="center">
-                     <i class="bi bi-exclamation-circle fs-08 text-elao"></i>
-                     <h5 class="mt-3"><b>Ingresa el nuevo código de autorización.</b></h5>
-                  </div>
-                  <div class="col-xl-2 offset-xl-2 col-lg-2 offset-lg-2 col-md-2 offset-md-2 col-sm-3 col-3 mt-2">
-                     <input type="text" inputmode="numeric" pattern="[0-9]*" name="autLLave1" id="autLLave1" class="form-control form-control-lg text-center border-secondary rounded-3" maxlength="1" onkeypress="return fnValidaNumeros(event);">
-                  </div>
-                  <div class="col-xl-2 col-lg-2 col-md-2 col-sm-3 col-3 mt-2">
-                     <input type="text" inputmode="numeric" pattern="[0-9]*" name="autLlave2" id="autLlave2" class="form-control form-control-lg text-center border-secondary rounded-3" maxlength="1" onkeypress="return fnValidaNumeros(event);">
-                  </div>
-                  <div class="col-xl-2 col-lg-2 col-md-2 col-sm-3 col-3 mt-2">
-                     <input type="text" inputmode="numeric" pattern="[0-9]*" name="autLlave3" id="autLlave3" class="form-control form-control-lg text-center border-secondary rounded-3" maxlength="1" onkeypress="return fnValidaNumeros(event);">
-                  </div>
-                  <div class="col-xl-2 col-lg-2 col-md-2 col-sm-3 col-3 mt-2">
-                     <input type="text" inputmode="numeric" pattern="[0-9]*" name="autLlave4" id="autLlave4" class="form-control form-control-lg text-center border-secondary rounded-3" maxlength="1" onkeypress="return fnValidaNumeros(event);">
-                  </div>
-                  <div class="col-6 mt-5" align="right">
-                     <button type="buttton" class="btn btn-dark btn-elao btn-redondo" onclick="fn_actualizar_llave();">
-                        <i class="bi bi-check-lg"></i> Actualizar
-                     </button>
-                  </div>
-                  <div class="col-6 mt-5">
-                     <button type="buttton" class="btn btn-secondary btn-redondo" data-bs-dismiss="modal">
-                        <i class="bi bi-x-lg"></i> Cancelar
-                     </button>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>`;
-   $('#modalAdmin').html(html);
-   $('#modalActualizarLlave').modal('show');
-}
-
-const fn_actualizar_llave = async () => {
-   let dat1      = $('#autLLave1').val().trim();
-   let dat2      = $('#autLlave2').val().trim();
-   let dat3      = $('#autLlave3').val().trim();
-   let dat4      = $('#autLlave4').val().trim();
-   
-   if(dat1 == '' || dat2 == '' || dat3 == '' || dat4 == '') {
-      ToastColor.fire({
-         text: '¡Atención! Debes ingresar el nuevo código de autorización',
-         icon: 'warning',
-         position: 'top',
-         timerProgressBar: false
-      });
-      return;
-   }
-
-   const res = await showMessageSwalQuestion('¿Estás seguro?', 'El código / llave de autorización será actualizado', 'question', 'Sí, actualizar', 'Cancelar');
-   
-   if (!res.result) {
-      return;
-   }
-
-   let clave = dat1+dat2+dat3+dat4;
-   let respuesta = await actualizar_llave(clave);
-   if(respuesta["estatus"] == 200) {         
-      showMessageSwalTimer('Llave / Código de autorización actualizado', '', 'success', 2500);
-      $('#modalActualizarLlave').modal('hide');         
-      $('#autLLave1').val('');
-      $('#autLLave2').val('');
-      $('#autLLave3').val('');
-      $('#autLLave4').val('');
-   }
-   else {
-      ToastColor.fire({
-         text: '¡Atención! ' + respuesta.mensaje,
-         icon: 'warning',
-         position: 'top',
-         timerProgressBar: false
-      });
-      return;
-   }
-   
-}
-
 const ModalFormUsuario = (idUsuario, nomUsuario) => {
 
    let usuarioSeleccionado = arrUsuarios.filter(usuario => usuario.id == idUsuario);
@@ -377,7 +281,7 @@ const ModalFormUsuario = (idUsuario, nomUsuario) => {
                         <option value="0">Seleccionar</option>
                         <option value="1">Administrador</option>
                         <option value="2">Operativo</option>
-                        <option value="3">Repartidor</option>
+                        <option value="3">Doctor</option>
                      </select>
                   </div>
                </div>
@@ -417,6 +321,8 @@ const listar_usuarios = async () => {
 }
 
 const pinta_listado_usuario = (data) => {
+   let icon = '';
+
    if(data.length == 0) {
       $('#containerListUsuarios').html('<div align="center"><img src="assets/images/no_encontrado.png" class="img img-fluid"> <br>No se encontraron usuarios registrados</div>');
       return;
@@ -424,13 +330,21 @@ const pinta_listado_usuario = (data) => {
    
    let html = `<div class="row">`;
    data.map((row, i) => {
+
+      if(row.perfil == 3) {
+         icon = '<i class="bi bi-hospital fs-1 text-secondary"></i>';
+      }
+      else {
+         icon = '<i class="bi bi-person-circle fs-1 text-secondary"></i>';
+      }
+
       html+=`
       <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 mt-2" id="cardUsuario${row.id}">
          <div class="card mb-3 shadow mh-card-usuarios">
             <div class="card-body">
                <div class="row fs-8">
                   <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-3 mt-2" align="center">
-                     <img src="assets/images/usuarios/${row.foto}" class="img img-fluid img-thumbnail">
+                     ${icon}
                   </div>
                   <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-9 mt-2" align="center">
                      <div class="mt-1"><b>${row.nombre}</b></div>
@@ -440,7 +354,7 @@ const pinta_listado_usuario = (data) => {
                </div>
             </div>
             <div class="card-footer" align="right">
-               <button class="btn btn-dark btn-elao btn-redondo" type="button" onclick="ModalFormUsuario(${row.id},'${row.nombre}');">
+               <button class="btn btn-dark btn-lib btn-redondo" type="button" onclick="ModalFormUsuario(${row.id},'${row.nombre}');">
                   <i class="bi bi-pencil"></i>
                </button>
                <button class="btn btn-outline-danger btn-redondo btnUsuariosDel" type="button" onclick="fn_eliminar_usuario(${i}, '${row.id}','${row.nombre}');">
@@ -571,11 +485,9 @@ const fn_buscar_usuario = () => {
 // Interfaces
 window.TabUsuarios          = TabUsuarios;
 window.ModalFormUsuario     = ModalFormUsuario;
-window.ModalActualizarLlave = ModalActualizarLlave;
 window.ModalLogsMovimientos = ModalLogsMovimientos;
 // Funciones
 window.fn_eliminar_usuario  = fn_eliminar_usuario;
 window.fn_guardar_usuario   = fn_guardar_usuario;
 window.fn_buscar_usuario    = fn_buscar_usuario;
-window.fn_actualizar_llave  = fn_actualizar_llave;
 window.fn_consultar_log     = fn_consultar_log;
