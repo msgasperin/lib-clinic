@@ -22,7 +22,13 @@
         case 'guardar_paciente':
 
           if($_POST["idPaciente"] == '0') {
-            $res = $v->guardar_paciente($_POST, $_SESSION["nombre"]);
+            $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            $key_query = '';
+            for ($i = 0; $i < 10; $i++) {
+              $key_query .= $chars[rand(0, strlen($chars) - 1)];
+            }
+
+            $res = $v->guardar_paciente($_POST, $_SESSION["nombre"], $key_query);
             $mensaje_bitacora = 'Paciente registrado: '.$_POST["nomPaciente"];
             $id_paciente = $res["data"][0];
           } 

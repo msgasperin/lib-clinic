@@ -11,7 +11,7 @@
 		public function obtiene_pacientes() {
 			try {
 				$res = [];
-				$sql = $this->dbh->prepare("SELECT id_paciente, ap_paterno, ap_materno, nombre, fecha_nac, DATE_FORMAT(fecha_nac,'%d-%m-%Y') AS fecha_nac_format, sexo, estado_civil, escolaridad, ocupacion, telefono, correo, direccion, colonia, municipio, entidad_fed, religion, aseguradora FROM cat_pacientes WHERE activo = 1"
+				$sql = $this->dbh->prepare("SELECT id_paciente, ap_paterno, ap_materno, nombre, fecha_nac, DATE_FORMAT(fecha_nac,'%d-%m-%Y') AS fecha_nac_format, sexo, estado_civil, escolaridad, ocupacion, telefono, correo, direccion, colonia, municipio, entidad_fed, religion, aseguradora, key_query FROM cat_pacientes WHERE activo = 1"
 				);
 				$sql->execute();				
 				$res = $sql->fetchAll(PDO::FETCH_ASSOC);				
@@ -22,12 +22,13 @@
 			return $res;
 		}
 	
-		public function guardar_paciente(array $post, string $user_cap) {
+		public function guardar_paciente(array $post, string $user_cap, string $key_query) {
 			$estatus = 500;
 			$data    = [0];
 			$mensaje = 'Error al intentar insertar';
+
 			try {        		
-				$sql = $this->dbh->prepare("INSERT INTO cat_pacientes (ap_paterno, ap_materno, nombre, fecha_nac, sexo, estado_civil, escolaridad, ocupacion, telefono, correo, direccion, colonia, municipio, entidad_fed, religion, aseguradora, user_cap) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				$sql = $this->dbh->prepare("INSERT INTO cat_pacientes (ap_paterno, ap_materno, nombre, fecha_nac, sexo, estado_civil, escolaridad, ocupacion, telefono, correo, direccion, colonia, municipio, entidad_fed, religion, aseguradora, key_query, user_cap) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 				$ok  = $sql->execute(array(
 					$post["apPaciente"], 
 					$post["amPaciente"], 
@@ -45,6 +46,7 @@
 					$post["entidadPaciente"],
 					$post["religionPaciente"],
 					$post["aseguradoraPaciente"],
+					$key_query,
 					$user_cap)
 				);
 

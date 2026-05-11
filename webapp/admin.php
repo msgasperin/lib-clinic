@@ -71,9 +71,9 @@
 		<script type="module" src="components/Menu/Menu.js?<?=time()?>"></script>
 		<script type="module" src="components/Citas/Citas.js?<?=time()?>"></script>
 		<script type="module" src="components/Pacientes/Pacientes.js?<?=time()?>"></script>
-		<script type="module" src="components/Reportes/Reportes.js?<?=time()?>"></script>
 		<script type="module" src="components/Usuarios/Usuarios.js?<?=time()?>"></script>	
-		<script type="module" src="components/NotaMedica/NotaMedica.js?=time()?>"></script>	
+		<script type="module" src="components/NotaMedica/NotaMedica.js?<?=time()?>"></script>	
+		<script type="module" src="components/ExpedienteClinico/ExpedienteClinico.js?<?=time()?>"></script>	
 
 		<script>
 			$(document).on('select2:open', function() {
