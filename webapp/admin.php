@@ -73,6 +73,7 @@
 		<script type="module" src="components/Pacientes/Pacientes.js?<?=time()?>"></script>
 		<script type="module" src="components/Reportes/Reportes.js?<?=time()?>"></script>
 		<script type="module" src="components/Usuarios/Usuarios.js?<?=time()?>"></script>	
+		<script type="module" src="components/NotaMedica/NotaMedica.js?=time()?>"></script>	
 
 		<script>
 			$(document).on('select2:open', function() {

@@ -390,14 +390,14 @@ const pintar_listado_citas = (containerId, data) => {
                         <button class="btn btn-outline-dark fs-7 bloqCancelCita" title="Editar" onclick="ModalFormCita(${cita.id_cita});">
                            <i class="bi bi-pencil"></i>
                         </button>
-                        <button class="btn btn-outline-dark fs-7 ms-1 bloqCancelCita" title="Nota médica" onclick="ModalFormNotaMedica();">
+                        <button class="btn btn-outline-dark fs-7 ms-1 bloqCancelCita" title="Nota médica" onclick="ModalListarNotaMedica(${cita.id_paciente}, '${cita.paciente}', ${cita.id_doctor}, '${cita.doctor}', ${cita.id_cita});">
                            <i class="bi bi-clipboard-plus"></i>
                         </button>`;
                      }
                      if(cita.estatus == 1) {
                         html+=`
-                        <button class="btn btn-outline-danger fs-7 ms-1 bloqCancelCita" title="Cancelar" onclick="ModalCancelarCita(${cita.id_cita}, '${cita.paciente}');">
-                           <i class="bi bi-trash"></i>
+                        <button class="btn btn-outline-danger fs-7 ms-1 bloqCancelCita" title="Cancelar cita" onclick="ModalCancelarCita(${cita.id_cita}, '${cita.paciente}');">
+                           <i class="bi bi-ban"></i>
                         </button>`;
                      }
                      html+=`
@@ -416,8 +416,8 @@ const pintar_listado_citas = (containerId, data) => {
       initDataTableExport({
         tableId: '#tableCitas',
         titulo: 'Citas',
-        alignment: ['10%', '10%', '50%', '10%', '10%', '10%'],
-        exportColumns: [0, 1, 2, 3, 4, 5]
+        alignment: ['15%', '25%', '25%', '25%', '15%'],
+        exportColumns: [1, 2, 3, 4, 5]
       });
    }, 500);
 }
@@ -516,196 +516,9 @@ const fn_cancelar_cita = async (idCita, nomPaciente) => {
    }
 }
 
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ NOTA MÉDICA  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-const ModalFormNotaMedica = () => {
-   let html = `
-   <div class="modal fade modal-superior-blur" id="modalNotaMedica" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-      <div class="modal-dialog modal-fullscreen">
-         <div class="modal-content sombra-modal">
-            
-            <div class="modal-header modal-head-per">
-               <div class="d-flex align-items-center">
-                    <div class="rounded-circle bg-primary me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                        <i class="bi bi-person-fill fs-4"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title mb-0">Nota Médica</h5>
-                        <small class="opacity-75">Paciente: Juan Pérez • 34 años • Veracruz, Ver.</small>
-                    </div>
-                </div>
-               <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal" aria-label="Close">
-                  <i class="bi bi-x-lg"></i>
-               </button>
-            </div>                        
-
-            <div class="modal-body bg-light">
-               <div class="row">
-                  <div class="col-12">
-                     <div class="card p-3 border-0 shadow">
-                        <div class="row">
-                           <div class="col-12 fs-6 fw-bold">
-                              Signos Vitales
-                           </div>
-                           <div class="col-md-1 col-sm-4 col-6 mt-3">
-                              <strong>T/A</strong>
-                              <input type="text" name="taMedica" id="taMedica" class="form-control" maxlength="50" />
-                           </div>
-                           <div class="col-md-1 col-sm-4 col-6 mt-3">
-                              <strong>SpO2</strong>
-                              <input type="text" name="spoMedica" id="spoMedica" class="form-control" maxlength="50" />
-                           </div>
-                           <div class="col-md-1 col-sm-4 col-6 mt-3">
-                              <strong>Temp.</strong>
-                              <input type="text" name="spoMedica" id="spoMedica" class="form-control" maxlength="50" />
-                           </div>
-                           <div class="col-md-1 col-sm-4 col-6 mt-3">
-                              <strong>Glucosa</strong>
-                              <input type="text" name="glucosaMedica" id="glucosaMedica" class="form-control" maxlength="50" />
-                           </div>
-                           <div class="col-md-2 col-sm-4 col-6 mt-3">
-                              <strong>FR</strong>
-                              <input type="text" name="frMedica" id="frMedica" class="form-control" maxlength="50" />
-                           </div>
-                           <div class="col-md-2 col-sm-4 col-6 mt-3">
-                              <strong>FC</strong>
-                              <input type="text" name="fcMedica" id="fcMedica" class="form-control" maxlength="50" />
-                           </div>
-                           <div class="col-md-2 col-sm-4 col-6 mt-3">
-                              <strong>Peso</strong>
-                              <input type="text" name="pedoMedica" id="pedoMedica" class="form-control" maxlength="50" />
-                           </div>
-                           <div class="col-md-2 col-sm-4 col-6 mt-3">
-                              <strong>Estatura</strong>
-                              <input type="text" name="estaturaMedica" id="estaturaMedica" class="form-control" maxlength="50" />
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div class="col-12 mt-5">
-                     <nav>
-                        <div class="nav nav-tabs" id="nav-revision-medica" role="tablist">
-                           <button class="nav-link text-dark active" id="nav-padecimiento-tab" data-bs-toggle="tab" data-bs-target="#nav-padecimiento" type="button" role="tab" aria-controls="nav-padecimiento" aria-selected="true">
-                              <i class="bi bi-virus2"></i> Padecimiento actual
-                           </button>
-                           <button class="nav-link text-dark" id="nav-exploracion-tab" data-bs-toggle="tab" data-bs-target="#nav-exploracion" type="button" role="tab" aria-controls="nav-exploracion" aria-selected="false">
-                              <i class="bi bi-person-arms-up"></i> Exploración física
-                           </button>
-                           <button class="nav-link text-dark" id="nav-plan-tab" data-bs-toggle="tab" data-bs-target="#nav-plan" type="button" role="tab" aria-controls="nav-plan" aria-selected="false">
-                              <i class="bi bi-capsule"></i> Plan de manejo y tratamiento 
-                           </button>
-                           <button class="nav-link text-dark" id="nav-pronostico-tab" data-bs-toggle="tab" data-bs-target="#nav-pronostico" type="button" role="tab" aria-controls="nav-pronostico" aria-selected="false">
-                              <i class="bi bi-journal-medical"></i> Pronóstico
-                           </button>
-                           <button class="nav-link text-dark" id="nav-diagnostico-tab" data-bs-toggle="tab" data-bs-target="#nav-diagnostico" type="button" role="tab" aria-controls="nav-diagnostico" aria-selected="false">
-                              <i class="bi bi-clipboard-check"></i> Diagnóstico principal
-                           </button>
-                           <button class="nav-link text-dark" id="nav-secundario-tab" data-bs-toggle="tab" data-bs-target="#nav-secundario" type="button" role="tab" aria-controls="nav-secundario" aria-selected="false">
-                              <i class="bi bi-clipboard-minus"></i> Diagnóstico secundario
-                           </button>
-                        </div>
-                     </nav>
-                     <div class="tab-content p-3 shadow-lg bg-white" id="nav-content-revision">        
-                        <div class="tab-pane fade show active" id="nav-padecimiento" role="tabpanel" aria-labelledby="nav-padecimiento-tab">
-                           <strong>Padecimiento actual</strong>
-                           <textarea name="padecimiento" id="padecimiento" class="form-control" rows="5"></textarea>
-                        </div>
-
-                        <div class="tab-pane fade" id="nav-exploracion" role="tabpanel" aria-labelledby="nav-exploracion-tab">
-                           <strong>Exploración física</strong>
-                           <textarea name="exploracionFisica" id="exploracionFisica" class="form-control" rows="5"></textarea>
-                        </div>
-
-                        <div class="tab-pane fade" id="nav-plan" role="tabpanel" aria-labelledby="nav-plan-tab">
-                           <strong>Plan de manejo y tratamiento</strong>
-                           <textarea name="tratamiento" id="tratamiento" class="form-control" rows="5"></textarea>
-                        </div>
-
-                        <div class="tab-pane fade" id="nav-pronostico" role="tabpanel" aria-labelledby="nav-pronostico-tab">
-                           <strong>Pronóstico</strong>
-                           <textarea name="pronostico" id="pronostico" class="form-control" rows="5"></textarea>
-                        </div>
-
-                        <div class="tab-pane fade" id="nav-diagnostico" role="tabpanel" aria-labelledby="nav-diagnostico-tab">
-                           <strong>Diagnóstico principal</strong>
-                           <textarea name="diagnosticoPrincipal" id="diagnosticoPrincipal" class="form-control" rows="5"></textarea>
-                        </div>
-
-                        <div class="tab-pane fade" id="nav-secundario" role="tabpanel" aria-labelledby="nav-secundario-tab">
-                           <strong>Diagnóstico secundario</strong>
-                           <textarea name="diagnosticoSecundario" id="diagnosticoSecundario" class="form-control" rows="5"></textarea>
-                        </div>
-
-                     </div>
-                  </div>
-
-                  <div class="col-12 mt-5">
-                     <nav>
-                        <div class="nav nav-tabs" id="nav-estudios" role="tablist">
-                            <button class="nav-link text-dark active" id="nav-analisis-tab" data-bs-toggle="tab" data-bs-target="#nav-analisis" type="button" role="tab" aria-controls="nav-analisis" aria-selected="false">
-                              <i class="bi bi-droplet"></i>Análisis Clínicos
-                           </button>
-                           <button class="nav-link text-dark" id="nav-gabinete-tab" data-bs-toggle="tab" data-bs-target="#nav-gabinete" type="button" role="tab" aria-controls="nav-gabinete" aria-selected="true">
-                              <i class="bi bi-clipboard2-pulse"></i>Estudios de Gabinete
-                           </button>
-                        </div>
-                     </nav>
-                     <div class="tab-content p-3 shadow-lg bg-white" id="nav-content-estudios">        
-                        <div class="tab-pane fade show active" id="nav-analisis" role="tabpanel" aria-labelledby="nav-analisis-tab">
-                           <strong>Análisis Clínicos</strong>
-                           <textarea name="analsisiClinicos" id="analsisiClinicos" class="form-control" rows="5"></textarea>
-                        </div>
-
-                        <div class="tab-pane fade" id="nav-gabinete" role="tabpanel" aria-labelledby="nav-gabinete-tab">
-                           <strong>Estudios de Gabinete</strong>
-                           <textarea name="estudiosGabinete" id="estudiosGabinete" class="form-control" rows="5"></textarea>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-
-               <div class="col-12 mt-5">
-                  <nav>
-                     <div class="nav nav-tabs" id="nav-receta-btn" role="tablist">
-                           <button class="nav-link text-dark active fw-bold" id="nav-receta-tab" data-bs-toggle="tab" data-bs-target="#nav-receta" type="button" role="tab" aria-controls="nav-receta" aria-selected="false">
-                           <i class="bi bi-prescription2"></i>Receta médica
-                        </button>
-                     </div>
-                  </nav>
-                  <div class="tab-content p-3 shadow-lg bg-white" id="nav-content-estudios">        
-                     <div class="tab-pane fade show active" id="nav-receta" role="tabpanel" aria-labelledby="nav-receta-tab">
-                        <textarea name="recetaMedica" id="recetaMedica" class="form-control border-secondary" rows="5" placeholder="Ingresa aquí la receta"></textarea>
-                     </div>
-                  </div>
-               </div>
-
-               <div class="row mt-5">
-                  <div class="col-12 text-center">
-                     <button type="button" class="btn btn-dark btn-lib btn-redondo w-25">
-                        Guardar
-                     </button>
-                  </div>
-               </div>
-
-            </div>                                                           
-            
-            <div class="modal-footer bg-light border-0" align="right">
-               <button type="buttton" class="btn btn-outline-dark btn-redondo" data-bs-dismiss="modal">
-                  Cerrar
-               </button>
-            </div>
-         </div>
-      </div>
-   </div>`;
-   $('#modalAdmin').html(html);
-   $('#modalNotaMedica').modal('show');
-}
-
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 window.TabCitas            = TabCitas;
-window.ModalFormCita       = ModalFormCita; 
-window.ModalFormNotaMedica = ModalFormNotaMedica;
+window.ModalFormCita       = ModalFormCita;
 window.ModalCancelarCita   = ModalCancelarCita;
 
 window.listar_citas        = listar_citas;

@@ -53,7 +53,7 @@
             $id_cita = $res["data"][0];
           } 
           else {
-            $id_cita = $_POST["idPaciente"];
+            $id_cita = $_POST["idCita"];
             $res = $v->actualizar_cita($_POST, $_SESSION["nombre"]);
             $mensaje_bitacora = 'Cita modificada: '.$_POST["nomPaciente"];
           }
