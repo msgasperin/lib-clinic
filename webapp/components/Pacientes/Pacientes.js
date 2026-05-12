@@ -95,7 +95,7 @@ const ModalFormPaciente = (idPaciente, nomPaciente, origen) => {
                      <b>Ap. Materno</b>
                      <input type="text" name="amPaciente" id="amPaciente" class="form-control" maxlength="70" value="${ap_materno}">
                   </div>
-                  <div class="col-md-3 col-sm-6 col-12 mt-3">
+                  <div class="col-md-3 col-sm-6 col-6 mt-3">
                      <b>Fecha de nacimiento *</b>
                      <input type="date" name="fechaNacimiento" id="fechaNacimiento" class="form-control" value="${fec_nac}">
                   </div>
@@ -368,7 +368,9 @@ const listar_pacientes = async (containerId) => {
 }
 
 const pinta_listado_pacientes = (containerId, data) => {
-   const contenedor = document.getElementById(containerId);   
+   const contenedor = document.getElementById(containerId); 
+   
+   let perfilUs = $('#perfilUs').val().trim();
 
    let html = `
    <div class="table-responsive mt-4">
@@ -413,10 +415,14 @@ const pinta_listado_pacientes = (containerId, data) => {
                      </button>
                      <button class="btn btn-outline-dark fs-7 btnBloqTabpac ms-1" title="Expediente PDF" onclick="ModalVerExpedientePdf('${row.key_query}');">
                         <i class="bi bi-list-columns"></i>
-                     </button>
-                     <button class="btn btn-outline-danger fs-7 btnBloqTabpac ms-1" title="Eliminar" onclick="fn_eliminar_paciente(${row.id_paciente}, '${row.nombre} ${row.ap_paterno} ${row.ap_materno}');">
-                        <i class="bi bi-trash"></i>
-                     </button>
+                     </button>`;
+                     if(perfilUs != 3) {
+                        html+=`
+                        <button class="btn btn-outline-danger fs-7 btnBloqTabpac ms-1" title="Eliminar" onclick="fn_eliminar_paciente(${row.id_paciente}, '${row.nombre} ${row.ap_paterno} ${row.ap_materno}');">
+                           <i class="bi bi-trash"></i>
+                        </button>`;
+                     }
+                     html+=`
                   </td>
                </tr>`;
             });

@@ -280,14 +280,14 @@ const ModalFormUsuario = (idUsuario, nomUsuario) => {
                      <select name="perfilUsuario" id="perfilUsuario" class="form-select">
                         <option value="0">Seleccionar</option>
                         <option value="1">Administrador</option>
-                        <option value="2">Operativo</option>
+                        <!--<option value="2">Operativo</option>-->
                         <option value="3">Doctor</option>
                      </select>
                   </div>
                </div>
             </div>
             <div class="modal-footer" align="right">
-              <button type="buttton" class="btn btn-secondary btn-elao btn-redondo" id="btnSaveUser" onclick="fn_guardar_usuario('${idUsuario}');">
+              <button type="buttton" class="btn btn-secondary btn-lib btn-redondo" id="btnSaveUser" onclick="fn_guardar_usuario('${idUsuario}');">
                 <i class="bi bi-save"></i> Guardar
               </button> 
               <button type="buttton" class="btn btn-outline-dark btn-redondo" data-bs-dismiss="modal">

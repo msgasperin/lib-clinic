@@ -25,7 +25,7 @@ const ModalListarNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita
             </div>                        
 
             <div class="modal-body bg-light">`;
-               if(idDoctor > 0 && idCita > 0) {
+               if(parseInt(idDoctor) > 0 && parseInt(idCita) > 0) {
                   html+=`
                   <div class="row">
                      <div class="col-12 text-end">
@@ -354,8 +354,8 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
                </div>
 
                <div class="row mt-5">
-                  <div class="col-12 text-center">
-                     <button type="button" class="btn btn-dark btn-lib btn-redondo w-25" id="btnGuardarNotaMedica" onclick="fn_guardar_nota_medica(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${doctor}', ${idCita}, ${idNota});">
+                  <div class="col-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4 col-lg-2 offset-lg-5 text-center">
+                     <button type="button" class="btn btn-dark btn-lib btn-redondo w-100" id="btnGuardarNotaMedica" onclick="fn_guardar_nota_medica(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${doctor}', ${idCita}, ${idNota});">
                         ${text_boton}
                      </button>
                   </div>

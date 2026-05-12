@@ -14,7 +14,7 @@
       switch ($_POST['func']) {
 
         case 'obtiene_pacientes':
-          $res = $v->obtiene_pacientes();          
+          $res = $v->obtiene_pacientes($_SESSION["perfil"], $_SESSION["id_usuario"]);          
           echo json_encode(["estatus" => 200, "mensaje" => "", "data" => $res]);
         break;
 
@@ -45,13 +45,15 @@
         break;
 
         case 'eliminar':
-          $response = $v->eliminar_paciente($_POST["idPaciente"]);
-          if($response) {
-            $res = array('estatus' => 200, 'mensaje' => 'ok', 'data'=>[]);
-            $g->bitacora('Paciente eliminado: '.$_POST["nomPaciente"], $_POST["idPaciente"], $_SESSION["id_usuario"], $_SESSION["nombre"]);
+
+          if($_SESSION["perfil"] == 3) {
+            echo json_encode(["estatus" => 406, "mensaje" => "Parámetros incompletos", 'data' => []]); // Parámatros no enviados
+            break;
           }
-          else {
-            $res = array('estatus' => 500, 'mensaje' => 'error al intentar eliminar al paciente', 'data'=>[]);
+          
+          $res = $v->eliminar_paciente($_POST["idPaciente"]);
+          if($res["estatus"] == 200) {
+            $g->bitacora('Paciente eliminado: '.$_POST["nomPaciente"], $_POST["idPaciente"], $_SESSION["id_usuario"], $_SESSION["nombre"]);
           }
           
           echo json_encode($res);

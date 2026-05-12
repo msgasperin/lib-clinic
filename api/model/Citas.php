@@ -1,6 +1,4 @@
-<?php
-  //print_r($sql->errorInfo());
-	header('Content-Type: application/json');
+<?php  
 	require_once('../config/class.pdo.php');
 	class Citas extends Conexion {
 		//Objeto principal del constructor de la clase
@@ -8,11 +6,17 @@
 	   	$this->conectar();
 	  }
   
-    public function obtiene_citas(string $fecha_inicial, string $fecha_final) {
+    public function obtiene_citas(string $fecha_inicial, string $fecha_final, int $perfil, int $id_usuario) {
       try {
         $res = [];
-        $sql = $this->dbh->prepare("SELECT id_cita, id_paciente, paciente, id_doctor, doctor, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format FROM citas WHERE fecha >= ? AND fecha <= ?");
-        $sql->execute([$fecha_inicial, $fecha_final]);
+        if($perfil == 3) { // Doctor
+          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, id_doctor_fk, doctor, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format FROM citas WHERE id_doctor_fk = ? AND (fecha >= ? AND fecha <= ?)");
+          $sql->execute([$id_usuario, $fecha_inicial, $fecha_final]);
+        }
+        else {
+          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, id_doctor_fk, doctor, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format FROM citas WHERE fecha >= ? AND fecha <= ?");
+          $sql->execute([$fecha_inicial, $fecha_final]);
+        }
         $res = $sql->fetchAll(PDO::FETCH_ASSOC);				
       } catch (Exception $error) {
             error_log($error->getMessage());
@@ -23,7 +27,7 @@
 
     public function valida_disponibilidad(int $id_cita, string $fecha, string $hora, int $id_doctor, int $intervalo = 1800) {
       try {
-        $sql = $this->dbh->prepare("SELECT id_cita, paciente, hora FROM citas WHERE id_cita <> ? AND id_doctor = ? AND fecha = ? AND estatus = 1 AND ABS(TIME_TO_SEC(hora) - TIME_TO_SEC(?)) < ? LIMIT 1");
+        $sql = $this->dbh->prepare("SELECT id_cita, paciente, hora FROM citas WHERE id_cita <> ? AND id_doctor_fk = ? AND fecha = ? AND estatus = 1 AND ABS(TIME_TO_SEC(hora) - TIME_TO_SEC(?)) < ? LIMIT 1");
         
         $sql->execute([$id_cita, $id_doctor, $fecha, $hora, $intervalo]);
         $res = $sql->fetch(PDO::FETCH_ASSOC);
@@ -34,7 +38,7 @@
 
       } catch (Exception $error) {
         error_log($error->getMessage());
-        return false;
+        return null;
       }
     }
   
@@ -43,7 +47,7 @@
       $data    = [0];
       $mensaje = 'Error al intentar insertar';
       try {        		
-        $sql = $this->dbh->prepare("INSERT INTO citas (id_paciente, paciente, id_doctor, doctor, fecha, hora, observacion, user_cap) VALUES (?,?,?,?,?,?,?,?)");
+        $sql = $this->dbh->prepare("INSERT INTO citas (id_paciente_fk, paciente, id_doctor_fk, doctor, fecha, hora, observacion, user_cap) VALUES (?,?,?,?,?,?,?,?)");
         $ok  = $sql->execute(array(
           $post["idPaciente"], 
           $post["nomPaciente"],
@@ -82,7 +86,7 @@
       $data    = [];
       $mensaje = 'Error al intentar actualizar';
       try {
-        $sql = $this->dbh->prepare("UPDATE citas SET id_paciente = ?, paciente = ?, id_doctor = ?, doctor = ?, fecha = ?, hora = ?, observacion = ?, user_cap = ? WHERE id_cita = ?");
+        $sql = $this->dbh->prepare("UPDATE citas SET id_paciente_fk = ?, paciente = ?, id_doctor_fk = ?, doctor = ?, fecha = ?, hora = ?, observacion = ?, user_cap = ? WHERE id_cita = ?");
         $ok  = $sql->execute(array(
           $post["idPaciente"], 
           $post["nomPaciente"],

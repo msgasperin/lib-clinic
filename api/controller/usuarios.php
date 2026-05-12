@@ -45,51 +45,12 @@
         break;
 
         case 'eliminar':
-          $response = $u->eliminar_usuario($_POST["idUsuario"]);
-          if($response) {
-            $res = array('estatus' => 200, 'data'=>[], 'mensaje' => 'ok');
+          $res = $u->eliminar_usuario($_POST["idUsuario"]);
+          if($res["estatus"] == 200) {
             $g->bitacora('Usuario eliminado: '.$_POST["nomUsuario"], $_POST["idUsuario"], $_SESSION["id_usuario"], $_SESSION["nombre"]);
-          }
-          else {
-            $res = array('estatus' => 500, 'data'=>[], 'mensaje' => 'error al intentar eliminar usuario');
-          }
+          }         
           
           echo json_encode($res);
-        break;
-
-        case 'subirFotoUser':
-          if(isset($_POST["idUsuario"]) and trim($_POST["idUsuario"])) {
-            $nombre_archivo = $_FILES['foto']['name'];	
-            $tmp_archivo    = $_FILES['foto']['tmp_name'];		
-            $ext            = explode(".",$_FILES['foto']['name']);
-            $extension      = end($ext);
-            $nomFile        = $_POST["idUsuario"].'.'.$extension;
-            $upload_folder  = '../assets/images/user_fotos/';
-            $archivador     = $upload_folder.$nomFile;
-
-            $extensiones_permitidas = ['jpg', 'jpeg', 'png', 'webp'];
-            if (!in_array(strtolower($extension), $extensiones_permitidas)) {
-                echo json_encode(['estatus' => 400, 'mensaje' => 'Tipo de archivo no permitido', 'data' => []]);
-                break;
-            }
-            if(move_uploaded_file($tmp_archivo, $archivador)) {
-              $res = $u->actualizar_foto_user($nomFile, $_POST["idUsuario"]);
-              if($res) {
-                $g->bitacora('Archivo subido: '.$nomFile, $_POST["idUsuario"], $_SESSION["id_usuario"], $_SESSION["nombre"]);
-                echo json_encode(['estatus' => 200, 'mensaje' => 'ok', 'data' => [$nomFile]]);  
-              } else {
-                if(file_exists($archivador)) {
-                  unlink($archivador);
-                }
-                echo json_encode(['estatus' => 208, 'mensaje' => 'Hubo un problema en el update', 'data' => []]);  
-              }
-            } else {
-              echo json_encode(['estatus' => 208, 'mensaje' => 'Hubo un problema con la subida del archivo', 'data' => []]);
-            }
-          } else {
-            echo json_encode(['estatus' => 207, 'mensaje' => 'Valores obligatorios', 'data' => []]);
-          }
-          
         break;
 
         case 'consulta_log':

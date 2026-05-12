@@ -30,23 +30,16 @@
           </div>
         </div>
         <div class="mt-cel">
-          <!--
-          <div class="opciones_menu align-menu" id="opcionDashboard" onclick="opcionActive('opcionDashboard'), TabDashboard(), cerrarMenu();">
-            <i class="bi bi-speedometer2 icon-menu"></i>
-            <div>Dashboard</div>
-          </div>
-          -->
+          
           <div class="opciones_menu align-menu text-white" id="opcionCitas" onclick="opcionActive('opcionCitas'), TabCitas(), cerrarMenu();">
             <i class="bi bi-calendar4-week icon-menu"></i>
             <div>Citas</div>
           </div>
 
-          <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 2) { ?>
-            <div class="opciones_menu align-menu text-white" id="opcionPacientes" onclick="opcionActive('opcionPacientes'), TabPacientes(), cerrarMenu();">
-              <i class="bi bi-person-bounding-box icon-menu"></i>
-              <div>Pacientes</div>
-            </div>
-          <?php } ?>
+          <div class="opciones_menu align-menu text-white" id="opcionPacientes" onclick="opcionActive('opcionPacientes'), TabPacientes(), cerrarMenu();">
+            <i class="bi bi-person-bounding-box icon-menu"></i>
+            <div>Pacientes</div>
+          </div>
 
           <?php if($_SESSION["perfil"] == 1) { ?>
             <div class="opciones_menu align-menu text-white" id="opcionUsuarios" onclick="opcionActive('opcionUsuarios'), TabUsuarios(), cerrarMenu();">

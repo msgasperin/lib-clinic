@@ -44,6 +44,8 @@
 			<div id="modalAdminDocs"></div>
 			<div id="modalLoader"></div>
 			<input type="hidden" id="perfilUs"  value="<?php echo $_SESSION["perfil"]; ?>" /> 
+			<input type="hidden" id="userUs"  value="<?php echo $_SESSION["nombre"]; ?>" /> 
+			<input type="hidden" id="idUserUs"  value="<?php echo $_SESSION["id_usuario"]; ?>" /> 
 		</div>
 
 		<div class="modal fade" id="modalLoading" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" style="z-index: 9999 !important;">

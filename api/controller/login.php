@@ -56,23 +56,25 @@
             // ── Regenerar ID de sesión — invalida IDs previos ────
             session_regenerate_id(true);
             
+            $nom_perfil  = 'No identificado';
             if($res["data"]["perfil"] == 1) {
               $nom_perfil = 'Administrador';
             }
             else if($res["data"]["perfil"] == 2) {
               $nom_perfil = 'Operativo';
             }
-            if($res["data"]["perfil"] == 3) {
-              $nom_perfil = 'Repartidor';
+            else if($res["data"]["perfil"] == 3) {
+              $nom_perfil = 'Doctor';
             }
+            
             // ───
-            $_SESSION["login_elao"]    = "SI";
-            $_SESSION["id_usuario"]    = $res["data"]["id_usuario"];
-            $_SESSION["usuario"]       = $res["data"]["usuario"];
-            $_SESSION["nombre"]        = $res["data"]["nombre"];
-            $_SESSION["perfil"]        = $res["data"]["perfil"];
-            $_SESSION["nom_perfil"]    = $nom_perfil;
-            $_SESSION["foto"]          = $res["data"]["foto"];
+            $_SESSION["login_lib_clinic"] = "SI";
+            $_SESSION["id_usuario"]       = $res["data"]["id_usuario"];
+            $_SESSION["usuario"]          = $res["data"]["usuario"];
+            $_SESSION["nombre"]           = $res["data"]["nombre"];
+            $_SESSION["perfil"]           = $res["data"]["perfil"];
+            $_SESSION["nom_perfil"]       = $nom_perfil;
+            $_SESSION["foto"]             = $res["data"]["foto"];
 
             $g->bitacora('Inicio de sesión', $res["data"]["id_usuario"], $res["data"]["id_usuario"], $res["data"]["nombre"]);
             echo json_encode(['estatus' => $res["estatus"], 'mensaje' => 'ok', 'data' => []]);

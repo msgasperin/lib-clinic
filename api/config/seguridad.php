@@ -1,19 +1,16 @@
 <?php
-if (isset($_SESSION["login_elao"]) && $_SESSION["login_elao"] === "SI") {
+if (isset($_SESSION["login_lib_clinic"]) && $_SESSION["login_lib_clinic"] === "SI") {
 
     // ── Protección contra session hijacking ──────────────────────────────
-
-    $agente_actual   = $_SERVER['HTTP_USER_AGENT'] ?? '';
-    $agente_guardado = $_SESSION['_agente'] ?? null;
+    $agente_actual = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
     // Primera carga tras login — guardar huella del navegador
-    if ($agente_guardado === null) {
+    if (!isset($_SESSION['_agente'])) {
         $_SESSION['_agente'] = $agente_actual;
-        $agente_guardado     = $agente_actual;
     }
 
     // Si cambia el navegador durante la sesión, cerrarla
-    if ($agente_guardado !== $agente_actual) {
+    if ($_SESSION['_agente'] !== $agente_actual) {
         session_destroy();
         header('Location: ../index.php');
         exit;
@@ -33,26 +30,6 @@ if (isset($_SESSION["login_elao"]) && $_SESSION["login_elao"] === "SI") {
     if (!isset($_SESSION['_token'])) {
         $_SESSION['_token'] = bin2hex(random_bytes(16));
     }
-
-    /*
-     * Cuando se pueda garantizar la IP real del cliente
-     * (sin proxies, sin IP dinámica, sin Cloudflare, etc.)
-     * descomentar este bloque y eliminar la validación solo de agente:
-     *
-     * $ip_actual   = $_SERVER['REMOTE_ADDR'] ?? '';
-     * $ip_guardada = $_SESSION['_ip'] ?? null;
-     *
-     * if ($ip_guardada === null) {
-     *     $_SESSION['_ip']     = $ip_actual;
-     *     $_SESSION['_agente'] = $agente_actual;
-     * }
-     *
-     * if ($ip_guardada !== $ip_actual || $agente_guardado !== $agente_actual) {
-     *     session_destroy();
-     *     header('Location: ../index.php');
-     *     exit;
-     * }
-     */
 
 } else {
     header('Location: ../index.php');

@@ -155,7 +155,7 @@ const fnNoSesion = () => {
     timer: 4000,
     timerProgressBar: false
   });
-  setTimeout("location.href='index'", 3500);
+  setTimeout("location.href='../inicio'", 2500);
   return;
 }
 

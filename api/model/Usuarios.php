@@ -1,6 +1,4 @@
 <?php
-  //print_r($sql->errorInfo());
-	header('Content-Type: application/json');
 	require_once('../config/class.pdo.php');
 	class Usuarios extends Conexion {
 		//Objeto principal del constructor de la clase
@@ -114,32 +112,26 @@
 			return $res;
 		}
 
-    public function actualizar_foto_user(string $nom_foto, int $id_usuario) {
-   		$res = false;
-			try {
-				$sql = $this->dbh->prepare("UPDATE cat_usuarios SET foto = ? WHERE id = ?");
-				if($sql->execute(array($nom_foto, $id_usuario))) {
-          	$res = true;
-        	}
-			} catch (Exception $error) {
-        		error_log($error->getMessage());
-			}
-			
-			return $res;
-		}
-
 		public function eliminar_usuario(int $id_usuario) {
-      	$res = false;
+      	$estatus = 500;
+			$mensaje = 'Error al intentar eliminar el usuario';
+			$data    = [];
 			try {
 				$sql = $this->dbh->prepare("UPDATE cat_usuarios SET estatus = ? WHERE id = ?");
-				if($sql->execute(array(0, $id_usuario))) {
-          		$res = true;
+				$sql->execute(array(0, $id_usuario));
+				if($sql->rowCount() >= 1) {
+          		$estatus = 200;
+					$mensaje = 'ok';
         		}
-			} 
+				else {
+					$mensaje = 'No se encontró un usuario con ese identificador';
+				}
+			}
 			catch (Exception $error) {
         		error_log($error->getMessage());
 			}
-						
+			
+			$res = ['estatus' => $estatus, 'mensaje' => $mensaje, 'data' => $data];
 			return $res;
 		}
 

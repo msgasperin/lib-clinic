@@ -18,7 +18,7 @@
             echo json_encode(["estatus" => 500, "mensaje" => 'Faltaron parámetros importantes', "data" => []]);
           }
           else {
-            $res = $v->obtiene_citas($_POST["fechaInicial"], $_POST["fechaFinal"]);
+            $res = $v->obtiene_citas($_POST["fechaInicial"], $_POST["fechaFinal"], $_SESSION["perfil"], $_SESSION["id_usuario"]);
             echo json_encode(["estatus" => 200, "mensaje" => "", "data" => $res]);
           }
         break;

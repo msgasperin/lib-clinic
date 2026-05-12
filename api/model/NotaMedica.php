@@ -1,6 +1,4 @@
 <?php
-  //print_r($sql->errorInfo());
-	header('Content-Type: application/json');
 	require_once('../config/class.pdo.php');
 	class NotaMedica extends Conexion {
 		//Objeto principal del constructor de la clase
@@ -14,12 +12,14 @@
         if($perfil == 3) { // Doctor
           $sql = $this->dbh->prepare("SELECT id_nota_medica, id_cita, id_paciente, paciente, id_doctor, doctor, ta, oxigenacion, temperatura, glucosa, fr, fc, peso, estatura, padecimiento, exploracion, tratamiento, diagnostico_principal, diagnostico_secundario, analisis_clinicos, estudios_gabinete, receta, user_cap, fecha_cap, DATE_FORMAT(fecha_cap, '%d-%m-%Y %H:%i:%s') AS fecha_cap_format FROM nota_medica WHERE estatus = 1 AND id_paciente = ? AND id_doctor = ?");
           $sql->execute([$id_paciente, $id_doctor]);
+          $res = $sql->fetchAll(PDO::FETCH_ASSOC);
         }
         else if($perfil == 1) { // Administrador
           $sql = $this->dbh->prepare("SELECT id_nota_medica, id_cita, id_paciente, paciente, id_doctor, doctor, ta, oxigenacion, temperatura, glucosa, fr, fc, peso, estatura, padecimiento, exploracion, tratamiento, diagnostico_principal, diagnostico_secundario, analisis_clinicos, estudios_gabinete, receta, user_cap, fecha_cap, DATE_FORMAT(fecha_cap, '%d-%m-%Y %H:%i:%s') AS fecha_cap_format FROM nota_medica WHERE estatus = 1 AND id_paciente = ?");
           $sql->execute([$id_paciente]);
+          $res = $sql->fetchAll(PDO::FETCH_ASSOC);
         }
-        $res = $sql->fetchAll(PDO::FETCH_ASSOC);				
+        
       } catch (Exception $error) {
           error_log($error->getMessage());
       }

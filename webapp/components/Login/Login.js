@@ -126,7 +126,7 @@ const fn_login = async () => {
   $('#btnLogin').prop('disabled',true);
   let res = await valida_login(user, pass, csrf);
   if(res.estatus == 200) {
-    showMessageSwalTimer('Bienvenido al equipo', 'LIB Laboratorios', 'success', 2500);
+    showMessageSwalTimer('Bienvenido al equipo', 'LIB Laboratorios - Clinic', 'success', 2500);
     redireccionar("webapp/admin", 1000);
   }
   else if(res.estatus == 202) {

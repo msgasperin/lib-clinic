@@ -41,7 +41,7 @@ const combo_pacientes = async (containerId) => {
       if(res.length > 0) {
          res.map((row) => {
             comboPacientes +=`
-            <option value="${row.id_paciente}">
+            <option value="${row.id_paciente_fk}">
                ${row.nombre} ${row.ap_paterno} ${row.ap_materno}
             </option>`;
          });
@@ -87,12 +87,16 @@ const TabCitas = () => {
 
 const ModalFormCita = (idCita) => {
 
-   let text_boton  = '';
-   let fecha       = '';
-   let hora        = '';
-   let idPaciente  = 0;
-   let idDoctor    = 0; 
-   let observacion = '';  
+   let text_boton   = '';
+   let fecha        = '';
+   let hora         = '';
+   let idPaciente   = 0;
+   let idDoctor     = 0; 
+   let observacion  = '';  
+   let perfilUs     = $('#perfilUs').val().trim();
+   let idUser       = $('#idUserUs').val().trim();
+   let user         = $('#userUs').val().trim();
+   let optionDoctor = '<option value="0">Seleccionar</option>';
 
    if(idCita == 0) {
       text_boton = 'Registrar Cita';
@@ -105,10 +109,14 @@ const ModalFormCita = (idCita) => {
       hora        = citaSelected[0].hora;
       fecha       = citaSelected[0].fecha;
       observacion = citaSelected[0].observacion;
-      idDoctor    = citaSelected[0].id_doctor;
-      idPaciente  = citaSelected[0].id_paciente;
+      idDoctor    = citaSelected[0].id_doctor_fk;
+      idPaciente  = citaSelected[0].id_paciente_fk;
    }
 
+   if(perfilUs == 3) {
+      optionDoctor = `<option value="${idUser}">${user}</option>`;
+   }
+   
    let html = `
    <div class="modal fade modal-superior-blur" id="modalFormCita" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
       <div class="modal-dialog modal-lg modal-fullscreen-md-down">
@@ -133,7 +141,7 @@ const ModalFormCita = (idCita) => {
                   <div class="col-12 mt-2">
                      <b>Doctor *</b>
                      <select name="doctorCita" id="doctorCita" class="form-select">
-                        <option value="0">Seleccionar</option>
+                        ${optionDoctor}
                      </select>
                   </div>
                   <div class="col-12 mt-3">
@@ -175,7 +183,14 @@ const ModalFormCita = (idCita) => {
    });
    setTimeout(() => {
       combo_pacientes('pacienteCita');
-      combo_doctores('doctorCita');
+      
+      if(perfilUs != 3) {
+         combo_doctores('doctorCita');
+      }
+      else {
+         $('#doctorCita').prop('disabled', true);
+         $('#doctorCita').trigger('change');
+      }
 
       if(idCita > 0) {
          setTimeout(() => {
@@ -390,7 +405,7 @@ const pintar_listado_citas = (containerId, data) => {
                         <button class="btn btn-outline-dark fs-7 bloqCancelCita" title="Editar" onclick="ModalFormCita(${cita.id_cita});">
                            <i class="bi bi-pencil"></i>
                         </button>
-                        <button class="btn btn-outline-dark fs-7 ms-1 bloqCancelCita" title="Nota médica" onclick="ModalListarNotaMedica(${cita.id_paciente}, '${cita.paciente}', ${cita.id_doctor}, '${cita.doctor}', ${cita.id_cita});">
+                        <button class="btn btn-outline-dark fs-7 ms-1 bloqCancelCita" title="Nota médica" onclick="ModalListarNotaMedica(${cita.id_paciente_fk}, '${cita.paciente}', ${cita.id_doctor_fk}, '${cita.doctor}', ${cita.id_cita});">
                            <i class="bi bi-clipboard-plus"></i>
                         </button>`;
                      }
