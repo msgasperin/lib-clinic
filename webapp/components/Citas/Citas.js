@@ -1,4 +1,4 @@
-import { obtiene_citas, guardar_cita, cancelar_cita  } from "./CitasServices.js";
+import { obtiene_citas, guardar_cita, cancelar_cita, cita_atendida  } from "./CitasServices.js";
 import { obtiene_pacientes } from "../Pacientes/PacientesServices.js";
 import { obtiene_doctores } from "../Usuarios/UsuariosServices.js";
 
@@ -411,16 +411,23 @@ const pintar_listado_citas = (containerId, data) => {
                   <td class="text-center">`
                      if(cita.estatus == 1) {
                         html+=`
-                        <button class="btn btn-outline-dark fs-7 bloqCancelCita" title="Editar" onclick="ModalFormCita(${cita.id_cita});">
+                        <button class="btn btn-outline-dark fs-7 bloqCancelCita bloqAtendidaCita" title="Editar" onclick="ModalFormCita(${cita.id_cita});">
                            <i class="bi bi-pencil"></i>
-                        </button>
+                        </button>`;
+                         html+=`
+                        <button class="btn btn-outline-success fs-7 ms-1 bloqCancelCita bloqAtendidaCita" title="Marcar como atendida" onclick="fn_cita_atendida(${cita.id_cita}, '${cita.paciente}');">
+                           <i class="bi bi-check-lg"></i>
+                        </button>`;
+                     }
+                     if(cita.estatus == 1 || cita.estatus == 2) {
+                        html+=`
                         <button class="btn btn-outline-dark fs-7 ms-1 bloqCancelCita" title="Nota médica" onclick="ModalListarNotaMedica(${cita.id_paciente_fk}, '${cita.paciente}', ${cita.id_doctor_fk}, '${cita.doctor}', ${cita.id_cita});">
                            <i class="bi bi-clipboard-plus"></i>
                         </button>`;
                      }
                      if(cita.estatus == 1) {
                         html+=`
-                        <button class="btn btn-outline-danger fs-7 ms-1 bloqCancelCita" title="Cancelar cita" onclick="ModalCancelarCita(${cita.id_cita}, '${cita.paciente}');">
+                        <button class="btn btn-outline-danger fs-7 ms-1 bloqCancelCita bloqAtendidaCita" title="Cancelar cita" onclick="ModalCancelarCita(${cita.id_cita}, '${cita.paciente}');">
                            <i class="bi bi-ban"></i>
                         </button>`;
                      }
@@ -540,6 +547,49 @@ const fn_cancelar_cita = async (idCita, nomPaciente) => {
    }
 }
 
+const fn_cita_atendida = async (idCita, nomPaciente) => {
+
+   if (idCita == '' || nomPaciente == '') {
+      ToastColor.fire({
+         text: '¡Atención! Faltaron parámetros importantes, actualiza y vuelve a intentarlo',
+         icon: 'warning'
+      });
+      return;
+   }  
+     
+   const res = await showMessageSwalQuestion('¿Estás seguro?', 'La cita del paciente: ' + nomPaciente + ' será marcada como atendida', 'question', 'Sí, marcar', 'Cancelar');
+
+   if (!res.result) {
+      $('.btnBloqTabpac').prop('disabled', false);
+      return;
+   }
+
+   $('.btnBloqTabpac').prop('disabled', true);
+   let respuesta = await cita_atendida(idCita, nomPaciente);
+   if(respuesta.estatus == 403) {
+      fnNoSesion();
+   }
+   else if(respuesta.estatus == 200) {
+      let index = arrCitas.findIndex(item => item.id_cita == idCita);   
+      if (index !== -1) {
+         arrCitas[index].estatus = 2;
+      }
+
+      let labelEstatus = 
+      `<span class="badge rounded-pill text-success border border-success bg-success bg-opacity-10">
+         Atendida
+      </span>`;
+      $('#label_estatus'+idCita).html(labelEstatus);
+      $('.bloqAtendidaCita').remove();
+      showMessageSwalTimer('Cita marcada como atendida correctamente!', '', 'success', 2500);
+   }
+   else {
+      showMessageSwal('Ocurrio un error: ', respuesta.mensaje, 'error');
+      $('.btnBloqTabpac').prop('disabled', false);
+      return;
+   }
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 window.TabCitas            = TabCitas;
 window.ModalFormCita       = ModalFormCita;
@@ -549,5 +599,6 @@ window.listar_citas        = listar_citas;
 window.combo_pacientes     = combo_pacientes;
 window.fn_guardar_cita     = fn_guardar_cita;
 window.fn_cancelar_cita    = fn_cancelar_cita;
+window.fn_cita_atendida    = fn_cita_atendida;
 
 

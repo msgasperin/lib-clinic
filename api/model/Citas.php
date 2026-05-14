@@ -134,5 +134,26 @@
       return $res;
     }
 
+    public function cita_atendida(int $id_cita) {
+      $estatus = 500;
+      $data    = [0];
+      $mensaje = 'Error al intentar marcar cita como atendida';
+      try {
+        $sql = $this->dbh->prepare("UPDATE citas SET estatus = ? WHERE id_cita = ?");
+        $sql->execute(array(2, $id_cita));
+        if($sql->rowCount() > 0) {
+          $estatus = 200;
+          $mensaje = 'ok';
+        }
+      }
+      catch (Exception $error) {
+        error_log($error->getMessage());
+      }
+
+      $res = ['estatus' => $estatus, 'mensaje' => $mensaje, 'data' => $data];
+
+      return $res;
+    }
+
 	}
 ?>

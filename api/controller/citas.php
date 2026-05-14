@@ -73,6 +73,14 @@
             echo json_encode($res);
         break;
 
+        case 'cita_atendida':            
+            $res = $v->cita_atendida($_POST["idCita"]);
+            if($res["estatus"] == 200) {
+               $g->bitacora('Cita atendida del paciente: '.$_POST["nomPaciente"], $_POST["idCita"] , $_SESSION["id_usuario"], $_SESSION["nombre"]);
+            }            
+            echo json_encode($res);
+        break;
+
         default:
           echo json_encode(["estatus" => 401, "mensaje" => "Función no encontrada", 'data' => []]); // Función no encontrada
         break;

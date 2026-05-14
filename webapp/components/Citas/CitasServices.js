@@ -30,3 +30,14 @@ export const cancelar_cita = async (idCita, nomPaciente, motivo) => {
    }
    return respuesta;
 }
+
+export const cita_atendida = async (idCita, nomPaciente) => {
+   const datos = { func: 'cita_atendida', idCita, nomPaciente };
+   let respuesta;
+   try {
+      respuesta = await postJSON('../api/controller/citas.php', datos);
+   } catch {
+      respuesta = {estatus: 500, "mensaje": "Error del servidor", data: []};
+   }
+   return respuesta;
+}
