@@ -299,7 +299,6 @@ const fn_guardar_paciente = async (idPaciente, origen) => {
       $('#btnGuardarPaciente').prop('disabled', false);
       if(origen == 2) { //Viene desde la modal de registrar cita
          combo_pacientes('pacienteCita');
-         console.log(respuesta.data[0]);
          setTimeout(() => {
             $('#pacienteCita').val(respuesta.data[0]);
             $('#pacienteCita').trigger('change');
@@ -360,6 +359,15 @@ const listar_pacientes = async (containerId) => {
    else if(respuesta.estatus != 200) {
       showMessageSwalTimer('Ocurrio un error: ', respuesta.mensaje, 'error', 2500);
       return;
+   }
+   else if(respuesta.data.length == 0) {
+      let html = 
+      `<div class="text-center py-5">
+         <img src="assets/images/no_encontrado.png" class="img-fluid mb-3">
+         <p class="text-muted">No se encontraron pacientes registrados</p>
+      </div>`;
+      $('#'+containerId).html(html);
+      closeLoad();
    }
    else {
       arrPacientes = await respuesta.data;

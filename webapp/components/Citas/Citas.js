@@ -41,7 +41,7 @@ const combo_pacientes = async (containerId) => {
       if(res.length > 0) {
          res.map((row) => {
             comboPacientes +=`
-            <option value="${row.id_paciente_fk}">
+            <option value="${row.id_paciente}">
                ${row.nombre} ${row.ap_paterno} ${row.ap_materno}
             </option>`;
          });
@@ -315,6 +315,15 @@ const listar_citas = async (containerId) => {
       showMessageSwalTimer('Ocurrio un error: ', respuesta.mensaje, 'error', 2500);
       closeLoad();
       return;
+   }
+   else if(respuesta.data.length == 0) {
+      let html = 
+      `<div class="text-center py-5">
+         <img src="assets/images/no_encontrado.png" class="img-fluid mb-3">
+         <p class="text-muted">No se encontraron citas médicas agendadas</p>
+      </div>`;
+      $('#'+containerId).html(html);
+      closeLoad();
    }
    else {
       arrCitas = await respuesta.data;
