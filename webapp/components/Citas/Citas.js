@@ -345,11 +345,11 @@ const pintar_listado_citas = (containerId, data) => {
             <tr>
                <th>ID</th>
                <th class="ps-4 text-secondary" width="15%">Fecha / Hora</th>
-               <th class="py-3 text-secondary" width="20%">Paciente</th>
-               <th class="py-3 text-secondary" width="20%">Doctor</th>
-               <th class="py-3 text-secondary" width="20%">Registró</th>
+               <th class="py-3 text-secondary" width="19%">Paciente</th>
+               <th class="py-3 text-secondary" width="19%">Doctor</th>
+               <th class="py-3 text-secondary" width="19%">Registró</th>
                <th class="py-3 text-secondary" width="10%">Estatus</th>
-               <th class="py-3 text-center text-secondary" width="15%">Acciones</th>
+               <th class="py-3 text-center text-secondary" width="18%">Acciones</th>
             </tr>
          </thead>
          <tbody>`;
@@ -408,7 +408,11 @@ const pintar_listado_citas = (containerId, data) => {
                         </div>
                      </div>
                   </td>
-                  <td class="text-center">`
+                  <td class="text-center">
+                     <button class="btn btn-dark btn-lib fs-7 btnBloqTabpac ms-1" title="Expediente Clínico" onclick="ModalFormExpClinico();">
+                        <i class="bi bi-person-rolodex"></i>
+                     </button>`                   
+
                      if(cita.estatus == 1) {
                         html+=`
                         <button class="btn btn-outline-dark fs-7 bloqCancelCita bloqAtendidaCita" title="Editar" onclick="ModalFormCita(${cita.id_cita});">
@@ -455,35 +459,50 @@ const pintar_listado_citas = (containerId, data) => {
 
 const ModalCancelarCita = (idCita, nomPaciente) => {
    let html = `
-   <div class="modal fade modal-superior-blur" id="modalCancelarCita" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-      <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen-sm-down">
-         <div class="modal-content sombra-modal">
-            <div class="modal-body">
-               <div class="row pb-5">
-                  <div class="col-12" align="center">
-                     <i class="bi bi-exclamation-circle fs-08 text-warning"></i>
-                     <h3 class="mt-3"><b>¿Estás seguro?</b></h3>
-                     <h4 class="mt-3"><b>La cita será cancelada</b></h4>
+   <div class="modal fade" id="modalCancelarCita" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+         <div class="modal-content border-0 shadow-lg rounded-4">
+            
+            <!-- Cuerpo del Modal -->
+            <div class="modal-body p-5">
+               <div class="text-center">
+                  <!-- Icono de advertencia estilizado -->
+                  <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-danger bg-opacity-10 p-3 mb-4">
+                     <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
                   </div>
-                  <div class="col-lg-6 offset-lg-3 col-md-6 offset-md-3 col-12 mt-3">
-                     <b>Ingresa un motivo</b>
-                     <textarea name="motivoCitaCancelada" id="motivoCitaCancelada" class="form-control" rows="2" maxlength="200"></textarea>
-                  </div>
-                  <div class="col-6 mt-5" align="right">
-                     <button type="buttton" class="btn btn-dark btn-lib btn-redondo" onclick="fn_cancelar_cita(${idCita}, '${nomPaciente}');">
-                        <i class="bi bi-check-lg"></i> Sí, cancelar
+                  
+                  <h4 class="fw-bold text-dark mb-2">¿Confirmar cancelación?</h4>
+                  <p class="text-muted mb-4">
+                     Estás por cancelar la cita de: <br>
+                     <strong class="text-dark">${nomPaciente}</strong>
+                  </p>
+               </div>
+
+               <!-- Campo de Motivo -->
+               <div class="mb-4">
+                  <label for="motivoCitaCancelada" class="form-label small fw-bold text-secondary tracking-wider">Motivo de cancelación</label>
+                  <textarea name="motivoCitaCancelada" id="motivoCitaCancelada" class="form-control border-2 bg-light shadow-none fs-6" rows="3" placeholder="Escribe brevemente el motivo..." maxlength="200"></textarea>
+               </div>
+
+               <!-- Acciones -->
+               <div class="row g-3">
+                  <div class="col-12 col-sm-6 order-sm-2">
+                     <button type="button" class="btn btn-danger w-100 fw-bold shadow-sm btn-redondo" onclick="fn_cancelar_cita(${idCita}, '${nomPaciente}');">
+                        Confirmar
                      </button>
                   </div>
-                  <div class="col-6 mt-5">
-                     <button type="buttton" class="btn btn-outline-secondary btn-redondo" data-bs-dismiss="modal">
-                        <i class="bi bi-x-lg"></i> Cancelar
+                  <div class="col-12 col-sm-6 order-sm-1">
+                     <button type="button" class="btn btn-outline-light text-secondary w-100 border-0" data-bs-dismiss="modal">
+                        Volver atrás
                      </button>
                   </div>
                </div>
             </div>
+
          </div>
       </div>
    </div>`;
+
    $('#modalAdminExt3').html(html);
    $('#modalCancelarCita').modal('show');
 }

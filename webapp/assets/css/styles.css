@@ -138,7 +138,6 @@
   background-color: var(--primary-dark);
   border-color: var(--primary-dark);
   color: var(--blanco);
-  border-radius: 2px;
 }
 
 .bg-primary-dark-lib {
@@ -619,7 +618,7 @@ tool-tip {
   }
 
   .mh-card-usuarios {
-    min-height: 300px;
+    min-height: 230;
   }
 
   .mt-index {
