@@ -140,7 +140,7 @@ const ModalFormPaciente = (idPaciente, nomPaciente, origen) => {
                   </div>
                   <div class="col-md-4 col-sm-6 col-12 mt-3">
                      <b>Correo</b>
-                     <input type="mail" name="correoPaciente" id="correoPaciente" class="form-control" maxlength="150" value="${correo}">
+                     <input type="email" name="correoPaciente" id="correoPaciente" class="form-control" maxlength="150" value="${correo}">
                   </div>
                   <div class="col-12 mt-3">
                      <b>Dirección *</b>
@@ -415,13 +415,15 @@ const pinta_listado_pacientes = (containerId, data) => {
                      <button class="btn btn-outline-dark fs-7 btnBloqTabpac" title="Editar" onclick="ModalFormPaciente(${row.id_paciente}, '${row.nombre} ${row.ap_paterno} ${row.ap_materno}', 1);">
                         <i class="bi bi-pencil"></i>
                      </button>
+                     <!--
                      <button class="btn btn-outline-dark fs-7 btnBloqTabpac ms-1" title="Expediente Clínico" onclick="ModalFormExpClinico();">
                         <i class="bi bi-person-rolodex"></i>
                      </button>
+                     -->
                      <button class="btn btn-outline-dark fs-7 btnBloqTabpac ms-1" title="Nota médica" onclick="ModalListarNotaMedica(${row.id_paciente}, '${row.nombre} ${row.ap_paterno} ${row.ap_materno}', 0, '', 0);">
                         <i class="bi bi-clipboard-plus"></i>
                      </button>
-                     <button class="btn btn-outline-dark fs-7 btnBloqTabpac ms-1" title="Expediente PDF" onclick="ModalVerExpedientePdf('${row.key_query}');">
+                     <button class="btn btn-outline-dark fs-7 btnBloqTabpac ms-1" title="Expediente PDF" onclick="fn_muestra_expediente('${row.key_query}');">
                         <i class="bi bi-list-columns"></i>
                      </button>`;
                      if(perfilUs != 3) {

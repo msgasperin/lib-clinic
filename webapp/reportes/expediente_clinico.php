@@ -296,6 +296,7 @@
   </html>
   ';
 
+  
   header('Content-Type: application/pdf');
   header('Content-Disposition: inline; filename="expediente.pdf"');
   header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
@@ -315,3 +316,5 @@
   $dompdf->stream('documento.pdf', [
     'Attachment' => false   // false = abre en el navegador, true = descarga
   ]);
+  
+  exit;

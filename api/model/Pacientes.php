@@ -12,8 +12,8 @@
 				if($perfil == 3) { // Doctor 
 					$sql = $this->dbh->prepare("SELECT id_paciente, ap_paterno, ap_materno, nombre, fecha_nac, DATE_FORMAT(fecha_nac,'%d-%m-%Y') AS fecha_nac_format, sexo, estado_civil,
 						escolaridad, ocupacion, telefono, correo, direccion, colonia, municipio, entidad_fed, religion, aseguradora, key_query 
-						FROM cat_pacientes AS P
-						INNER JOIN citas AS C ON P.id_paciente = C.id_paciente_fk
+						FROM citas AS C
+						INNER JOIN cat_pacientes AS P ON P.id_paciente = C.id_paciente_fk
 						WHERE activo = 1 AND id_doctor_fk = ?
 						GROUP BY id_paciente"
 					);

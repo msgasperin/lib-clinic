@@ -7,7 +7,7 @@
     <div class="p-3">
       <div class="d-none d-xl-block d-xxl-block text-dark text-white">
         <div class="fs-8"><i class="bi bi-person-circle fs-6">&nbsp;</i> <?php echo $_SESSION["nombre"] ?></div>
-        <div class="fs-8">Administrador</div>
+        <div class="fs-8"><?php echo $_SESSION["nom_perfil"] ?></div>
       </div>
       <div class="d-block d-xl-none d-xxl-none text-white" onclick="muestraMenu(1);">
         <i class="bi bi-list"></i>
@@ -23,7 +23,7 @@
         <div class="row mt-4">
           <div class="col-8 offset-1 d-lg-none mt-3 text-white">
             <div class="fs-6">&nbsp;<?php echo $_SESSION["nombre"] ?></div>
-            <div class="fs-7">&nbsp;Admininstrador</div>
+            <div class="fs-7">&nbsp;<?php echo $_SESSION["nom_perfil"] ?></div>
           </div>
           <div class="col-1 d-lg-none text-white mt-3" onclick="muestraMenu(2);">
             <i class="bi bi-x-lg"></i>

@@ -10,7 +10,7 @@
       try {
         $res = [];
         if($perfil == 3) { // Doctor
-          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, id_doctor_fk, doctor, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format FROM citas WHERE id_doctor_fk = ? AND (fecha >= ? AND fecha <= ?)");
+          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, id_doctor_fk, doctor, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format FROM citas WHERE id_doctor_fk = ? AND fecha >= ? AND fecha <= ?");
           $sql->execute([$id_usuario, $fecha_inicial, $fecha_final]);
         }
         else {

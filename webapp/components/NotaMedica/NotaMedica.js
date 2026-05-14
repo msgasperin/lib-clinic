@@ -116,7 +116,7 @@ const pintar_listado_notas_medicas = (containerId, data) => {
                      <div class="mb-0 fw-semibold fs-7">${row.paciente}</div>
                      <small class="text-muted">Paciente</small>
                      </div>
-                     <span class="badge text-bg-primary rounded-pill fw-normal"># ${row.id_cita}</span>
+                     <span class="badge text-bg-primary rounded-pill fw-normal"># ${row.id_cita_fk}</span>
                   </div>
                   <hr class="my-2">
                   <div class="row g-2">
@@ -135,10 +135,10 @@ const pintar_listado_notas_medicas = (containerId, data) => {
                   </div>
                   <div class="row mt-2">
                      <div class="col-12 text-end">
-                        <button type="button" class="btn btn-outline-secondary btnAccNotaMedica" title="Editar" onclick="ModalFormNotaMedica(${row.id_paciente}, '${row.paciente}', ${row.id_doctor}, '${row.doctor}', ${row.id_cita}, ${row.id_nota_medica});">
+                        <button type="button" class="btn btn-outline-secondary btnAccNotaMedica" title="Editar" onclick="ModalFormNotaMedica(${row.id_paciente_fk}, '${row.paciente}', ${row.id_doctor_fk}, '${row.doctor}', ${row.id_cita_fk}, ${row.id_nota_medica});">
                            <i class="bi bi-pencil-square"></i>
                         </button>
-                        <button type="button" class="btn btn-outline-danger ms-1 btnAccNotaMedica" title="Eliminar" onclick="fn_eliminar_nota(${row.id_nota_medica}, ${row.id_cita}, '${row.paciente}');">
+                        <button type="button" class="btn btn-outline-danger ms-1 btnAccNotaMedica" title="Eliminar" onclick="fn_eliminar_nota(${row.id_nota_medica}, ${row.id_cita_fk}, '${row.paciente}');">
                            <i class="bi bi-trash"></i>
                         </button>
                      </div>

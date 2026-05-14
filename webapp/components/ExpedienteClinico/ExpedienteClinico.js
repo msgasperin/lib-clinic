@@ -823,6 +823,16 @@ const ModalVerExpedientePdf = (key_query) => {
    $('#modalVerExpedientePdf').modal('show');
 }
 
+const fn_muestra_expediente = (key_query) => {
+   let urlPDF = `reportes/expediente_clinico.php?key_query=${key_query}`;
+   if(window.innerWidth <= 900){
+      window.open(urlPDF, '_blank');
+   }
+   else{
+      ModalVerExpedientePdf(key_query);
+   }
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 window.ModalFormExpClinico              = ModalFormExpClinico;
 window.ModalVerExpedientePdf            = ModalVerExpedientePdf;
@@ -833,3 +843,5 @@ window.FormAntecedentesPatologicos      = FormAntecedentesPatologicos;
 window.FormAntecedentesCronicos         = FormAntecedentesCronicos;
 window.FormAntecedentesCardiovasculares = FormAntecedentesCardiovasculares;
 window.FormAntecedentesGinecoObstetra   = FormAntecedentesGinecoObstetra;
+
+window.fn_muestra_expediente            = fn_muestra_expediente;

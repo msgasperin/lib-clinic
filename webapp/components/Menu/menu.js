@@ -48,7 +48,11 @@ const closeLoad = (mensajeFinal) => {
 }
 
 const isMobile = () => {
-  return /android|iphone|ipad|ipod|windows phone|mobile/i.test(navigator.userAgent);
+  return (
+    window.matchMedia("(pointer: coarse)").matches ||
+    navigator.maxTouchPoints > 0 ||
+    window.innerWidth <= 1024
+  );
 }
 
 

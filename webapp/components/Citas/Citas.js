@@ -67,7 +67,7 @@ const TabCitas = () => {
       </div>
    </div>
    <div class="row mt-3">
-      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12 mt-3" align="right">
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 mt-3" align="right">
          <div class="input-group">
             <input type="date" name="inpFechaIniCita" id="inpFechaIniCita" class="form-control" value="${fecha}">
             <input type="date" name="inpFechaFinCita" id="inpFechaFinCita" class="form-control" value="${fechaRangoAdelante}">
