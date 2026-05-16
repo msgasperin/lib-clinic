@@ -3,6 +3,7 @@ RewriteEngine on
 
 RewriteRule ^inicio index.php
 RewriteRule ^webapp/admin webapp/admin.php
+RewriteRule ^webapp/reportes/ver_adjunto webapp/reportes/ver_adjunto.php
 
 # ── Headers de seguridad HTTP ────────────────────────────────
 <IfModule mod_headers.c>

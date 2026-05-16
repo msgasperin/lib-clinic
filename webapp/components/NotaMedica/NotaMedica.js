@@ -1,4 +1,4 @@
-import { obtiene_notas_medicas, guardar_nota_medica, eliminar_nota } from "./NotaMedicaServices.js";
+import { obtiene_notas_medicas, guardar_nota_medica, eliminar_nota, subir_adjunto_nota, obtiene_adjuntos_nota, eliminar_adjunto_nota } from "./NotaMedicaServices.js";
 
 let arrNotaMedica = [];
 
@@ -285,25 +285,18 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
                         <div class="col-12">
                            <h5 class="modal-title fw-bold mb-0">${text_boton}</h5>
                         </div>
-                        <div class="col-12 col-sm-4 col-md-3">
+                        <div class="col-12 col-sm-4 col-md-4">
                            <small class="text-white-50">
                               <i class="bi bi-person me-1"></i>Paciente: <strong class="text-white">${nomPaciente}</strong> 
                               <span class="mx-2">|</span>
                            </small>
                         </div>
-                        <div class="col-12 col-sm-4 col-md-3">
+                        <div class="col-12 col-sm-4 col-md-4">
                            <small class="text-white-50">
                               <i class="bi bi-person-md me-1"></i>Médico: <span class="text-white">${doctor}</span>
                            </small>
                         </div>
                      </div>
-                  </div>
-                  
-                  <!-- Bloque de botones: Adjuntos y Cerrar -->
-                  <div class="col-12 col-sm-4 text-start text-sm-end">
-                     <button type="button" class="btn btn-primary px-3 btn-sm rounded-pill fw-semibold" onclick="ModalGestionarAdjuntos(${idPaciente}, ${idCita});">
-                        <i class="bi bi-paperclip me-1"></i> Archivos / Adjuntos
-                     </button>
                   </div>
                </div>
             </div>                    
@@ -382,7 +375,7 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
 
                               <div class="mb-4">
                                  <label for="diagnosticoPrincipal" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-clipboard-check-fill text-success me-1"></i>Diagnóstico Principal <span class="text-danger">*</span></label>
-                                 <textarea name="diagnosticoPrincipal" id="diagnosticoPrincipal" class="form-control border-success border-opacity-50 bg-success bg-opacity-10 text-dark fw-medium fs-8" rows="2" maxlength="500" placeholder="Diagnóstico primario confirmado o presuntivo..." required>${diagnostico_principal}</textarea>
+                                 <textarea name="diagnosticoPrincipal" id="diagnosticoPrincipal" class="form-control border-success border-opacity-50 bg-success bg-opacity-10 text-dark fw-medium fs-8" rows="5" maxlength="500" placeholder="Diagnóstico primario confirmado o presuntivo..." required>${diagnostico_principal}</textarea>
                               </div>
 
                               <div class="mb-0">
@@ -445,11 +438,40 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
                                  </div>
                               </div>
 
-                              <div class="mb-0 mt-auto">
+                              <div class="mt-auto">
                                  <label for="recetaMedica" class="form-label fw-bold text-dark mb-1 fs-7"><i class="bi bi-printer me-1"></i>Especificación de Receta Médica <span class="text-danger">*</span></label>
                                  <textarea name="recetaMedica" id="recetaMedica" class="form-control border-primary border-opacity-50 p-3 bg-light fw-medium fs-8" rows="4" placeholder="Medicamento - Dosis - Frecuencia - Duración&#10;Ejemplo: Paracetamol 500mg, 1 tab cada 8 horas por 5 días." maxlength="500" required>${receta}</textarea>
-                              </div>
+                              </div>`;
 
+                              if(idNota > 0) {
+                                 html+=`
+                                 <div class="shadow border-1 border-secondary rounded-3 mt-3 p-3">
+                                    <div class="row">
+                                       <div class="col-12">
+                                          <div class="text-dark fw-bold m-0 fs-7">
+                                             <i class="bi bi-folder"></i> Expediente Digital
+                                          </div>
+                                       </div>
+                                       <div class="col-7">
+                                          <input type="text" name="nomAdjuntoNota" id="nomAdjuntoNota" class="form-control fs-8" placeholder="Nombre del documento" maxlength="100">
+                                       </div>
+                                       <div class="col-3">
+                                          <input type="file" name="adjuntoNota" id="adjuntoNota" class="form-control fs-8" accept=".pdf">
+                                       </div>
+                                       <div class="col-2" align="right">
+                                          <button type="button" id="btnAdjuntarNota" class="btn btn-dark btn-lib btn-redondo fs-8" title="Adjuntar archivo" onclick="fn_subir_adjunto_nota(${idNota}, ${idCita});">
+                                             <i class="bi bi-cloud-arrow-up"></i>
+                                          </button>
+                                       </div>
+                                    </div>
+                                    <div id="ver_adjuntos_nota" class="mt-2">
+                                       <div class="text-center text-muted py-2 mt-2 border border-dashed rounded fs-8">
+                                          <i class="bi bi-paperclip me-1 text-opacity-50"></i> Sin documentos adjuntos
+                                       </div>
+                                    </div>
+                                 </div>`;
+                              }
+                              html+=`
                            </div>
                         </div>
                      </div>
@@ -478,6 +500,11 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
    
    $('#modalAdminExt').html(html);
    $('#modalFormNotaMedica').modal('show');
+   setTimeout(() => {
+      if(idNota > 0) {
+         listar_adjuntos_notas('ver_adjuntos_nota', idNota);
+      }
+   }, 500);
 }
 
 const fn_guardar_nota_medica = async (idPaciente, nomPaciente, idDoctor, nomDoctor, idCita, idNota) => {
@@ -672,10 +699,7 @@ const fn_eliminar_nota = async (idNota, idCita, nomPaciente) => {
 
 const fn_ver_nota_medica = (idNota) => {
 
-   const arrPrint = arrNotaMedica.find(nota => nota.id_nota_medica == idNota);
-
-   console.log(arrPrint);
-
+   const arrPrint = arrNotaMedica.find(nota => nota.id_nota_medica == idNota);   
    fetch('reportes/nota_medica_pdf.php', {
       method: 'POST',
       headers: {
@@ -690,14 +714,202 @@ const fn_ver_nota_medica = (idNota) => {
    });
 }
 
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-window.ModalListarNotaMedica = ModalListarNotaMedica; 
-window.ModalFormNotaMedica   = ModalFormNotaMedica;
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ADJUNTOS NOTA MÉDICA ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-window.fn_guardar_nota_medica = fn_guardar_nota_medica;
-window.fn_eliminar_nota       = fn_eliminar_nota;
-window.fn_buscar_nota         = fn_buscar_nota;
-window.fn_ver_nota_medica     = fn_ver_nota_medica;
+const fn_subir_adjunto_nota = async (idNota, idCita) => {
+   
+   let nomAdjuntoNota = $('#nomAdjuntoNota').val().trim();
+   let file0          = document.getElementById('adjuntoNota');
+   let file           = file0.files[0];   
+
+   if (idNota <= 0 || idCita <= 0) {
+      ToastColor.fire({
+         text: '¡Faltaron parámetros importantes, actualiza y vuelve a intentarlo',
+         icon: 'warning'
+      });
+      return;
+   }
+   else if (nomAdjuntoNota == '') {
+      ToastColor.fire({
+         text: '¡Atención! Debes ingresar el nombre del documento',
+         icon: 'warning'
+      });
+      $('#nomAdjuntoNota').focus();
+      return;
+   }
+   else if (typeof(file) == "undefined") {
+      ToastColor.fire({
+        text: '¡Atención! Debes seleccionar un documento', icon: 'warning', position: 'top', timer: 4000, timerProgressBar: false });
+      $('#adjuntoNota').focus();
+      return;
+   }
+   else if (file.size > 3000000) {
+      ToastColor.fire({
+        text: '¡Atención! Debes agregar un documento más ligero, tamaño máximo 3 MB.', icon: 'warning', position: 'top', timer: 4000, timerProgressBar: false });
+      $('#adjuntoNota').focus();
+      return;
+   } 
+   else if (!(/\.(pdf)$/i).test(file.name)) {
+      ToastColor.fire({ text: '¡Atención! El archivo debe ser un documento PDF', icon: 'warning', position: 'top', timer: 4000, timerProgressBar: false });
+      $('#adjuntoNota').focus();
+      return;    
+   }
+
+   var objArchivo = new FormData();
+   objArchivo.append('func', 'subir_adjunto_nota');
+   objArchivo.append('idNota', idNota); 
+   objArchivo.append('idCita', idCita); 
+   objArchivo.append('nomAdjuntoNota', nomAdjuntoNota);
+   objArchivo.append('documento', file);
+
+   const res = await showMessageSwalQuestion('¿Estás seguro?', 'Se adjuntará el documento', 'question', 'Sí, subir', 'Cancelar');
+   
+   if (!res.result) return;
+
+   let respuesta = await subir_adjunto_nota(objArchivo);
+
+   if(respuesta.estatus == 403) {
+      fnNoSesion();
+   }
+   else if(respuesta.estatus == 200) {
+      showMessageSwalTimer('¡Subido correctamente!', '', 'success', 2500);
+      listar_adjuntos_nota('ver_adjuntos_nota', idNota);
+   }
+   else {
+      showMessageSwal('Ocurrio un error: ', respuesta.mensaje, 'error');
+      return;
+   }
+}
+
+const listar_adjuntos_notas = async (containerId, idNota) => {
+   
+   let arrAdjuntos = [];
+   
+   if(idNota == '') {
+      ToastColor.fire({
+         text: '¡Atención! No se obtuvieron parámetros importantes',
+         icon: 'warning',
+         position: 'top',
+         timerProgressBar: false
+      });
+      let html = 
+      `<div class="alert alert-secondary p-2 text-center">No hay documentos adjuntos</div>`;
+      $('#'+containerId).html(html);
+      return;
+   }
+
+   let respuesta = await obtiene_adjuntos_nota(idNota);
+   if(respuesta.estatus == 403) {
+      fnNoSesion();
+   }
+   else if(respuesta.estatus != 200) {
+      showMessageSwalTimer('Ocurrio un error: ', respuesta.mensaje, 'error', 2500);
+      let html = 
+      `<div class="text-center text-muted py-2 mt-2 border border-dashed rounded fs-8">
+         <i class="bi bi-paperclip me-1 text-opacity-50"></i> Sin documentos adjuntos
+      </div>`;
+      $('#'+containerId).html(html);
+      return;
+   }
+   else if(respuesta.data.length == 0) {
+      let html = 
+      `<div class="text-center text-muted py-2 mt-2 border border-dashed rounded fs-8">
+         <i class="bi bi-paperclip me-1 text-opacity-50"></i> Sin documentos adjuntos
+      </div>`;
+      $('#'+containerId).html(html);
+   }
+   else {
+      arrAdjuntos = await respuesta.data;
+      pintar_listado_adjuntos_notas(containerId, arrAdjuntos);
+   }
+}
+
+const pintar_listado_adjuntos_notas = (containerId, data) => {
+   const contenedor = document.getElementById(containerId);
+   let html = '';
+   
+   if(data.length > 0) {
+      html = `<div class="row row-cols-1 row-cols-md-2 g-2 mt-2">`;
+      
+      data.forEach(row => {
+         html += `
+         <div class="col" id="cardAdjNota${row.id}">
+            <!-- Creamos la estructura de "pill" usando bordes redondeados y alineación flex compacta -->
+            <div class="d-flex align-items-center justify-content-between p-1 ps-2 pe-1 border rounded-pill bg-light shadow-sm">
+               
+               <!-- Contenedor del texto e icono con truncate para que no rompa las 2 columnas -->
+               <div class="d-flex align-items-center text-truncate me-2 fs-8 pointer" onclick="fn_ver_adjunto(${row.id})">
+                  <i class="bi bi-file-earmark-pdf-fill text-danger fs-6 me-2 flex-shrink-0"></i>
+                  <span class="text-truncate fw-medium text-dark" title="${row.nom_archivo}.pdf">
+                     ${row.nom_archivo}.pdf
+                  </span>
+               </div>               
+               <!-- Botón de eliminar en formato circular pequeño para encajar en la píldora -->
+               <button type="button" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center p-0 text-muted btn-outline-danger border-0 opacity-75 opacity-100-hover" style="width: 24px; height: 24px; min-width: 24px;" title="Eliminar adjunto" onclick="fn_eliminar_adjunto_nota(${row.id}, '${row.nom_archivo}', '${row.archivo}', ${row.id_nota_fk}, ${row.id_cita_fk});">
+                  <i class="bi bi-x fs-5"></i>
+               </button>
+            </div>
+         </div>`;
+      });
+      
+      html += `</div>`;
+   }
+   else {
+      html = `
+      <div class="text-center text-muted py-2 mt-2 border border-dashed rounded" style="font-size: 0.8rem; border-style: dashed !important;">
+         <i class="bi bi-paperclip me-1 text-opacity-50"></i> Sin documentos adjuntos
+      </div>`;
+   }
+   
+   contenedor.innerHTML = html;
+}
+
+const fn_eliminar_adjunto_nota = async (id, nomArchivo, archivo, idNota, idCita) => {
+
+   if (idNota <= 0 || id <= 0 || idCita <= 0 || nomArchivo == '') {
+      ToastColor.fire({
+         text: '¡Atención! Faltaron parámetros importantes',
+         icon: 'warning'
+      });
+      return;
+   }
+        
+   const res = await showMessageSwalQuestion('¿Estás seguro?', 'El archivo será eliminado', 'question', 'Sí, eliminar', 'Cancelar');
+
+   if (!res.result) {
+      return;
+   }
+
+   let respuesta = await eliminar_adjunto_nota(id, nomArchivo, archivo, idNota, idCita);
+   if(respuesta.estatus == 403) {
+      fnNoSesion();
+   }
+   else if(respuesta.estatus == 200) {
+      showMessageSwalTimer('¡Eliminado!', '', 'success', 2500);
+      $('#cardAdjNota'+id).remove();
+   }
+   else {
+      showMessageSwal('Ocurrio un error: ', respuesta.mensaje, 'error');
+      return;
+   }
+}
+
+const fn_ver_adjunto = (id) => {
+   window.open('reportes/ver_adjunto.php?id='+id);
+}
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+window.ModalListarNotaMedica    = ModalListarNotaMedica; 
+window.ModalFormNotaMedica      = ModalFormNotaMedica;
+
+window.fn_guardar_nota_medica   = fn_guardar_nota_medica;
+window.fn_eliminar_nota         = fn_eliminar_nota;
+window.fn_buscar_nota           = fn_buscar_nota;
+window.fn_ver_nota_medica       = fn_ver_nota_medica;
+window.fn_subir_adjunto_nota    = fn_subir_adjunto_nota;
+window.listar_adjuntos_notas    = listar_adjuntos_notas;
+window.fn_eliminar_adjunto_nota = fn_eliminar_adjunto_nota;
+window.fn_ver_adjunto           = fn_ver_adjunto;
 
 
 

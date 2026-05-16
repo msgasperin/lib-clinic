@@ -30,3 +30,38 @@ export const eliminar_nota = async (idNota, idCita, nomPaciente) => {
    }
    return respuesta;
 }
+
+export const subir_adjunto_nota = async (objArchivo) => {
+   
+   let respuesta;
+
+   try {               
+      respuesta = await postFormData('../api/controller/nota_medica.php', objArchivo);
+   } catch (err) {
+      respuesta = { estatus: 500, "mensaje": "Error del servidor: "+err, data: [] };
+   }
+
+   return respuesta;
+};
+
+export const obtiene_adjuntos_nota = async (idNota) => {
+   const datos = { func: 'obtiene_adjuntos_nota', idNota };
+   let respuesta;
+   try {
+      respuesta = await postJSON('../api/controller/nota_medica.php', datos);
+   } catch {
+      respuesta = {estatus: 500, "mensaje": "Error del servidor", data: []};
+   }
+   return respuesta;
+}
+
+export const eliminar_adjunto_nota = async (id, nomArchivo, archivo, idNota, idCita) => {
+   const datos = { func: 'eliminar_adjunto_nota', id, nomArchivo, archivo, idNota, idCita };
+   let respuesta;
+   try {
+      respuesta = await postJSON('../api/controller/nota_medica.php', datos);
+   } catch {
+      respuesta = {estatus: 500, "mensaje": "Error del servidor", data: []};
+   }
+   return respuesta;
+}

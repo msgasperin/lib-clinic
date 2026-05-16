@@ -146,5 +146,62 @@
       return $res;
     }
 
+    public function inserta_documento_nota(string $nom_documento, string $archivo, int $id_nota, int $id_cita) {
+      $estatus = 500;
+      $mensaje = 'Error al intentar insertar documento en BD';
+      $data    = [];
+			try {        		
+				$sql = $this->dbh->prepare("INSERT INTO nota_adjuntos (id_cita_fk, id_nota_fk, nom_archivo, archivo) VALUES (?,?,?,?)");
+				$ok = $sql->execute([$id_cita, $id_nota, $nom_documento, $archivo]);
+        if($ok) {
+          $estatus = 200;
+          $mensaje = 'ok';
+        }
+			} catch (Exception $error) {
+        error_log($error->getMessage());
+			}
+			finally {
+        $this->cerrar();
+      }
+
+      $res = ['estatus' => $estatus, 'mensaje' => $mensaje, 'data' => $data];
+
+			return $res;
+		}
+
+    public function obtiene_adjuntos_nota(int $id_nota) {
+      try {
+        $res = [];
+        $sql = $this->dbh->prepare("SELECT id, id_cita_fk, id_nota_fk, nom_archivo, archivo FROM nota_adjuntos WHERE id_nota_fk = ?");
+        $sql->execute([$id_nota]);
+        $res = $sql->fetchAll(PDO::FETCH_ASSOC);        
+        
+      } catch (Exception $error) {
+        error_log($error->getMessage());
+      }
+      
+      return $res;
+    }
+
+    public function eliminar_adjunto_nota(int $id) {
+      $estatus = 500;
+      $data    = [0];
+      $mensaje = 'Error al intentar eliminar el archivo adjunto';
+      try {
+        $sql = $this->dbh->prepare("DELETE FROM nota_adjuntos WHERE id = ?");
+        $sql->execute(array($id));
+        if($sql->rowCount() > 0) {
+          $estatus = 200;
+          $mensaje = 'ok';
+        }
+      }
+      catch (Exception $error) {
+        error_log($error->getMessage());
+      }
+
+      $res = ['estatus' => $estatus, 'mensaje' => $mensaje, 'data' => $data];
+
+      return $res;
+    }
 	}
 ?>
