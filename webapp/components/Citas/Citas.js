@@ -54,8 +54,27 @@ const combo_pacientes = async (containerId) => {
 
 let arrCitas = [];
 
+const fn_buscar_citas = () => {
+   let busqueda = $('#inpBusquedaCita').val().trim();
+
+   const normalizarTexto = (texto) => {
+      return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+   };
+
+   const busquedaNormalizada = normalizarTexto(busqueda);
+
+   const filtrado = arrCitas.filter(cita => 
+      normalizarTexto(cita.paciente).includes(busquedaNormalizada)
+   );
+   
+   pintar_listado_citas('listado_citas', filtrado);
+}
+
 const TabCitas = () => {
-   let fecha = fnFechaActual();
+   let fecha       = fnFechaActual();
+   let optionAnios = comboAnios();
+   let mes         = fecha.split('-')[1];
+
    activarLoad('Cargando citas del día...');
    let html =
    `<div class="row">
@@ -69,15 +88,30 @@ const TabCitas = () => {
    <div class="row mt-3">
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 mt-3" align="right">
          <div class="input-group">
-            <input type="date" name="inpFechaIniCita" id="inpFechaIniCita" class="form-control" value="${fecha}">
-            <input type="date" name="inpFechaFinCita" id="inpFechaFinCita" class="form-control" value="${fechaRangoAdelante}">
+            <select name="anioCita" id="anioCita" class="form-select">
+               ${optionAnios}
+            </select>
+            <select name="mesCita" id="mesCita" class="form-select">
+               ${comboMeses}
+            </select>
             <button class="btn btn-secondary btn-lib" type="button" onclick="listar_citas('listado_citas');"><i class="bi bi-arrow-clockwise"></i></button>
+         </div>
+      </div>
+      <div class="col-xl-3 offset-xl-5 col-lg-3 offset-lg-5 col-md-4 offset-md-4 col-sm-12 col-12 mt-3" align="right">
+         <div class="input-group">
+            <input type="text" name="inpBusquedaCita" id="inpBusquedaCita" class="form-control border-end-0" placeholder="Buscar citas" onkeyUp="fn_buscar_citas();">
+            <span class="input-group-text border-start-0 bg-white"><i class="bi bi-search"></i></span>
          </div>
       </div>
    </div>
    <div class="mt-4">
       <div id="listado_citas"></div>
    </div>`;
+
+
+   setTimeout(() => {
+      $('#mesCita').val(mes);
+   }, 100);
 
    $('#containerMain').html(html);
    setTimeout(() => {
@@ -92,11 +126,16 @@ const ModalFormCita = (idCita) => {
    let hora         = '';
    let idPaciente   = 0;
    let idDoctor     = 0; 
+   let tipoConsulta = 0; 
+   let tipoVisita   = 0; 
    let observacion  = '';  
    let perfilUs     = $('#perfilUs').val().trim();
    let idUser       = $('#idUserUs').val().trim();
    let user         = $('#userUs').val().trim();
    let optionDoctor = '<option value="0">Seleccionar</option>';
+   let solEsfuerzo  = '';
+   let solHolter    = '';
+   let solMapa      = '';
 
    if(idCita == 0) {
       text_boton = 'Registrar Cita';
@@ -105,12 +144,16 @@ const ModalFormCita = (idCita) => {
       text_boton = 'Modificar Cita';
 
       let citaSelected = arrCitas.filter(cita => cita.id_cita == idCita);
-
-      hora        = citaSelected[0].hora;
-      fecha       = citaSelected[0].fecha;
-      observacion = citaSelected[0].observacion;
-      idDoctor    = citaSelected[0].id_doctor_fk;
-      idPaciente  = citaSelected[0].id_paciente_fk;
+      hora         = citaSelected[0].hora;
+      fecha        = citaSelected[0].fecha;
+      observacion  = citaSelected[0].observacion;
+      idPaciente   = citaSelected[0].id_paciente_fk;
+      idDoctor     = citaSelected[0].id_doctor_fk;
+      tipoConsulta = citaSelected[0].tipo_consulta;
+      tipoVisita   = citaSelected[0].tipo_visita;
+      citaSelected[0].sol_esfuerzo == 1 ? solEsfuerzo = 'checked' : solEsfuerzo
+      citaSelected[0].sol_holter == 1 ? solHolter = 'checked': solHolter
+      citaSelected[0].sol_mapa == 1 ? solMapa = 'checked' : solMapa
    }
 
    if(perfilUs == 3) {
@@ -128,7 +171,7 @@ const ModalFormCita = (idCita) => {
                </button>
             </div>
             <div class="modal-body bg-light">
-               <div class="row">
+               <div class="row mb-5">
                   <div class="col-12 mt-2">
                      <b>Paciente *</b>
                      <div class="input-group">
@@ -144,17 +187,55 @@ const ModalFormCita = (idCita) => {
                         ${optionDoctor}
                      </select>
                   </div>
-                  <div class="col-12 mt-3">
+                  <div class="col-12 col-sm-6 mt-2">
+                     <b>Tipo de Consulta *</b>
+                     <select name="tipoConsulta" id="tipoConsulta" class="form-select">
+                        <option value="0">Seleccionar</option>
+                        <option value="1">Consulta</option>
+                        <option value="2">Ecocardiograma</option>
+                        <option value="3">Consulta / Ecocardiograma</option>
+                     </select>
+                  </div>
+                  <div class="col-12 col-sm-6 mt-2">
+                     <b>Tipo de Visita *</b>
+                     <select name="tipoVisita" id="tipoVisita" class="form-select">
+                        <option value="0">Seleccionar</option>
+                        <option value="1">Primera Vez</option>
+                        <option value="2">Seguimiento</option>
+                     </select>
+                  </div>
+                  <div class="col-12 col-sm-6 mt-2">
                      <b>Fecha *</b>
                      <input type="date" name="fechaCita" id="fechaCita" class="form-control" value="${fecha}">
                   </div>
-                  <div class="col-12 mt-3">
+                  <div class="col-12 col-sm-6 mt-2">
                      <b>Hora *</b>
                      <input type="time" name="horaCita" id="horaCita" class="form-control" value="${hora}">
                   </div>
                   <div class="col-12 mt-3">
                      <b>Observación</b>
                      <textarea name="obsCita" id="obsCita" class="form-control" rows="2" maxlength="250">${observacion}</textarea>
+                  </div>
+                  <div class="col-12 mt-3">
+                     <b>¿Se realizará alguno de estos estudios?</b>
+                  </div>
+                  <div class="col-4 mt-2">    
+                     <input type="checkbox" class="btn-check" name="pEsfuerzo" id="pEsfuerzo" autocomplete="off" ${solEsfuerzo}>                     
+                     <label class="btn btn-outline-dark w-100" for="pEsfuerzo">
+                        P. Esfuerzo
+                     </label>
+                  </div>
+                  <div class="col-4 mt-2">    
+                     <input type="checkbox" class="btn-check" name="holter" id="holter" autocomplete="off" ${solHolter}>                     
+                     <label class="btn btn-outline-dark w-100" for="holter">
+                        HOLTER
+                     </label>
+                  </div>
+                  <div class="col-4 mt-2">    
+                     <input type="checkbox" class="btn-check" name="mapa" id="mapa" autocomplete="off" ${solMapa}>                     
+                     <label class="btn btn-outline-dark w-100" for="mapa">
+                        M.A.P.A
+                     </label>
                   </div>
                </div>                     
             </div>
@@ -197,6 +278,8 @@ const ModalFormCita = (idCita) => {
             $('#pacienteCita').val(idPaciente);
             $('#pacienteCita').trigger('change');
             $('#doctorCita').val(idDoctor);
+            $('#tipoConsulta').val(tipoConsulta);
+            $('#tipoVisita').val(tipoVisita);
          }, 300);
       }
    }, 200);
@@ -204,6 +287,9 @@ const ModalFormCita = (idCita) => {
 
 const fn_guardar_cita = async (idCita) => {
 
+   let solEsfuerzo  = 0;
+   let solHolter    = 0;
+   let solMapa      = 0;
    let fechaActual  = fnFechaActual();
    let pacSelected  = document.getElementById("pacienteCita");
    let nomPaciente  = pacSelected.options[pacSelected.selectedIndex].text;
@@ -211,9 +297,15 @@ const fn_guardar_cita = async (idCita) => {
    let docSelected  = document.getElementById("doctorCita");
    let nomDoctor    = docSelected.options[docSelected.selectedIndex].text;
    let idDoctor     = $('#doctorCita').val().trim();
+   let tipoConsulta = $('#tipoConsulta').val();
+   let tipoVisita   = $('#tipoVisita').val();
    let fechaCita    = $('#fechaCita').val().trim();
    let horaCita     = $('#horaCita').val();
    let obsCita      = $('#obsCita').val();
+   
+   $('#pEsfuerzo').prop('checked') ? solEsfuerzo = 1 : solEsfuerzo;
+   $('#holter').prop('checked') ? solHolter = 1 : solHolter;
+   $('#mapa').prop('checked') ? solMapa = 1 : solMapa;
 
    if (idPaciente == 0) {
       ToastColor.fire({
@@ -229,6 +321,22 @@ const fn_guardar_cita = async (idCita) => {
          icon: 'warning'
       });
       $('#doctorCita').focus();
+      return;
+   }
+   else if (tipoConsulta == 0) {
+      ToastColor.fire({
+         text: '¡Atención! Debes seleccionar un tipo de consulta',
+         icon: 'warning'
+      });
+      $('#tipoConsulta').focus();
+      return;
+   }
+   else if (tipoVisita == 0) {
+      ToastColor.fire({
+         text: '¡Atención! Debes seleccionar un tipo de visita',
+         icon: 'warning'
+      });
+      $('#tipoVisita').focus();
       return;
    }
    else if (fechaCita == '') {
@@ -248,7 +356,7 @@ const fn_guardar_cita = async (idCita) => {
       return;
    }  
      
-   let objCita = { func: 'guardar_cita', idCita, idPaciente, nomPaciente, idDoctor, nomDoctor, fechaCita, horaCita, obsCita };
+   let objCita = { func: 'guardar_cita', idCita, idPaciente, nomPaciente, idDoctor, nomDoctor, tipoConsulta, tipoVisita, fechaCita, horaCita, obsCita, solEsfuerzo, solHolter, solMapa };
 
    const res = await showMessageSwalQuestion('¿Estás seguro?', 'La cita para: ' + nomPaciente + '  con fecha ' + fechaCita + ' en horario ' + horaCita + ' será registrado', 'question', 'Sí, guardar', 'Cancelar');
 
@@ -267,10 +375,16 @@ const fn_guardar_cita = async (idCita) => {
       $('#pacienteCita').val(0);
       $('#pacienteCita').trigger('change');
       $('#doctorCita').val(0);
+      $('#tipoConsulta').val(0);
+      $('#tipoVisita').val(0);
       $('#fechaCita').val('');
       $('#horaCita').val('');
       $('#obsCita').val('');
       $('#modalFormCita').modal('hide');
+      $('#pEsfuerzo').prop('checked', false);
+      $('#holter').prop('checked', false);
+      $('#mapa').prop('checked', false);
+
       listar_citas('listado_citas');
    }
    else {
@@ -283,29 +397,13 @@ const fn_guardar_cita = async (idCita) => {
 const listar_citas = async (containerId) => {
    arrCitas = [];
 
-   let fechaInicial = $('#inpFechaIniCita').val();
-   let fechaFinal = $('#inpFechaFinCita').val();
+   $('#'+containerId).html('<div class="text-center mt-5"><span class="loader_bar_2"></span><div class="text-secondary fs-7">Cargando...</div></div>');
+   let anio = $('#anioCita').val();
+   let mes  = $('#mesCita').val();
+   const ultimoDia = new Date(anio, mes, 0).getDate();
 
-   if(fechaInicial == '' || fechaFinal == '') {
-      ToastColor.fire({
-         text: '¡Atención! Debes seleccionar el rango de fechas',
-         icon: 'warning',
-         position: 'top',
-         timerProgressBar: false
-      });
-      $('#inpFechaIniCita').focus()
-      return;
-   }
-   else if(fechaInicial > fechaFinal) {
-      ToastColor.fire({
-         text: '¡Atención! La fecha inicial no puede ser mayor a la fecha final',
-         icon: 'warning',
-         position: 'top',
-         timerProgressBar: false
-      });
-      $('#inpFechaIniCita').focus()
-      return;
-   }
+   let fechaInicial = anio+'-'+mes+'-01';
+   let fechaFinal   = anio+'-'+mes+'-'+ultimoDia;
 
    let respuesta = await obtiene_citas(fechaInicial, fechaFinal);
    if(respuesta.estatus == 403) {
@@ -314,6 +412,7 @@ const listar_citas = async (containerId) => {
    else if(respuesta.estatus != 200) {
       showMessageSwalTimer('Ocurrio un error: ', respuesta.mensaje, 'error', 2500);
       closeLoad();
+      $('#'+containerId).html('');
       return;
    }
    else if(respuesta.data.length == 0) {
@@ -335,126 +434,174 @@ const pintar_listado_citas = (containerId, data) => {
    const contenedor = document.getElementById(containerId);
    let color         = '';
    let estatus       = 'No identificado';
-   let infoCancelada = '';
+   let tipo_consulta = '';
+   let tipo_visita   = '';
+   let txtMes        = '';
+   let fecha         = '';
    
-   // Nota: Eliminamos el overflow:hidden y la card del string para que Datatable maneje el layout
-   let html = `
-   <div class="table-responsive mt-4">
-      <table id="tableCitas" class="table table-hover align-middle w-100">
-         <thead class="bg-light">
-            <tr>
-               <th>ID</th>
-               <th class="ps-4 text-secondary" width="15%">Fecha / Hora</th>
-               <th class="py-3 text-secondary" width="19%">Paciente</th>
-               <th class="py-3 text-secondary" width="19%">Doctor</th>
-               <th class="py-3 text-secondary" width="19%">Registró</th>
-               <th class="py-3 text-secondary" width="10%">Estatus</th>
-               <th class="py-3 text-center text-secondary" width="18%">Acciones</th>
-            </tr>
-         </thead>
-         <tbody>`;
-            data.forEach(cita => {
+   // Contenedor principal usando el sistema de filas de Bootstrap
+   let html = `<div class="row g-4 mt-2">`;
+   
+   data.forEach(cita => {
 
-               infoCancelada = 'no-display';
+      txtMes = arrayMeses[(parseInt(cita.fecha.split('-')[1])) - 1];
+      fecha  = cita.fecha.split('-');
+      fecha  = fecha[2]+' / '+txtMes+' / '+fecha[0];
+
+      // Reiniciar variables por cada iteración
+      let sol_holter      = '';
+      let sol_mapa        = '';
+      let sol_esfuerzo    = '';
+      let botonCollapse   = '';
+      let seccionCollapse = '';
+
+      // Evaluaciones de tipos de consulta y visita
+      cita.tipo_consulta == 1 ? tipo_consulta = 'Consulta' :
+      cita.tipo_consulta == 2 ? tipo_consulta = 'Ecocardiograma' : 
+      cita.tipo_consulta == 3 ? tipo_consulta = 'Consulta / Ecocardiograma' : tipo_consulta;
+
+      cita.tipo_visita == 1 ? tipo_visita = 'Primera vez' :
+      cita.tipo_visita == 2 ? tipo_visita = 'Seguimiento' : tipo_visita;
+
+      // Formateo de estudios solicitados en badges pequeños
+      if(cita.sol_esfuerzo == 1) sol_esfuerzo = `<span class="badge bg-light shadow-sm text-dark border me-1 mb-1"><small>Prueba de esfuerzo</small></span>`;
+      if(cita.sol_holter == 1)   sol_holter   = `<span class="badge bg-light shadow-sm text-dark border me-1 mb-1"><small>HOLTER</small></span>`;
+      if(cita.sol_mapa == 1)     sol_mapa     = `<span class="badge bg-light shadow-sm text-dark border me-1 mb-1"><small>M.A.P.A</small></span>`;
+
+      if(cita.estatus == 1) {
+         color   = 'primary';
+         estatus = 'Registrada';
+      }
+      else if(cita.estatus == 2) {
+         color   = 'success';
+         estatus = 'Atendida';
+      }
+      else if(cita.estatus == 3) {
+         color   = 'danger';
+         estatus = 'Cancelada';
+         
+         // Botón que activa el collapse (solo si está cancelada)
+         botonCollapse = `
+         <button class="btn btn-sm btn-link text-danger p-0 mt-2 text-decoration-none d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCancel${cita.id_cita}" aria-expanded="false" aria-controls="collapseCancel${cita.id_cita}">
+            <i class="bi bi-chevron-down me-1"></i> Ver motivo de cancelación
+         </button>`;
+
+         // Estructura del collapse oculto por defecto
+         seccionCollapse = `
+         <div class="collapse mt-2" id="collapseCancel${cita.id_cita}">
+            <div class="alert alert-danger p-2 m-0 fs-8">
+               <small class="d-block text-truncate"><strong>Por:</strong> ${cita.user_cancela ?? ''}</small>
+               <small class="d-block text-muted"><strong>Fecha:</strong> ${cita.fecha_cancela_format ?? ''}</small>
+               <div class="text-dark border-top mt-1 pt-1"><em>"${cita.motivo ?? ''}"</em></div>
+            </div>
+         </div>`;
+      }               
+
+      // Maquetación de la Card (col-xl-3 = 4 por fila, col-md-4 = 3 por fila)
+      html += `
+      <div class="col-xl-3 col-md-4 col-sm-6" id="cardCita${cita.id_cita}">
+         <div class="card h-100 shadow-sm border-0 rounded-3 position-relative overflow-hidden transition-card">
+            
+            <!-- Línea de color superior según el estatus -->
+            <div class="border-top border-5 border-${color}"></div>
+            
+            <div class="card-body d-flex flex-column p-3">
+               
+               <!-- Encabezado: ID y Estatus -->
+               <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="text-muted fw-bold fs-8">ID: #${cita.id_cita}</span>
+                  <span class="badge rounded-pill text-${color} border border-${color} bg-${color} bg-opacity-10 fs-8 fw-bold">
+                     ${estatus}
+                  </span>
+               </div>
+
+               <!-- NUEVO FORMATO DE FECHA Y HORA (Mayor relevancia) -->
+               <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded-3 mb-3 border-start border-${color} border-3">
+                  <div class="d-flex align-items-center">
+                     <i class="bi bi-calendar3 text-secondary me-2 fs-5"></i>
+                     <div class="lh-sm">
+                        <small class="text-muted d-block fs-8 text-uppercase">Fecha</small>
+                        <span class="text-dark fw-bold fs-6">${fecha}</span>
+                     </div>
+                  </div>
+                  <div class="text-end lh-sm">
+                     <small class="text-muted d-block fs-8 text-uppercase">Hora</small>
+                     <span class="text-${color} fw-bolder fs-7">${cita.hora} <span class="fs-8">hrs</span>.</span>
+                  </div>
+               </div>
+
+               <!-- Información del Paciente -->
+               <div class="d-flex align-items-start mb-3">
+                  <div class="w-100">
+                     <div class="text-dark fw-bold fs-7">${cita.paciente}</div>
+                     <div class="text-muted fs-8">Paciente</div>
+                     <div class="mt-2">
+                        ${sol_esfuerzo} ${sol_mapa} ${sol_holter}
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Información del Médico y Consulta -->
+               <div class="p-2 border rounded-2 mb-2 bg-light shadow-sm fs-8">
+                  <div class="text-dark mb-1 text-truncate">
+                     <i class="bi bi-person-md me-1 text-muted fw-bold"></i>${cita.doctor}
+                  </div>
+                  <div class="text-muted text-truncate" title="${tipo_consulta}">
+                     <i class="bi bi-heart-pulse me-1"></i> ${tipo_consulta}
+                  </div>
+                  <div class="text-muted fs-8">
+                     <i class="bi bi-tag me-1"></i> ${tipo_visita}
+                  </div>
+               </div>
+
+               <!-- Usuario que registró -->
+               <div class="mt-auto pt-2 text-muted fs-8">
+                  <i class="bi bi-person-workspace me-1"></i> Registró: <span class="fw-medium">${cita.user_cap}</span>
+               </div>
+
+               <!-- Renderizado de elementos de Cancelación (Dinámicos) -->
+               ${botonCollapse}
+               ${seccionCollapse}
+
+            </div>
+
+            <!-- Botones de Acción / Footer de la Card -->
+            <div class="card-footer bg-white border-top-0 p-3 pt-0 text-end">
+               <div class="btn-group w-100" role="group">`;
 
                if(cita.estatus == 1) {
-                  color   = 'primary';
-                  estatus = 'Registrada';
+                  html += `
+                  <button class="btn btn-sm btn-outline-secondary" title="Editar" onclick="ModalFormCita(${cita.id_cita});">
+                     <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-success" title="Marcar como atendida" onclick="fn_cita_atendida(${cita.id_cita}, '${cita.paciente}');">
+                     <i class="bi bi-check-lg"></i>
+                  </button>`;
                }
-               else if(cita.estatus == 2) {
-                  color   = 'success';
-                  estatus = 'Atendida';
+               if(cita.estatus == 1 || cita.estatus == 2) {
+                  html += `
+                  <button class="btn btn-sm btn-outline-secondary" title="Nota médica" onclick="ModalListarNotaMedica(${cita.id_paciente_fk}, '${cita.paciente}', ${cita.id_doctor_fk}, '${cita.doctor}', ${cita.id_cita});">
+                     <i class="bi bi-clipboard-plus"></i>
+                  </button>`;
                }
-               else if(cita.estatus == 3) {
-                  color         = 'danger';
-                  estatus       = 'Cancelada';
-                  infoCancelada = 'info-flotante';
-               }               
+               if(cita.estatus == 1) {
+                  html += `
+                  <button class="btn btn-sm btn-outline-danger" title="Cancelar cita" onclick="ModalCancelarCita(${cita.id_cita}, '${cita.paciente}');">
+                     <i class="bi bi-ban"></i>
+                  </button>`;
+               }
 
                html += `
-               <tr id="trCita${cita.id_cita}">
-                  <td>${cita.id_cita}</td>
-                  <td class="ps-4 text-center">
-                     <span class="fw-bold text-dark">${cita.fecha_format} / ${cita.hora}</span>
-                  </td>
-                  <td>
-                     <div class="d-flex align-items-center">
-                        <div class="btn-redondo d-flex align-items-center justify-content-center me-2 badge_cita">
-                           <span class="text-secondary fw-bold" style="font-size: 0.7rem;">${cita.paciente.charAt(0)}</span>
-                        </div>
-                        <span class="text-dark fw-medium">${cita.paciente}</span>
-                     </div>
-                  </td>
-                  <td><span class="text-muted">${cita.doctor}</span></td>
-                  <td>
-                     <span>${cita.user_cap}</span>
-                  </td>
-                  <td class="text-center celda-estatus">
-                     <div id="label_estatus${cita.id_cita}">
-                        <span class="badge rounded-pill text-${color} border border-${color} bg-${color} bg-opacity-10">
-                           ${estatus}
-                        </span>
-                     </div>
-                     
-                     <!-- Agregamos la clase 'info-flotante' para controlarla con CSS -->
-                     <div id="info_cancelada${cita.id_cita}" class="${infoCancelada}">
-                        <div class="alert alert-danger p-2 m-0 mt-2">
-                           <strong>Información de cancelación </strong><br>
-                           <small>
-                              ${cita.user_cancela ?? ''}<br>
-                              ${cita.fecha_cancela_format ?? ''}<br>
-                              <em>${cita.motivo ?? ''}</em>
-                           </small>
-                        </div>
-                     </div>
-                  </td>
-                  <td class="text-center">
-                     <button class="btn btn-dark btn-lib fs-7 btnBloqTabpac ms-1" title="Expediente Clínico" onclick="ModalFormExpClinico();">
-                        <i class="bi bi-person-rolodex"></i>
-                     </button>`                   
-
-                     if(cita.estatus == 1) {
-                        html+=`
-                        <button class="btn btn-outline-dark fs-7 bloqCancelCita bloqAtendidaCita" title="Editar" onclick="ModalFormCita(${cita.id_cita});">
-                           <i class="bi bi-pencil"></i>
-                        </button>`;
-                         html+=`
-                        <button class="btn btn-outline-success fs-7 ms-1 bloqCancelCita bloqAtendidaCita" title="Marcar como atendida" onclick="fn_cita_atendida(${cita.id_cita}, '${cita.paciente}');">
-                           <i class="bi bi-check-lg"></i>
-                        </button>`;
-                     }
-                     if(cita.estatus == 1 || cita.estatus == 2) {
-                        html+=`
-                        <button class="btn btn-outline-dark fs-7 ms-1 bloqCancelCita" title="Nota médica" onclick="ModalListarNotaMedica(${cita.id_paciente_fk}, '${cita.paciente}', ${cita.id_doctor_fk}, '${cita.doctor}', ${cita.id_cita});">
-                           <i class="bi bi-clipboard-plus"></i>
-                        </button>`;
-                     }
-                     if(cita.estatus == 1) {
-                        html+=`
-                        <button class="btn btn-outline-danger fs-7 ms-1 bloqCancelCita bloqAtendidaCita" title="Cancelar cita" onclick="ModalCancelarCita(${cita.id_cita}, '${cita.paciente}');">
-                           <i class="bi bi-ban"></i>
-                        </button>`;
-                     }
-                     html+=`
-                  </td>
-               </tr>`;
-            });
-            html += `
-         </tbody>
-      </table>
-   </div>`;
+               </div>
+            </div>
+         </div>
+      </div>`;
+   });
+   
+   html += `</div>`; // Cierre de .row
 
    contenedor.innerHTML = html;
    closeLoad();
-
-   setTimeout(() => {
-      initDataTableExport({
-        tableId: '#tableCitas',
-        titulo: 'Citas',
-        alignment: ['15%', '25%', '25%', '25%', '15%'],
-        exportColumns: [1, 2, 3, 4, 5]
-      });
-   }, 500);
 }
 
 const ModalCancelarCita = (idCita, nomPaciente) => {
@@ -542,22 +689,8 @@ const fn_cancelar_cita = async (idCita, nomPaciente) => {
          arrCitas[index].estatus = 3;
       }
 
-      let labelEstatus = 
-      `<span class="badge rounded-pill text-danger border border-danger bg-danger bg-opacity-10">
-         Cancelada
-      </span>`;
-      $('#label_estatus'+idCita).html(labelEstatus);
-      $('.bloqCancelCita').remove();
+      listar_citas('listado_citas', arrCitas);
       showMessageSwalTimer('Cita cancelada correctamente!', '', 'success', 2500);
-
-      let labelInfoCancelada = `
-      <div class="alert alert-danger p-2">
-         <strong>Información de cancelación </strong><br>
-         ${motivo}
-      </div>`;
-
-      $('#info_cancelada'+idCita).html(labelInfoCancelada);
-
       $('#modalCancelarCita').modal('hide');
    }
    else {
@@ -594,12 +727,7 @@ const fn_cita_atendida = async (idCita, nomPaciente) => {
          arrCitas[index].estatus = 2;
       }
 
-      let labelEstatus = 
-      `<span class="badge rounded-pill text-success border border-success bg-success bg-opacity-10">
-         Atendida
-      </span>`;
-      $('#label_estatus'+idCita).html(labelEstatus);
-      $('.bloqAtendidaCita').remove();
+      listar_citas('listado_citas', arrCitas);
       showMessageSwalTimer('Cita marcada como atendida correctamente!', '', 'success', 2500);
    }
    else {
@@ -610,14 +738,15 @@ const fn_cita_atendida = async (idCita, nomPaciente) => {
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-window.TabCitas            = TabCitas;
-window.ModalFormCita       = ModalFormCita;
-window.ModalCancelarCita   = ModalCancelarCita;
+window.TabCitas          = TabCitas;
+window.ModalFormCita     = ModalFormCita;
+window.ModalCancelarCita = ModalCancelarCita;
 
-window.listar_citas        = listar_citas;
-window.combo_pacientes     = combo_pacientes;
-window.fn_guardar_cita     = fn_guardar_cita;
-window.fn_cancelar_cita    = fn_cancelar_cita;
-window.fn_cita_atendida    = fn_cita_atendida;
-
+window.listar_citas      = listar_citas;
+window.combo_pacientes   = combo_pacientes;
+window.combo_doctores    = combo_doctores;
+window.fn_guardar_cita   = fn_guardar_cita;
+window.fn_cancelar_cita  = fn_cancelar_cita;
+window.fn_cita_atendida  = fn_cita_atendida;
+window.fn_buscar_citas   = fn_buscar_citas;
 

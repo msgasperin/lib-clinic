@@ -18,12 +18,17 @@
             echo json_encode(["estatus" => 500, "mensaje" => 'Faltaron parámetros importantes', "data" => []]);
           }
           else {
-            $res = $v->obtiene_notas_medicas($_POST["idPaciente"], $_SESSION["id_usuario"], $_SESSION["perfil"]);
+            $res = $v->obtiene_notas_medicas($_POST["idPaciente"]);
             echo json_encode(["estatus" => 200, "mensaje" => "", "data" => $res]);
           }
         break;
 
-        case 'guardar_nota_medica':          
+        case 'guardar_nota_medica':
+
+          if($_SESSION["perfil"] != 3) {
+            echo json_encode(["estatus" => 500, "mensaje" => 'No tienes los permisos necesarios', "data" => []]);
+            break;
+          }
 
           if($_POST["idPaciente"] == "" || $_POST["idDoctor"] == "" || $_POST["idCita"] == "" || $_POST["ta"] == "" || $_POST["oxigenacion"] == "" || $_POST["temperatura"] == "" || $_POST["fc"] == "" || $_POST["peso"] == "" || $_POST["estatura"] == "" || $_POST["padecimiento"] == "" || $_POST["tratamiento"] == "" || $_POST["diagnosticoPrincipal"] == "" || $_POST["receta"] == "") {
             echo json_encode(["estatus" => 500, "mensaje" => 'Faltaron parámetros importantes', "data" => []]);
@@ -48,7 +53,12 @@
 
         break;
 
-        case 'eliminar_nota':            
+        case 'eliminar_nota':
+            if($_SESSION["perfil"] != 3) {
+              echo json_encode(["estatus" => 500, "mensaje" => 'No tienes los permisos necesarios', "data" => []]);
+              break;
+            }
+
             $res = $v->eliminar_nota($_POST["idNota"]);
             if($res["estatus"] == 200) {
                $g->bitacora('Nota eliminada: '.$_POST["idNota"].' del paciente: '.$_POST["nomPaciente"], $_POST["idCita"] , $_SESSION["id_usuario"], $_SESSION["nombre"]);

@@ -1,6 +1,99 @@
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ANTECEDENTES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-const ModalFormExpClinico = () => {
+const fn_elige_modal_expediente = (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
+   
+   let perfilUs = $('#perfilUs').val().trim();
+   let idUserUs = $('#idUserUs').val().trim();
+   let userUs   = $('#userUs').val().trim();
+
+   if(perfilUs == 3 || idDoctor > 0) { // Doctor
+      ModalFormExpClinico(idPaciente, nomPaciente, idUserUs, userUs);
+   }
+   else {
+      ModalEligeExpedienteDoctor(idPaciente, nomPaciente);
+   }
+}
+
+const ModalEligeExpedienteDoctor = (idPaciente, nomPaciente) => {
+   let html = `
+   <div class="modal fade" id="modalEligeExpedienteDoctor" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+         <div class="modal-content border-0 shadow-lg rounded-4">
+            
+            <!-- Cuerpo del Modal -->
+            <div class="modal-body p-5">
+               <div class="text-center">
+                  <!-- Icono de Estetoscopio o Usuario (Azul para procesos administrativos) -->
+                  <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-10 p-4 mb-4">
+                     <i class="bi bi-person-badge text-secondary fs-1"></i>
+                  </div>
+                  
+                  <h3 class="fw-bold text-dark mb-2">Elige al Doctor</h3>
+                  <p class="text-muted mb-4">
+                     Selecciona al médico responsable para el paciente:<br>
+                     <strong class="text-dark">${nomPaciente}</strong>
+                  </p>
+               </div>
+
+               <!-- Selección de Doctor -->
+               <div class="mb-4">
+                  <label for="doctorExpediente" class="form-label small fw-bold text-secondary text-uppercase">Doctor Especialista</label>
+                  <div class="input-group">
+                     <span class="input-group-text bg-light border-2 border-end-0 text-secondary">
+                        <i class="bi bi-search"></i>
+                     </span>
+                     <select id="doctorExpediente" class="form-select form-select-lg border-2 border-start-0 bg-light shadow-none">
+                        <option value="" selected disabled>Seleccionar</option>
+                     </select>
+                  </div>
+               </div>
+
+               <!-- Acciones -->
+               <div class="row g-3 mt-2">
+                  <div class="col-12 col-sm-6 order-sm-2">
+                     <button type="button" class="btn btn-dark btn-lib w-100 shadow-sm btn-redondo" onclick="fn_doctor_seleccionado_expediente(${idPaciente}, '${nomPaciente}');">
+                        Seleccionar Doctor
+                     </button>
+                  </div>
+                  <div class="col-12 col-sm-6 order-sm-1">
+                     <button type="button" class="btn btn-link text-secondary w-100 text-decoration-none" data-bs-dismiss="modal">
+                        Cancelar
+                     </button>
+                  </div>
+               </div>
+            </div>
+
+         </div>
+      </div>
+   </div>`;
+
+   $('#modalAdmin').html(html);
+   $('#modalEligeExpedienteDoctor').modal('show');
+   setTimeout(() => {
+      combo_doctores('doctorExpediente');
+   }, 500);
+}
+
+const fn_doctor_seleccionado_expediente = (idPaciente, nomPaciente) => {
+   
+   let idDoctor    = $('#doctorExpediente').val();
+   let docSelected = document.getElementById("doctorExpediente");
+   let nomDoctor   = docSelected.options[docSelected.selectedIndex].text;
+
+   if (idDoctor == 0) {
+      ToastColor.fire({
+         text: '¡Atención! Debes seleccionar un doctor',
+         icon: 'warning'
+      });
+      $('#doctorExpediente').focus();
+      return;
+   }
+
+   $('#modalEligeExpedienteDoctor').modal('hide');
+   ModalFormExpClinico(idPaciente, nomPaciente, idDoctor, nomDoctor);
+}
+
+const ModalFormExpClinico = (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
    let html = `
    <div class="modal fade modal-superior-blur" id="modalFormExpediente" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
       <div class="modal-dialog modal-fullscreen">
@@ -75,75 +168,24 @@ const ModalFormExpClinico = () => {
          </div>
       </div>
    </div>`;
-   $('#modalAdmin').html(html);
+   $('#modalAdminExt').html(html);
    $('#modalFormExpediente').modal('show');
    setTimeout(() => {
-      FormAntecedentesFamiliares();
+      FormAntecedentesFamiliares(idPaciente, nomPaciente, idDoctor, nomDoctor);
    }, 100);
 }
 
-const FormAntecedentesFamiliares = () => {
-   let html = 
-   `<div class="card p-3 border-0 shadow">
-      <div class="row">
-         <div class="col-12 fs-6 mb-3 fw-bold">
-           <i class="bi bi-people"></i> Antecedenes Heredo-Familiares
-         </div>
-         <div class="col-md-3 col-sm-4 col-6">
-            <strong>Familiar *</strong>
-            <select name="tipoFamiliar" id="tipoFamiliar" class="form-select">
-               <option value="0">Seleccionar</option>
-               <option value="Abuelo Paterno">Abuelo Paterno</option>
-               <option value="Abuela Paterna">Abuela Paterna</option>
-               <option value="Abuelo Materno">Abuelo Materno</option>
-               <option value="Abuela Materna">Abuela Materna</option>
-               <option value="Padre">Padre</option>
-               <option value="Madre">Madre</option>
-               <option value="Hijo (a)">Hijo (a)</option>
-            </select>
-         </div>
-         <div class="col-md-3 col-sm-4 col-6">
-            <strong>Padecimiento *</strong>
-            <select name="padecimientoFamiliar" id="padecimientoFamiliar" class="form-select">
-               <option value="0">Seleccionar</option>
-               <option value="Diabetes">Diabetes</option>
-               <option value="Hipertensión">Hipertensión</option>
-               <option value="Cardiopatía">Cardiopatía</option>
-               <option value="Dislipidemia">Dislipidemia</option>
-               <option value="Cáncer">Cáncer</option>
-               <option value="Otro">Otro</option>
-            </select>
-         </div>
-         <div class="col-md-4 col-sm-4 col-12">
-            <strong>Otro *</strong>
-            <input type="text" name="otroAntecedenteFamiliar" id="otroAntecedenteFamiliar" class="form-control" maxlength="100">
-         </div>
-         <div class="col-md-2 col-sm-12 col-12">
-            <br>
-            <button type="button" class="btn btn-dark btn-lib w-100 btn-redondo">
-               Agregar
-            </button>
-         </div>
-      </div>
-   </div>
-   <div class="row mt-3">
-      <div class="col-12 mt-4">
-         <div id="listado_antecedentes_familiares"></div>
-      </div>
-   </div>`;
-   $('#antecedente_heredo_familiar').html(html);
-   $('#antecedente_heredo_familiar').show();
+const toggleOtroAntecedent = (valor) => {
+   const inputOtro = document.getElementById('otroAntecedenteFamiliar');
 
-   $('#antecedente_no_patologico').hide();
-   $('#antecedente_patologico').hide();
-   $('#antecedente_cronico_degenerativo').hide();
-   $('#antecedente_cardiovascular').hide();
-   $('#antecedente_gineco_obstetrico').hide();
-
-   $('#listado_antecedentes_familiares').html('<div class="text-center mt-5"><span class="loader_bar_2"></span><div class="text-secondary fs-7">Cargando...</div></div>');
-   setTimeout(() => {
-      cargar_antecedentes_familiares('listado_antecedentes_familiares');
-   }, 500);
+   if(valor === 'Otro') {
+      inputOtro.disabled = false;
+      inputOtro.focus();
+   }
+   else {
+      inputOtro.disabled = true;
+      inputOtro.value = '';
+   }
 }
 
 const cargar_antecedentes_familiares = (containerId) => {
@@ -834,14 +876,17 @@ const fn_muestra_expediente = (key_query) => {
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-window.ModalFormExpClinico              = ModalFormExpClinico;
-window.ModalVerExpedientePdf            = ModalVerExpedientePdf;
+window.ModalEligeExpedienteDoctor        = ModalEligeExpedienteDoctor;
+window.ModalFormExpClinico               = ModalFormExpClinico;
+window.ModalVerExpedientePdf             = ModalVerExpedientePdf;
 
-window.FormAntecedentesFamiliares       = FormAntecedentesFamiliares;
-window.FormAntecedentesNoPatologicos    = FormAntecedentesNoPatologicos;
-window.FormAntecedentesPatologicos      = FormAntecedentesPatologicos;
-window.FormAntecedentesCronicos         = FormAntecedentesCronicos;
-window.FormAntecedentesCardiovasculares = FormAntecedentesCardiovasculares;
-window.FormAntecedentesGinecoObstetra   = FormAntecedentesGinecoObstetra;
+window.FormAntecedentesNoPatologicos     = FormAntecedentesNoPatologicos;
+window.FormAntecedentesPatologicos       = FormAntecedentesPatologicos;
+window.FormAntecedentesCronicos          = FormAntecedentesCronicos;
+window.FormAntecedentesCardiovasculares  = FormAntecedentesCardiovasculares;
+window.FormAntecedentesGinecoObstetra    = FormAntecedentesGinecoObstetra;
 
-window.fn_muestra_expediente            = fn_muestra_expediente;
+window.fn_muestra_expediente             = fn_muestra_expediente;
+window.toggleOtroAntecedent              = toggleOtroAntecedent;
+window.fn_elige_modal_expediente         = fn_elige_modal_expediente;
+window.fn_doctor_seleccionado_expediente = fn_doctor_seleccionado_expediente;

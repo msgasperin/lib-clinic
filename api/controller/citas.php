@@ -25,7 +25,7 @@
 
         case 'guardar_cita':          
 
-          if(!isset($_POST["idPaciente"]) && !isset($_POST["idDoctor"]) && !isset($_POST["fechaCita"]) && !isset($_POST["horaCita"])) {
+          if($_POST["idPaciente"] == '' || $_POST["idDoctor"] == '' || $_POST["tipoConsulta"] == 0 || $_POST["fechaCita"] == '' || $_POST["horaCita"] == '') {
             echo json_encode(["estatus" => 500, "mensaje" => 'Faltaron parámetros importantes', "data" => []]);
             break;
           }

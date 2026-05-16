@@ -3,7 +3,17 @@ import { obtiene_notas_medicas, guardar_nota_medica, eliminar_nota } from "./Not
 let arrNotaMedica = [];
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ NOTA MÉDICA  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+const fn_buscar_nota = () => {
+   let busqueda = $('#inpBusquedaNota').val().trim();
+
+   const filtrado = arrNotaMedica.filter(nota => nota.fecha_cap_fil == busqueda);
+   pintar_listado_notas_medicas('listado_notas_medicas', filtrado);
+}
+
 const ModalListarNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita) => {
+
+   let perfilUs = $('#perfilUs').val().trim();
+
    let html = `
    <div class="modal fade modal-superior-blur" id="modalListarNotaMedica" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
       <div class="modal-dialog modal-xl modal-fullscreen-md-down">
@@ -24,18 +34,24 @@ const ModalListarNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita
                </button>
             </div>                        
 
-            <div class="modal-body bg-light">`;
-               if(parseInt(idDoctor) > 0 && parseInt(idCita) > 0) {
-                  html+=`
-                  <div class="row">
-                     <div class="col-12 text-end">
+            <div class="modal-body bg-light">
+               <div class="row">
+                  
+                  <div class="col-6 col-md-3">
+                     <div class="input-group">
+                        <input type="date" name="inpBusquedaNota" id="inpBusquedaNota" class="form-control border-end-0" onchange="fn_buscar_nota();">
+                     </div>
+                  </div>`;
+                  if(parseInt(perfilUs) == 3 && parseInt(idCita) > 0) {
+                     html+=`
+                     <div class="col-6 col-md-9 text-end">
                         <button class="btn btn-dark btn-lib btn-redondo fs-6" type="button" id="btnNuevaNotaMedica" onclick="ModalFormNotaMedica(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${doctor}', ${idCita}, 0);">
                            <i class="bi bi-plus-lg"></i> Nueva nota médica
                         </button>
-                     </div>
-                  </div>`;
-               }
-               html+=`
+                     </div>`;
+                  }
+                  html+=`
+               </div>
                <div class="row">
                   <div class="col-12">
                      <div id="listado_notas_medicas"></div>
@@ -102,55 +118,104 @@ const listar_notas_medicas = async (containerId, idPaciente, idDoctor) => {
 }
 
 const pintar_listado_notas_medicas = (containerId, data) => {
-   const contenedor = document.getElementById(containerId);
    
-   let html = `
-   <div class="row mt-4">`;
-      data.forEach(row => {
-         html += `
-         <div class="col-12 mt-2" id="cardNotMedica${row.id_nota_medica}">
-            <div class="card border rounded-3 shadow-sm">
-               <div class="card-body px-4 py-3">
-                  <div class="d-flex justify-content-between align-items-start mb-2">
-                     <div>
-                     <div class="mb-0 fw-semibold fs-7">${row.paciente}</div>
-                     <small class="text-muted">Paciente</small>
-                     </div>
-                     <span class="badge text-bg-primary rounded-pill fw-normal"># ${row.id_cita_fk}</span>
-                  </div>
-                  <hr class="my-2">
-                  <div class="row g-2">
-                     <div class="col-5">
-                        <p class="text-muted mb-1 text-uppercase fs-8">Doctor</p>
-                        <p class="mb-0 small">
-                           <i class="bi bi-person-badge me-1 text-secondary"></i>${row.doctor}
-                        </p>
-                     </div>
-                     <div class="col-7">
-                        <p class="text-muted mb-1 text-uppercase fs-8">Padecimiento</p>
-                        <p class="mb-0 small">
-                           <i class="bi bi-heart-pulse me-1 text-secondary"></i>${row.padecimiento}
-                        </p>
-                     </div>
-                  </div>
-                  <div class="row mt-2">
-                     <div class="col-12 text-end">
-                        <button type="button" class="btn btn-outline-secondary btnAccNotaMedica" title="Editar" onclick="ModalFormNotaMedica(${row.id_paciente_fk}, '${row.paciente}', ${row.id_doctor_fk}, '${row.doctor}', ${row.id_cita_fk}, ${row.id_nota_medica});">
-                           <i class="bi bi-pencil-square"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-danger ms-1 btnAccNotaMedica" title="Eliminar" onclick="fn_eliminar_nota(${row.id_nota_medica}, ${row.id_cita_fk}, '${row.paciente}');">
-                           <i class="bi bi-trash"></i>
-                        </button>
-                     </div>
-                  </div>
+   const contenedor = document.getElementById(containerId);
+   let txtMes       = '';
+   let fecha        = '';
+   let perfilUs     = $('#perfilUs').val().trim();
+   let idUser       = $('#idUserUs').val().trim();
+   let html         = '';
+   
+   if(data.length > 0) {
+      html = `
+      <div class="row mt-4">`;
+         data.forEach(row => {
 
+            txtMes = arrayMeses[(parseInt(row.fecha_cap_format.split('-')[1])) - 1];
+            fecha  = row.fecha_cap_format.split('-');
+            fecha  = fecha[0]+' / '+txtMes+' / '+fecha[2];
+
+            // Reiniciar variables por cada iteración
+            let sol_holter      = '';
+            let sol_mapa        = '';
+            let sol_esfuerzo    = '';
+            let botonCollapse   = '';
+            let seccionCollapse = '';
+
+            // Formateo de estudios solicitados en badges pequeños
+            if(row.esfuerzo == 1) sol_esfuerzo = `<span class="badge bg-light shadow-sm text-dark border me-1 mb-1"><small>Prueba de esfuerzo</small></span>`;
+            if(row.holter == 1)   sol_holter   = `<span class="badge bg-light shadow-sm text-dark border me-1 mb-1"><small>HOLTER</small></span>`;
+            if(row.mapa == 1)     sol_mapa     = `<span class="badge bg-light shadow-sm text-dark border me-1 mb-1"><small>M.A.P.A</small></span>`;
+
+            html += `
+            <div class="col-12 mt-2" id="cardNotMedica${row.id_nota_medica}">
+               <div class="card border rounded-3 shadow-sm">
+                  <div class="card-body px-4 py-3">
+                     <div class="row mb-2">
+                        <div class="col-8">
+                           <div class="mb-0 fw-semibold fs-7">${row.doctor}</div>
+                           <small class="text-muted">Doctor</small>
+                        </div>
+                        <div class="col-4 text-end">
+                           <div class="badge text-bg-primary rounded-pill fw-normal p-1">Cita # ${row.id_cita_fk}</div>
+                           <div class="text-muted fs-8 mt-1">${fecha}</i></div>
+                        </div>
+                     </div>
+                     <hr class="my-2">
+                     <div class="row g-2">
+                        <div class="col-12 col-sm-6">
+                           <p class="text-muted mb-1 text-uppercase fs-8">Padecimiento</p>
+                           <p class="mb-0 small">
+                              <i class="bi bi-heart-pulse me-1 text-secondary"></i>${row.padecimiento}
+                           </p>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                           <p class="text-muted mb-1 text-uppercase fs-8">Diagnóstico</p>
+                           <p class="mb-0 small">
+                              <i class="bi bi-clipboard2-pulse-fill me-1 text-secondary"></i>${row.diagnostico_principal}
+                           </p>
+                        </div>
+                     </div>
+                     <div class="d-flex align-items-start">
+                        <div class="w-100">
+                           <div class="mt-2">
+                              ${sol_esfuerzo} ${sol_mapa} ${sol_holter}
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row mt-2">
+                        <div class="col-12 text-end">
+                           <button type="button" class="btn btn-outline-dark btnAccNotaMedica btn-redondo" title="Ver nota" onclick="fn_ver_nota_medica(${row.id_nota_medica});">
+                              <i class="bi bi-file-earmark-break"></i>
+                           </button>`;
+
+                           if(perfilUs == 3 && idUser == row.id_doctor_fk) {
+                              html+=`
+                              <button type="button" class="btn btn-outline-secondary btnAccNotaMedica btn-redondo ms-1" title="Editar" onclick="ModalFormNotaMedica(${row.id_paciente_fk}, '${row.paciente}', ${row.id_doctor_fk}, '${row.doctor}', ${row.id_cita_fk}, ${row.id_nota_medica});">
+                                 <i class="bi bi-pencil-square"></i>
+                              </button>
+                              <button type="button" class="btn btn-outline-danger ms-1 btnAccNotaMedica btn-redondo" title="Eliminar" onclick="fn_eliminar_nota(${row.id_nota_medica}, ${row.id_cita_fk}, '${row.paciente}');">
+                                 <i class="bi bi-trash"></i>
+                              </button>`;
+                           }
+                           html+=`
+                        </div>
+                     </div>
+
+                  </div>
                </div>
-            </div>
-         </div>`;
-      });
-      html += `
-   </div>`;
-
+            </div>`;
+         });
+         html += `
+      </div>`;
+   }
+   else {
+      html = 
+      `<div class="text-center py-5">
+         <img src="assets/images/no_encontrado.png" class="img-fluid mb-3">
+         <p class="text-muted">No se encontraron notas médicas</p>
+      </div>`;
+   }
    contenedor.innerHTML = html;
 }
 
@@ -173,12 +238,15 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
    let analisis_clinicos      = '';
    let estudios_gabinete      = '';
    let receta                 = '';
+   let checkMapa              = '';
+   let checkHolter            = '';
+   let checkEsfuerzo          = '';
 
    if(idNota == 0) {
-      text_boton = 'Registrar Nota Médica';
+      text_boton = 'Registrar Nota';
    }
    else {
-      text_boton = 'Modificar Nota Médica';
+      text_boton = 'Modificar Nota';
 
       let notaSelected = arrNotaMedica.filter(nota => nota.id_nota_medica == idNota);
 
@@ -198,185 +266,225 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
       analisis_clinicos      = notaSelected[0].analisis_clinicos;
       estudios_gabinete      = notaSelected[0].estudios_gabinete;
       receta                 = notaSelected[0].receta;
+
+      notaSelected[0].mapa == 1 ? checkMapa = 'checked' : checkMapa;
+      notaSelected[0].holter == 1 ? checkHolter = 'checked' : checkHolter;
+      notaSelected[0].esfuerzo == 1 ? checkEsfuerzo = 'checked' : checkEsfuerzo;
    }
 
    let html = `
-   <div class="modal fade modal-superior-blur" id="modalFormNotaMedica" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+   <div class="modal fade" id="modalFormNotaMedica" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
       <div class="modal-dialog modal-fullscreen">
-         <div class="modal-content sombra-modal">
+         <div class="modal-content border-0">
             
-            <div class="modal-header modal-head-per">
-               <div class="d-flex align-items-center">
-                    <div class="rounded-circle bg-primary me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                        <i class="bi bi-person-fill fs-4"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title mb-0">Nota Médica</h5>
-                        <small class="opacity-75">Paciente: ${nomPaciente}}</small>
-                    </div>
-                </div>
-               <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal" aria-label="Close">
-                  <i class="bi bi-x-lg"></i>
-               </button>
-            </div>                        
+            <!-- Encabezado Clínico Principal -->
+            <div class="modal-header modal-head-per py-3 border-0">
+               <div class="row  w-100">
+                  <div class="col-12 col-sm-8">
+                     <div class="row">
+                        <div class="col-12">
+                           <h5 class="modal-title fw-bold mb-0">${text_boton}</h5>
+                        </div>
+                        <div class="col-12 col-sm-4 col-md-3">
+                           <small class="text-white-50">
+                              <i class="bi bi-person me-1"></i>Paciente: <strong class="text-white">${nomPaciente}</strong> 
+                              <span class="mx-2">|</span>
+                           </small>
+                        </div>
+                        <div class="col-12 col-sm-4 col-md-3">
+                           <small class="text-white-50">
+                              <i class="bi bi-person-md me-1"></i>Médico: <span class="text-white">${doctor}</span>
+                           </small>
+                        </div>
+                     </div>
+                  </div>
+                  
+                  <!-- Bloque de botones: Adjuntos y Cerrar -->
+                  <div class="col-12 col-sm-4 text-start text-sm-end">
+                     <button type="button" class="btn btn-primary px-3 btn-sm rounded-pill fw-semibold" onclick="ModalGestionarAdjuntos(${idPaciente}, ${idCita});">
+                        <i class="bi bi-paperclip me-1"></i> Archivos / Adjuntos
+                     </button>
+                  </div>
+               </div>
+            </div>                    
 
-            <div class="modal-body bg-light">
+            <div class="modal-body bg-light p-4">
+               <form id="formNotaMedica" autocomplete="off">
+                  
+                  <!-- BLOQUE INTEGRAL DE SIGNOS VITALES -->
+                  <div class="card border-0 shadow-sm rounded-3 mb-4">
+                     <div class="card-body p-3 bg-white">
+                        <div class="d-flex align-items-center mb-3">
+                           <i class="bi bi-heart-pulse text-danger me-2 fs-5"></i>
+                           <h6 class="text-dark fw-bold m-0 fs-6">Signos Vitales y Somatometría</h6>
+                        </div>
+                        
+                        <div class="row g-3">
+                           <div class="col-6 col-sm-4 col-md-3 col-xl-1">
+                              <label for="taMedica" class="form-label fw-semibold text-secondary mb-1 fs-8">T/A <span class="text-danger">*</span></label>
+                              <input type="text" name="taMedica" id="taMedica" class="form-control form-control-sm text-center fw-bold" placeholder="00/00" maxlength="10" value="${ta}" required />
+                           </div>
+                           <div class="col-6 col-sm-4 col-md-3 col-xl-1">
+                              <label for="spoMedica" class="form-label fw-semibold text-secondary mb-1 fs-8">SpO2 % <span class="text-danger">*</span></label>
+                              <input type="number" inputmode="numeric" name="spoMedica" id="spoMedica" class="form-control form-control-sm text-center fw-bold" placeholder="00" maxlength="3" value="${oxigenacion}" required />
+                           </div>
+                           <div class="col-6 col-sm-4 col-md-3 col-xl-1">
+                              <label for="tempMedica" class="form-label fw-semibold text-secondary mb-1 fs-8">Temp. °C <span class="text-danger">*</span></label>
+                              <input type="number" step="0.1" inputmode="decimal" name="tempMedica" id="tempMedica" class="form-control form-control-sm text-center fw-bold" placeholder="00.0" maxlength="5" value="${temperatura}" required />
+                           </div>
+                           <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                              <label for="glucosaMedica" class="form-label fw-semibold text-secondary mb-1 fs-8">Glucosa (mg/dL)</label>
+                              <input type="number" inputmode="numeric" name="glucosaMedica" id="glucosaMedica" class="form-control form-control-sm text-center" placeholder="00" maxlength="4" value="${glucosa}" />
+                           </div>
+                           <div class="col-6 col-sm-4 col-md-3 col-xl-1">
+                              <label for="frMedica" class="form-label fw-semibold text-secondary mb-1 fs-8">FR (rpm)</label>
+                              <input type="number" inputmode="numeric" name="frMedica" id="frMedica" class="form-control form-control-sm text-center" placeholder="00" maxlength="3" value="${fr}"/>
+                           </div>
+                           <div class="col-6 col-sm-4 col-md-3 col-xl-1">
+                              <label for="fcMedica" class="form-label fw-semibold text-secondary mb-1 fs-8">FC (lpm) <span class="text-danger">*</span></label>
+                              <input type="number" inputmode="numeric" name="fcMedica" id="fcMedica" class="form-control form-control-sm text-center fw-bold" placeholder="00" maxlength="3" value="${fc}" required />
+                           </div>
+                           <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                              <label for="pesoMedica" class="form-label fw-semibold text-secondary mb-1 fs-8">Peso (kg.) <span class="text-danger">*</span></label>
+                              <input type="number" step="0.1" inputmode="decimal" name="pesoMedica" id="pesoMedica" class="form-control form-control-sm text-center fw-bold" placeholder="0.00" maxlength="5" value="${peso}" required />
+                           </div>
+                           <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                              <label for="estaturaMedica" class="form-label fw-semibold text-secondary mb-1 fs-8">Estatura (cm.) <span class="text-danger">*</span></label>
+                              <input type="number" inputmode="numeric" name="estaturaMedica" id="estaturaMedica" class="form-control form-control-sm text-center fw-bold" placeholder="000" maxlength="5" value="${estatura}" required />
+                           </div>
+                        </div>
+
+                     </div>
+                  </div>
+
+                  <!-- COLUMNAS DE TRABAJO EN PARALELO (UX CLÍNICA EFICIENTE) -->
+                  <div class="row g-4">
+                     
+                     <!-- COLUMNA IZQUIERDA: DIAGNÓSTICO Y EVOLUCIÓN -->
+                     <div class="col-lg-6">
+                        <div class="card border-0 shadow rounded-3 h-100">
+                           <div class="card-body p-4">
+                              
+                              <div class="d-flex align-items-center mb-3 text-success">
+                                 <i class="bi bi-clipboard2-pulse me-2 fs-5"></i>
+                                 <h6 class="fw-bold text-dark m-0">Evolución y Diagnósticos</h6>
+                              </div>
+
+                              <div class="mb-3">
+                                 <label for="padecimiento" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-virus2 me-1"></i>Padecimiento Actual <span class="text-danger">*</span></label>
+                                 <textarea name="padecimiento" id="padecimiento" class="form-control border-secondary border-opacity-25 fs-8" rows="4" maxlength="500" placeholder="Describa los síntomas y estado actual del paciente..." required>${padecimiento}</textarea>
+                              </div>
+
+                              <div class="mb-3">
+                                 <label for="exploracionFisica" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-person-arms-up me-1"></i>Exploración Física</label>
+                                 <textarea name="exploracionFisica" id="exploracionFisica" class="form-control border-secondary border-opacity-25 fs-8" rows="3" maxlength="500" placeholder="Hallazgos de la exploración médica general o segmental...">${exploracion}</textarea>
+                              </div>
+
+                              <div class="mb-4">
+                                 <label for="diagnosticoPrincipal" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-clipboard-check-fill text-success me-1"></i>Diagnóstico Principal <span class="text-danger">*</span></label>
+                                 <textarea name="diagnosticoPrincipal" id="diagnosticoPrincipal" class="form-control border-success border-opacity-50 bg-success bg-opacity-10 text-dark fw-medium fs-8" rows="2" maxlength="500" placeholder="Diagnóstico primario confirmado o presuntivo..." required>${diagnostico_principal}</textarea>
+                              </div>
+
+                              <div class="mb-0">
+                                 <label for="diagnosticoSecundario" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-clipboard-minus me-1"></i>Diagnóstico Secundario / Comorbilidades</label>
+                                 <textarea name="diagnosticoSecundario" id="diagnosticoSecundario" class="form-control border-secondary border-opacity-25 fs-8" rows="2" maxlength="500" placeholder="Otros diagnósticos o condiciones adicionales...">${diagnostico_secundario}</textarea>
+                              </div>
+
+                           </div>
+                        </div>
+                     </div>
+
+                     <!-- COLUMNA DERECHA: PLAN, ESTUDIOS Y RECETA -->
+                     <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm rounded-3 h-100">
+                           <div class="card-body p-4 d-flex flex-column">
+                              
+                              <div class="d-flex align-items-center mb-3 text-success">
+                                 <i class="bi bi-prescription2 me-2 fs-5"></i>
+                                 <h6 class="fw-bold text-dark m-0">Tratamiento y Plan de Acción</h6>
+                              </div>
+
+                              <div class="mb-3">
+                                 <label for="tratamiento" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-capsule me-1"></i>Plan de Manejo y Tratamiento General <span class="text-danger">*</span></label>
+                                 <textarea name="tratamiento" id="tratamiento" class="form-control border-secondary border-opacity-25 fs-8" rows="3" maxlength="500" placeholder="Indicaciones generales, dieta, recomendaciones..." required>${tratamiento}</textarea>
+                              </div>
+
+                              <div class="row g-3 mb-3">
+                                 <div class="col-md-6">
+                                    <label for="analisisClinicos" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-droplet me-1"></i>Análisis Clínicos Solicitados</label>
+                                    <textarea name="analisisClinicos" id="analisisClinicos" class="form-control border-secondary border-opacity-25 fs-8" rows="3" maxlength="500" placeholder="Laboratorios (Biometría, Química, etc.)">${analisis_clinicos}</textarea>
+                                 </div>
+                                 <div class="col-md-6">
+                                    <label for="estudiosGabinete" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-clipboard2-pulse me-1"></i>Estudios de Gabinete</label>
+                                    <textarea name="estudiosGabinete" id="estudiosGabinete" class="form-control border-secondary border-opacity-25 fs-8" rows="3" maxlength="500" placeholder="Rayos X, Ultrasonido, TAC, etc.">${estudios_gabinete}</textarea>
+                                 </div>
+                              </div>
+
+                              <!-- NUEVO ROW: ESTUDIOS ESPECIALES REQUERIDOS -->
+                              <div class="row g-3 mb-3">
+                                 <div class="col-12">
+                                    <label class="form-label fw-bold text-secondary mb-2 fs-7"><i class="bi bi-plus-circle me-1"></i>Estudios Especiales a Solicitar</label>
+                                    
+                                    <div class="bg-light p-3 rounded-3 border d-flex flex-wrap gap-4 align-items-center justify-content-start">
+                                       
+                                       <div class="form-check form-switch m-0 fs-8">
+                                          <input class="form-check-input" type="checkbox" role="switch" name="holterNota" id="holterNota" value="1" ${checkHolter}>
+                                          <label class="form-check-label text-dark fw-medium" for="holterNota">Monitoreo HOLTER</label>
+                                       </div>
+
+                                       <div class="form-check form-switch m-0 fs-8">
+                                          <input class="form-check-input" type="checkbox" role="switch" name="mapaNota" id="mapaNota" value="1" ${checkMapa}>
+                                          <label class="form-check-label text-dark fw-medium" for="mapaNota">M.A.P.A.</label>
+                                       </div>
+
+                                       <div class="form-check form-switch m-0 fs-8">
+                                          <input class="form-check-input" type="checkbox" role="switch" name="esfuerzoNota" id="esfuerzoNota" value="1" ${checkEsfuerzo}>
+                                          <label class="form-check-label text-dark fw-medium" for="esfuerzoNota">Prueba de Esfuerzo</label>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <div class="mb-0 mt-auto">
+                                 <label for="recetaMedica" class="form-label fw-bold text-dark mb-1 fs-7"><i class="bi bi-printer me-1"></i>Especificación de Receta Médica <span class="text-danger">*</span></label>
+                                 <textarea name="recetaMedica" id="recetaMedica" class="form-control border-primary border-opacity-50 p-3 bg-light fw-medium fs-8" rows="4" placeholder="Medicamento - Dosis - Frecuencia - Duración&#10;Ejemplo: Paracetamol 500mg, 1 tab cada 8 horas por 5 días." maxlength="500" required>${receta}</textarea>
+                              </div>
+
+                           </div>
+                        </div>
+                     </div>
+
+                  </div> <!-- Cierre .row secundario -->
+               </form>
+            </div> <!-- Cierre .modal-body -->
+            
+            <!-- Footer Fijo de Acciones Rápidas -->
+            <div class="modal-footer bg-white border-top p-3">
                <div class="row">
                   <div class="col-12">
-                     <div class="card p-3 border-0 shadow">
-                        <div class="row">
-                           <div class="col-12 fs-6 fw-bold">
-                              Signos Vitales
-                           </div>
-                           <div class="col-md-1 col-sm-4 col-6 mt-3 fs-8">
-                              <strong>T/A *</strong>
-                              <input type="text" name="taMedica" id="taMedica" class="form-control" maxlength="10" value="${ta}" />
-                           </div>
-                           <div class="col-md-1 col-sm-4 col-6 mt-3 fs-8">
-                              <strong>SpO2 % *</strong>
-                              <input type="number" inputmode="numeric" name="spoMedica" id="spoMedica" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="3" value="${oxigenacion}" />
-                           </div>
-                           <div class="col-md-1 col-sm-4 col-6 mt-3 fs-8">
-                              <strong>Temp. °C *</strong>
-                              <input type="number" inputmode="numeric" name="tempMedica" id="tempMedica" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="5" value="${temperatura}" />
-                           </div>
-                           <div class="col-md-1 col-sm-4 col-6 mt-3 fs-8">
-                              <strong>Glucosa (mg/dL)</strong>
-                              <input type="number" inputmode="numeric" name="glucosaMedica" id="glucosaMedica" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="4"value="${glucosa}" />
-                           </div>
-                           <div class="col-md-2 col-sm-4 col-6 mt-3 fs-8">
-                              <strong>FR (rpm) </strong>
-                              <input type="number" inputmode="numeric" name="frMedica" id="frMedica" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="3" value="${fr}"/>
-                           </div>
-                           <div class="col-md-2 col-sm-4 col-6 mt-3 fs-8">
-                              <strong>FC (ltm) *</strong>
-                              <input type="number" inputmode="numeric" name="fcMedica" id="fcMedica" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="3" value="${fc}"/>
-                           </div>
-                           <div class="col-md-2 col-sm-4 col-6 mt-3 fs-8">
-                              <strong>Peso (kg.) *</strong>
-                              <input type="number" inputmode="decimal" name="pesoMedica" id="pesoMedica" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="5" value="${peso}"/>
-                           </div>
-                           <div class="col-md-2 col-sm-4 col-6 mt-3 fs-8">
-                              <strong>Estatura (cm.) *</strong>
-                              <input type="number" inputmode="decimal" name="estaturaMedica" id="estaturaMedica" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="5" value="${estatura}"/>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div class="col-12 mt-5">
-                     <nav>
-                        <div class="nav nav-tabs" id="nav-revision-medica" role="tablist">
-                           <button class="nav-link text-dark active" id="nav-padecimiento-tab" data-bs-toggle="tab" data-bs-target="#nav-padecimiento" type="button" role="tab" aria-controls="nav-padecimiento" aria-selected="true">
-                              <i class="bi bi-virus2"></i> Padecimiento actual *
-                           </button>
-                           <button class="nav-link text-dark" id="nav-exploracion-tab" data-bs-toggle="tab" data-bs-target="#nav-exploracion" type="button" role="tab" aria-controls="nav-exploracion" aria-selected="false">
-                              <i class="bi bi-person-arms-up"></i> Exploración física
-                           </button>
-                           <button class="nav-link text-dark" id="nav-plan-tab" data-bs-toggle="tab" data-bs-target="#nav-plan" type="button" role="tab" aria-controls="nav-plan" aria-selected="false">
-                              <i class="bi bi-capsule"></i> Plan de manejo y tratamiento *
-                           </button>
-                           <button class="nav-link text-dark" id="nav-diagnostico-tab" data-bs-toggle="tab" data-bs-target="#nav-diagnostico" type="button" role="tab" aria-controls="nav-diagnostico" aria-selected="false">
-                              <i class="bi bi-clipboard-check"></i> Diagnóstico principal *
-                           </button>
-                           <button class="nav-link text-dark" id="nav-secundario-tab" data-bs-toggle="tab" data-bs-target="#nav-secundario" type="button" role="tab" aria-controls="nav-secundario" aria-selected="false">
-                              <i class="bi bi-clipboard-minus"></i> Diagnóstico secundario
-                           </button>
-                        </div>
-                     </nav>
-                     <div class="tab-content p-3 shadow-lg bg-white" id="nav-content-revision">        
-                        <div class="tab-pane fade show active" id="nav-padecimiento" role="tabpanel" aria-labelledby="nav-padecimiento-tab">
-                           <strong>Padecimiento actual *</strong>
-                           <textarea name="padecimiento" id="padecimiento" class="form-control" rows="5" maxlength="500">${padecimiento}</textarea>
-                        </div>
-
-                        <div class="tab-pane fade" id="nav-exploracion" role="tabpanel" aria-labelledby="nav-exploracion-tab">
-                           <strong>Exploración física</strong>
-                           <textarea name="exploracionFisica" id="exploracionFisica" class="form-control" rows="5" maxlength="500">${exploracion}</textarea>
-                        </div>
-
-                        <div class="tab-pane fade" id="nav-plan" role="tabpanel" aria-labelledby="nav-plan-tab">
-                           <strong>Plan de manejo y tratamiento *</strong>
-                           <textarea name="tratamiento" id="tratamiento" class="form-control" rows="5" maxlength="500">${tratamiento}</textarea>
-                        </div>
-
-                        <div class="tab-pane fade" id="nav-diagnostico" role="tabpanel" aria-labelledby="nav-diagnostico-tab">
-                           <strong>Diagnóstico principal *</strong>
-                           <textarea name="diagnosticoPrincipal" id="diagnosticoPrincipal" class="form-control" rows="5" maxlength="500">${diagnostico_principal}</textarea>
-                        </div>
-
-                        <div class="tab-pane fade" id="nav-secundario" role="tabpanel" aria-labelledby="nav-secundario-tab">
-                           <strong>Diagnóstico secundario</strong>
-                           <textarea name="diagnosticoSecundario" id="diagnosticoSecundario" class="form-control" rows="5" maxlength="500">${diagnostico_secundario}</textarea>
-                        </div>
-
-                     </div>
-                  </div>
-
-                  <div class="col-12 mt-5">
-                     <nav>
-                        <div class="nav nav-tabs" id="nav-estudios" role="tablist">
-                            <button class="nav-link text-dark active" id="nav-analisis-tab" data-bs-toggle="tab" data-bs-target="#nav-analisis" type="button" role="tab" aria-controls="nav-analisis" aria-selected="false">
-                              <i class="bi bi-droplet"></i>Análisis Clínicos
-                           </button>
-                           <button class="nav-link text-dark" id="nav-gabinete-tab" data-bs-toggle="tab" data-bs-target="#nav-gabinete" type="button" role="tab" aria-controls="nav-gabinete" aria-selected="true">
-                              <i class="bi bi-clipboard2-pulse"></i>Estudios de Gabinete
-                           </button>
-                        </div>
-                     </nav>
-                     <div class="tab-content p-3 shadow-lg bg-white" id="nav-content-estudios">        
-                        <div class="tab-pane fade show active" id="nav-analisis" role="tabpanel" aria-labelledby="nav-analisis-tab">
-                           <strong>Análisis Clínicos</strong>
-                           <textarea name="analisisClinicos" id="analisisClinicos" class="form-control" rows="5" maxlength="500">${analisis_clinicos}</textarea>
-                        </div>
-
-                        <div class="tab-pane fade" id="nav-gabinete" role="tabpanel" aria-labelledby="nav-gabinete-tab">
-                           <strong>Estudios de Gabinete</strong>
-                           <textarea name="estudiosGabinete" id="estudiosGabinete" class="form-control" rows="5" maxlength="500">${estudios_gabinete}</textarea>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-
-               <div class="col-12 mt-5">
-                  <nav>
-                     <div class="nav nav-tabs" id="nav-receta-btn" role="tablist">
-                           <button class="nav-link text-dark active fw-bold" id="nav-receta-tab" data-bs-toggle="tab" data-bs-target="#nav-receta" type="button" role="tab" aria-controls="nav-receta" aria-selected="false">
-                           <i class="bi bi-prescription2"></i>Receta médica *
-                        </button>
-                     </div>
-                  </nav>
-                  <div class="tab-content p-3 shadow-lg bg-white" id="nav-content-estudios">        
-                     <div class="tab-pane fade show active" id="nav-receta" role="tabpanel" aria-labelledby="nav-receta-tab">
-                        <textarea name="recetaMedica" id="recetaMedica" class="form-control" rows="5" placeholder="Ingresa aquí la receta" maxlength="500">${receta}</textarea>
-                     </div>
-                  </div>
-               </div>
-
-               <div class="row mt-5">
-                  <div class="col-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4 col-lg-2 offset-lg-5 text-center">
-                     <button type="button" class="btn btn-dark btn-lib btn-redondo w-100" id="btnGuardarNotaMedica" onclick="fn_guardar_nota_medica(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${doctor}', ${idCita}, ${idNota});">
+                     <button type="button" class="btn btn-outline-secondary px-4 fw-medium btn-redondo" data-bs-dismiss="modal">
+                        Cerrar Nota
+                     </button>
+                     <button type="submit" form="formNotaMedica" class="btn btn-dark btn-lib px-4 fw-bold shadow-sm btn-redondo ms-1" id="btnGuardarNotaMedica" onclick="event.preventDefault(); fn_guardar_nota_medica(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${doctor}', ${idCita}, ${idNota});">
                         ${text_boton}
                      </button>
                   </div>
                </div>
-
-            </div>                                                           
-            
-            <div class="modal-footer bg-light border-0" align="right">
-               <button type="buttton" class="btn btn-outline-dark btn-redondo" data-bs-dismiss="modal">
-                  Cerrar
-               </button>
             </div>
+
          </div>
       </div>
    </div>`;
+   
    $('#modalAdminExt').html(html);
    $('#modalFormNotaMedica').modal('show');
 }
 
 const fn_guardar_nota_medica = async (idPaciente, nomPaciente, idDoctor, nomDoctor, idCita, idNota) => {
 
+   let holter                = 0;
+   let mapa                  = 0;
+   let esfuerzo              = 0;
    let ta                    = $('#taMedica').val().trim();
    let oxigenacion           = $('#spoMedica').val().trim();
    let temperatura           = $('#tempMedica').val().trim();
@@ -393,6 +501,10 @@ const fn_guardar_nota_medica = async (idPaciente, nomPaciente, idDoctor, nomDoct
    let analisisClinicos      = $('#analisisClinicos').val().trim();
    let estudiosGabinete      = $('#estudiosGabinete').val().trim();
    let receta                = $('#recetaMedica').val().trim();
+
+   $('#holterNota').prop('checked') ? holter = 1 : holter;
+   $('#mapaNota').prop('checked') ? mapa = 1 : mapa;
+   $('#esfuerzoNota').prop('checked') ? esfuerzo = 1 : esfuerzo;
 
    if (idPaciente <= 0 || idDoctor <= 0 || idCita <= 0) {
       ToastColor.fire({
@@ -482,7 +594,7 @@ const fn_guardar_nota_medica = async (idPaciente, nomPaciente, idDoctor, nomDoct
       return;
    }
      
-   let objNota = { func: 'guardar_nota_medica', idPaciente, nomPaciente, idDoctor, nomDoctor, idCita, idNota, ta, oxigenacion, temperatura, glucosa, fr, fc, peso, estatura, padecimiento, exploracion, tratamiento, diagnosticoPrincipal, diagnosticoSecundario, analisisClinicos, estudiosGabinete, receta };
+   let objNota = { func: 'guardar_nota_medica', idPaciente, nomPaciente, idDoctor, nomDoctor, idCita, idNota, ta, oxigenacion, temperatura, glucosa, fr, fc, peso, estatura, padecimiento, exploracion, tratamiento, diagnosticoPrincipal, diagnosticoSecundario, analisisClinicos, estudiosGabinete, receta, holter, mapa, esfuerzo };
 
    const res = await showMessageSwalQuestion('¿Estás seguro?', 'La nota médica para: ' + nomPaciente + ' será registrada', 'question', 'Sí, guardar', 'Cancelar');
 
@@ -558,12 +670,34 @@ const fn_eliminar_nota = async (idNota, idCita, nomPaciente) => {
    }
 }
 
+const fn_ver_nota_medica = (idNota) => {
+
+   const arrPrint = arrNotaMedica.find(nota => nota.id_nota_medica == idNota);
+
+   console.log(arrPrint);
+
+   fetch('reportes/nota_medica_pdf.php', {
+      method: 'POST',
+      headers: {
+         'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(arrPrint)
+   })
+   .then(res => res.blob())
+   .then(pdf => {
+      const url = window.URL.createObjectURL(pdf);
+      window.open(url);
+   });
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 window.ModalListarNotaMedica = ModalListarNotaMedica; 
 window.ModalFormNotaMedica   = ModalFormNotaMedica;
 
 window.fn_guardar_nota_medica = fn_guardar_nota_medica;
 window.fn_eliminar_nota       = fn_eliminar_nota;
+window.fn_buscar_nota         = fn_buscar_nota;
+window.fn_ver_nota_medica     = fn_ver_nota_medica;
 
 
 

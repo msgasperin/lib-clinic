@@ -184,7 +184,7 @@
     <body>
       <!-- HEADER -->
       <header>
-        <h1>LIB Laboratorios - Clínic</h1>
+        <h1>LIB Laboratorios - Expediente Clínico</h1>
         <p>Expediente generado el ' . date('d/m/Y H:i:s') . '</p>
       </header>
 

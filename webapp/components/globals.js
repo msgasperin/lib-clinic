@@ -1,5 +1,19 @@
 const arrayMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
+const comboMeses = `
+  <option value="01">Enero</option>
+  <option value="02">Febrero</option>
+  <option value="03">Marzo</option>
+  <option value="04">Abril</option>
+  <option value="05">Mayo</option>
+  <option value="06">Junio</option>
+  <option value="07">Julio</option>
+  <option value="08">Agosto</option>
+  <option value="09">Septiembre</option>
+  <option value="10">Octubre</option>
+  <option value="11">Noviembre</option>
+  <option value="12">Diciembre</option>`;
+
 const estadosMexico = `
 <option value="Aguascalientes">Aguascalientes</option>
 <option value="Baja California">Baja California</option>
@@ -397,11 +411,13 @@ const comboUsuarios = () => {
 const comboAnios = () => {
   let fecha = fnFechaActual();
   let fec = fecha.split('-');
-  for (let index = fec[0]; index >= 2024; index--) {
-    cmboAnios += `<option value="${index}">${index}</option>`;    
+  let optionsAnios = '';
+  for (let index = fec[0]; index >= 2026; index--) {
+    optionsAnios += `<option value="${index}">${index}</option>`;    
   }
-}
 
+  return optionsAnios;
+}
 
 function initDataTableExport({ tableId, titulo = '', alignment = [], exportColumns = [], posicionOrden = 0, order = 'asc', columnDefs = [], columnAlignments = {}}, orientation = 'portrait') {
   return new DataTable(tableId, {
@@ -505,4 +521,4 @@ window.fechaRangoAtras         = fechaRangoAtras;
 window.reducirImagen           = reducirImagen;
 window.formatoMoneda           = formatoMoneda;
 window.estadosMexico           = estadosMexico;
-
+window.comboMeses              = comboMeses;
