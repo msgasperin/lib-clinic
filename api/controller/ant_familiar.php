@@ -41,10 +41,16 @@
 
         break;
 
-        case 'eliminar_antecedente_familiar':            
+        case 'eliminar_antecedente_familiar':
+
+            if ($_POST["idAntecedente"] == '' || $_POST["familiar"] == '' || $_POST["padecimiento"] == '' || $_POST["idPaciente"] == '' || $_POST["paciente"] == '') {
+              echo json_encode(["estatus" => 500, "mensaje" => 'Faltaron parámetros importantes', "data" => []]);
+              break;
+            }
+
             $res = $v->eliminar_antecedente_familiar($_POST["idAntecedente"]);
             if($res["estatus"] == 200) {
-               $g->bitacora('Antecedente eliminado, Familiar: '.$_POST["familiar"]. ' padecimiento: '.$_POST["padecimiento"].' al paciente: '.$_POST["nomPaciente"], $_POST["idPaciente"] , $_SESSION["id_usuario"], $_SESSION["nombre"]);
+              $g->bitacora('Antecedente eliminado, Familiar: '.$_POST["familiar"]. ' padecimiento: '.$_POST["padecimiento"].' al paciente: '.$_POST["paciente"], $_POST["idPaciente"] , $_SESSION["id_usuario"], $_SESSION["nombre"]);
             }            
             echo json_encode($res);
         break;

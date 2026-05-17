@@ -10,46 +10,23 @@ const FormAntecedentesFamiliares = (idPaciente, nomPaciente, idDoctor, nomDoctor
          <div class="col-12 fs-6 mb-3 fw-bold">
            <i class="bi bi-people"></i> Antecedenes Heredo-Familiares
          </div>
-         <div class="col-md-3 col-sm-4 col-6">
-            <strong>Familiar *</strong>
-            <select name="tipoFamiliar" id="tipoFamiliar" class="form-select">
-               <option value="NA">Seleccionar</option>
-               <option value="Abuelo Paterno">Abuelo Paterno</option>
-               <option value="Abuela Paterna">Abuela Paterna</option>
-               <option value="Abuelo Materno">Abuelo Materno</option>
-               <option value="Abuela Materna">Abuela Materna</option>
-               <option value="Padre">Padre</option>
-               <option value="Madre">Madre</option>
-               <option value="Hijo (a)">Hijo (a)</option>
-            </select>
+         <div class="col-12 mt-2 fs-8">
+            <div class="mb-2 fw-bold">¿Algún familiar con algún padecimiento?</div>
+            <div class="btn-group" role="group">
+               <input type="radio" class="btn-check fs-8" name="option_biomasa" id="biomasa_si" autocomplete="off">
+               <label class="btn btn-outline-danger fs-8" for="biomasa_si">Sí</label>
+               <input type="radio" class="btn-check fs-8" name="option_biomasa" id="biomasa_no" autocomplete="off">
+               <label class="btn btn-outline-secondary fs-8" for="biomasa_no">No</label>
+            </div>            
          </div>
-         <div class="col-md-3 col-sm-4 col-6">
-            <strong>Padecimiento *</strong>
-            <select name="padecimientoFamiliar" id="padecimientoFamiliar" class="form-select" onchgange="toggleOtroAntecedent(this.value);">
-               <option value="NA">Seleccionar</option>
-               <option value="Diabetes">Diabetes</option>
-               <option value="Hipertensión">Hipertensión</option>
-               <option value="Cardiopatía">Cardiopatía</option>
-               <option value="Dislipidemia">Dislipidemia</option>
-               <option value="Cáncer">Cáncer</option>
-               <option value="Otro">Otro</option>
-            </select>
+         <div class="col-12 mt-2">
+            <textarea name="infoPadecimientoFamiliar" id="infoPadecimientoFamiliar" class="form-control fs-8" rows="5">Ingresa aquí la información adicional</textarea>
          </div>
-         <div class="col-md-4 col-sm-4 col-12">
-            <strong>Otro</strong>
-            <input type="text" name="otroPadecimientoFamiliar" id="otroPadecimientoFamiliar" class="form-control" maxlength="100" disabled>
-         </div>
-         <div class="col-md-2 col-sm-12 col-12">
-            <br>
-            <button type="button" class="btn btn-dark btn-lib w-100 btn-redondo" id="btnAgregarAntFamiliar" onclick="fn_agregar_antecedente_familiar(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${nomDoctor}');">
-               Agregar
+         <div class="col-12 mt-3 text-end">
+            <button type="button" class="btn btn-dark btn-lib fs-7 btn-redondo">
+               Guardar
             </button>
          </div>
-      </div>
-   </div>
-   <div class="row mt-3">
-      <div class="col-12 mt-4">
-         <div id="listado_antecedentes_familiares"></div>
       </div>
    </div>`;
    $('#antecedente_heredo_familiar').html(html);
@@ -60,11 +37,6 @@ const FormAntecedentesFamiliares = (idPaciente, nomPaciente, idDoctor, nomDoctor
    $('#antecedente_cronico_degenerativo').hide();
    $('#antecedente_cardiovascular').hide();
    $('#antecedente_gineco_obstetrico').hide();
-
-   $('#listado_antecedentes_familiares').html('<div class="text-center mt-5"><span class="loader_bar_2"></span><div class="text-secondary fs-7">Cargando...</div></div>');
-   setTimeout(() => {
-      fn_obtiene_antecedente_familiares('listado_antecedentes_familiares', idPaciente, nomPaciente, idDoctor, nomDoctor);
-   }, 500);
 }
 
 const fn_obtiene_antecedente_familiares = async (containerId, idPaciente, nomPaciente, idDoctor, nomDoctor) => {
@@ -113,14 +85,14 @@ const pintar_antecedentes_familiares = (containerId, data) => {
    <div class="row">`;
       data.forEach(row => {
          html += `
-         <div class="col-md-3 col-sm-4 col-12">
+         <div class="col-md-3 col-sm-4 col-12" id="cardAntFam${row.id_antecedente}">
             <div class="card shadow-sm">
                <div class="card-body">
                   <i class="bi bi-person-circle fs-4 text-muted"></i> 
                   <div class="fw-bold">${row.familiar}</div>
                   <div class="text-secondaty mt-2"><i class="bi bi-prescription2"></i> ${row.padecimiento}</div>
                   <div class="text-end">
-                     <button class="btn btn-outline-danger btn-redondo btnEliminarAntFam" title="Eliminar" onclick="fn_eliminar_antecedente_familiar();">
+                     <button class="btn btn-outline-danger btn-redondo btnEliminarAntFam" title="Eliminar" onclick="fn_eliminar_antecedente_familiar(${row.id_antecedente}, '${row.familiar}', '${row.padecimiento}', ${row.id_paciente_fk}, '${row.paciente_hist}');">
                         <i class="bi bi-trash"></i>
                      </button>
                   </div>
@@ -137,8 +109,7 @@ const pintar_antecedentes_familiares = (containerId, data) => {
 const fn_agregar_antecedente_familiar = async (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
 
    let familiar         = $('#tipoFamiliar').val();
-   let padecimiento     = $('#padecimientoFamiliar').val();
-   let otroPadecimiento = $('#otroPadecimientoFamiliar').val().trim();
+   let padecimiento     = $('#padecimientoFamiliar').val().trim();
 
    if (idPaciente == 0 || idDoctor == 0) {
       ToastColor.fire({
@@ -155,24 +126,16 @@ const fn_agregar_antecedente_familiar = async (idPaciente, nomPaciente, idDoctor
       $('#tipoFamiliar').focus();
       return;
    }
-   else if (padecimiento == 'NA') {
+   else if (padecimiento == '') {
       ToastColor.fire({
          text: '¡Atención! Debes seleccionar un padecimiento',
          icon: 'warning'
       });
       $('#padecimientoFamiliar').focus();
       return;
-   }   
-   else if (padecimiento == 'Otro' && otroPadecimiento == '') {
-      ToastColor.fire({
-         text: '¡Atención! Debes ingresar otro padecimiento',
-         icon: 'warning'
-      });
-      $('#otroPadecimientoFamiliar').focus();
-      return;
-   }  
+   }
      
-   let objAntecedente = { func: 'agregar_antecedente_familiar', idPaciente, nomPaciente, idDoctor, nomDoctor, familiar, padecimiento, otroPadecimiento };
+   let objAntecedente = { func: 'agregar_antecedente_familiar', idPaciente, nomPaciente, idDoctor, nomDoctor, familiar, padecimiento };
 
    const res = await showMessageSwalQuestion('¿Estás seguro?', 'El antecedente familiar: '+ padecimiento +' será agregado', 'question', 'Sí, agregar', 'Cancelar');
 
@@ -189,8 +152,7 @@ const fn_agregar_antecedente_familiar = async (idPaciente, nomPaciente, idDoctor
    else if(respuesta.estatus == 200) {
       showMessageSwalTimer('¡Agregado!', '', 'success', 1500);
       $('#tipoFamiliar').val('NA');
-      $('#padecimientoFamiliar').val('NA');
-      $('#tipoFamiliar').val('');
+      $('#padecimientoFamiliar').val('');
       fn_obtiene_antecedente_familiares('listado_antecedentes_familiares', idPaciente, nomPaciente, idDoctor, nomDoctor);
    }
    else {
@@ -200,9 +162,9 @@ const fn_agregar_antecedente_familiar = async (idPaciente, nomPaciente, idDoctor
    }
 }
 
-const fn_eliminar_antecedente_familiar = async (idPaciente, nomPaciente, nomDoctor, familiar, padecimiento) => {
+const fn_eliminar_antecedente_familiar = async (idAntecedente, familiar, padecimiento, idPaciente, paciente) => {
 
-   if (idCita == '' || nomPaciente == '') {
+   if (idAntecedente == '' || familiar == '' || padecimiento == '' || paciente == '') {
       ToastColor.fire({
          text: '¡Atención! Faltaron parámetros importantes, actualiza y vuelve a intentarlo',
          icon: 'warning'
@@ -210,37 +172,24 @@ const fn_eliminar_antecedente_familiar = async (idPaciente, nomPaciente, nomDoct
       return;
    }  
      
-   let objAntecedente = { func: 'eliminar_antecedente_familiar', idPaciente, nomPaciente, nomDoctor, familiar, padecimiento };
+   let objAntecedente = { func: 'eliminar_antecedente_familiar', idAntecedente, familiar, padecimiento, idPaciente, paciente };
 
    const res = await showMessageSwalQuestion('¿Estás seguro?', 'El padecimiento: ' + padecimiento + ' será eliminado del expediente', 'question', 'Sí, eliminar', 'Cancelar');
 
    if (!res.result) {
-      $('.btnEliminarAntFam').prop('disabled', false);
       return;
    }
 
-   $('.btnEliminarAntFam').prop('disabled', true);
    let respuesta = await eliminar_antecedente_familiar(objAntecedente);
    if(respuesta.estatus == 403) {
       fnNoSesion();
    }
    else if(respuesta.estatus == 200) {
-      let index = arrCitas.findIndex(item => item.id_cita == idCita);   
-      if (index !== -1) {
-         arrCitas[index].estatus = 2;
-      }
-
-      let labelEstatus = 
-      `<span class="badge rounded-pill text-success border border-success bg-success bg-opacity-10">
-         Atendida
-      </span>`;
-      $('#label_estatus'+idCita).html(labelEstatus);
-      $('.bloqAtendidaCita').remove();
+      $('#cardAntFam'+idAntecedente).remove();
       showMessageSwalTimer('Cita marcada como atendida correctamente!', '', 'success', 2500);
    }
    else {
       showMessageSwal('Ocurrio un error: ', respuesta.mensaje, 'error');
-      $('.btnEliminarAntFam').prop('disabled', false);
       return;
    }
 }
@@ -248,5 +197,6 @@ const fn_eliminar_antecedente_familiar = async (idPaciente, nomPaciente, nomDoct
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 window.FormAntecedentesFamiliares       = FormAntecedentesFamiliares;
-window. fn_agregar_antecedente_familiar = fn_agregar_antecedente_familiar;
+window.fn_agregar_antecedente_familiar  = fn_agregar_antecedente_familiar;
+window.fn_eliminar_antecedente_familiar = fn_eliminar_antecedente_familiar;
 

@@ -10,7 +10,7 @@
       try {
         $res = [];
         
-        $sql = $this->dbh->prepare("SELECT id_antecedente, familiar, padecimiento, otro_padecimiento, user_cap, fecha_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format FROM ant_familiar WHERE id_doctor_fk = ? AND id_paciente_fk = ?");
+        $sql = $this->dbh->prepare("SELECT id_antecedente, familiar, padecimiento, id_paciente_fk, paciente_hist, doctor_hist, user_cap, fecha_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format FROM ant_familiar WHERE id_doctor_fk = ? AND id_paciente_fk = ?");
         $sql->execute([$id_doctor, $id_paciente]);
         
         $res = $sql->fetchAll(PDO::FETCH_ASSOC);				
@@ -26,7 +26,7 @@
       $data    = [0];
       $mensaje = 'Error al intentar insertar';
       try {        		
-        $sql = $this->dbh->prepare("INSERT INTO ant_familiar (id_paciente_fk, paciente_hist, id_doctor_fk, doctor_hist, familiar, padecimiento, otro_padecimiento, user_cap) VALUES (?,?,?,?,?,?,?,?)");
+        $sql = $this->dbh->prepare("INSERT INTO ant_familiar (id_paciente_fk, paciente_hist, id_doctor_fk, doctor_hist, familiar, padecimiento, user_cap) VALUES (?,?,?,?,?,?,?)");
         $ok  = $sql->execute(array(
           $post["idPaciente"], 
           $post["nomPaciente"],
@@ -34,7 +34,6 @@
           $post["nomDoctor"], 
           $post["familiar"], 
           $post["padecimiento"],
-          $post["otroPadecimiento"],
           $user_cap)
         );
 

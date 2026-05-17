@@ -5,7 +5,19 @@
 		public function __construct() {
 	   	$this->conectar();
 	  }
-  
+
+    public function generarCadena($longitud = 10) {
+			$caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			$max = strlen($caracteres) - 1;
+			$cadena = '';
+
+			for ($i = 0; $i < $longitud; $i++) {
+				$cadena .= $caracteres[random_int(0, $max)];
+			}
+
+			return $cadena;
+		}
+
     public function obtiene_notas_medicas(int $id_paciente) {
       try {
         $res = [];
@@ -146,13 +158,14 @@
       return $res;
     }
 
-    public function inserta_documento_nota(string $nom_documento, string $archivo, int $id_nota, int $id_cita) {
+    public function inserta_documento_nota(string $nom_documento, string $archivo, int $id_nota, int $id_cita, int $origen) {
       $estatus = 500;
       $mensaje = 'Error al intentar insertar documento en BD';
       $data    = [];
 			try {        		
-				$sql = $this->dbh->prepare("INSERT INTO nota_adjuntos (id_cita_fk, id_nota_fk, nom_archivo, archivo) VALUES (?,?,?,?)");
-				$ok = $sql->execute([$id_cita, $id_nota, $nom_documento, $archivo]);
+        $key_query = date('ydmhis').$id_nota.$id_cita.$this->generarCadena(20);
+				$sql = $this->dbh->prepare("INSERT INTO nota_adjuntos (id_cita_fk, id_nota_fk, nom_archivo, archivo, origen, key_query) VALUES (?,?,?,?,?,?)");
+				$ok = $sql->execute([$id_cita, $id_nota, $nom_documento, $archivo, $origen, $key_query]);
         if($ok) {
           $estatus = 200;
           $mensaje = 'ok';
@@ -169,11 +182,11 @@
 			return $res;
 		}
 
-    public function obtiene_adjuntos_nota(int $id_nota) {
+    public function obtiene_adjuntos_nota(int $id_nota, int $id_origen) {
       try {
         $res = [];
-        $sql = $this->dbh->prepare("SELECT id, id_cita_fk, id_nota_fk, nom_archivo, archivo FROM nota_adjuntos WHERE id_nota_fk = ?");
-        $sql->execute([$id_nota]);
+        $sql = $this->dbh->prepare("SELECT id, id_cita_fk, id_nota_fk, nom_archivo, archivo, key_query FROM nota_adjuntos WHERE id_nota_fk = ? AND origen = ?");
+        $sql->execute([$id_nota, $id_origen]);
         $res = $sql->fetchAll(PDO::FETCH_ASSOC);        
         
       } catch (Exception $error) {

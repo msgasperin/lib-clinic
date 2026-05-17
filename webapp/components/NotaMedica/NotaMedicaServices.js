@@ -44,8 +44,8 @@ export const subir_adjunto_nota = async (objArchivo) => {
    return respuesta;
 };
 
-export const obtiene_adjuntos_nota = async (idNota) => {
-   const datos = { func: 'obtiene_adjuntos_nota', idNota };
+export const obtiene_adjuntos_nota = async (idNota, origen) => {
+   const datos = { func: 'obtiene_adjuntos_nota', idNota, origen };
    let respuesta;
    try {
       respuesta = await postJSON('../api/controller/nota_medica.php', datos);

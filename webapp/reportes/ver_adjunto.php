@@ -23,12 +23,12 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
     exit;
 }
 
-$id_adjunto = intval($_GET['id']);
+$id_adjunto = $_GET['id'];
 
 // 4. Consultar la información del archivo en la Base de Datos
 // Ajusta los nombres de las columnas y tabla a tu base de datos real
 try {
-    $sql = $v->dbh->prepare("SELECT id_cita_fk, archivo FROM nota_adjuntos WHERE id = ? LIMIT 1");
+    $sql = $v->dbh->prepare("SELECT id_cita_fk, archivo FROM nota_adjuntos WHERE key_query = ? LIMIT 1");
     $sql->execute([$id_adjunto]);
     $archivo_db = $sql->fetch();
 } catch (\PDOException $e) {
