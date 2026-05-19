@@ -76,11 +76,9 @@
 		<script type="module" src="components/Usuarios/Usuarios.js?<?=time()?>"></script>	
 		<script type="module" src="components/NotaMedica/NotaMedica.js?<?=time()?>"></script>	
 		<script type="module" src="components/ExpedienteClinico/ExpedienteClinico.js?<?=time()?>"></script>
-		<script type="module" src="components/AntFamiliares/AntFamiliares.js?<?=time()?>"></script>
+		<script type="module" src="components/AntGenerales/AntGenerales.js?<?=time()?>"></script>
 		<script type="module" src="components/AntNoPatologicos/AntNoPatologicos.js?<?=time()?>"></script>
 		<script type="module" src="components/AntPatologicos/AntPatologicos.js?<?=time()?>"></script>
-		<script type="module" src="components/AntCronicas/AntCronicas.js?<?=time()?>"></script>
-		<script type="module" src="components/AntCardiovascular/AntCardiovascular.js?<?=time()?>"></script>
 		<script type="module" src="components/AntGineco/AntGineco.js?<?=time()?>"></script>
 
 		<script>

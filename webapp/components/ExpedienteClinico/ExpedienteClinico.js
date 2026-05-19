@@ -118,8 +118,8 @@ const ModalFormExpClinico = (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
                <div class="bg-light border-bottom sticky-top shadow-sm">
                   <ul class="nav nav-tabs-custom shadow-sm bg-white px-3" id="expedienteTab" role="tablist">
                      <li class="nav-item" role="presentation">
-                        <button class="nav-link py-3 active text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesFamiliares(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${nomDoctor}');">
-                           <i class="bi bi-people"></i> Heredo-Fam
+                        <button class="nav-link py-3 active text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesGenerales(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${nomDoctor}');">
+                           <i class="bi bi-people"></i> Generales
                         </button>
                      </li>
                      <li class="nav-item" role="presentation">
@@ -133,16 +133,6 @@ const ModalFormExpClinico = (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
                         </button>
                      </li>
                      <li class="nav-item" role="presentation">
-                        <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesCronicos();">
-                           <i class="bi bi-activity me-1"></i>Crónico/Degenerativos
-                        </button>
-                     </li>
-                     <li class="nav-item" role="presentation">
-                        <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesCardiovasculares();">
-                           <i class="bi bi-heart-pulse me-1"></i> Cardio-Nefro-Metabólico
-                        </button>
-                     </li>
-                     <li class="nav-item" role="presentation">
                         <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesGinecoObstetra();">
                            <i class="bi bi-gender-female me-1"></i> Gineco-Obstétrico
                         </button>
@@ -152,11 +142,9 @@ const ModalFormExpClinico = (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
             </div>
 
             <div class="modal-body bg-light">
-               <div id="antecedente_heredo_familiar" class="si-display"></div>
+               <div id="antecedente_general" class="si-display"></div>
                <div id="antecedente_no_patologico" class="no-display"></div>
                <div id="antecedente_patologico" class="no-display"></div>
-               <div id="antecedente_cronico_degenerativo" class="no-display"></div>
-               <div id="antecedente_cardiovascular" class="no-display"></div>
                <div id="antecedente_gineco_obstetrico" class="no-display"></div>
             </div>
             
@@ -171,53 +159,8 @@ const ModalFormExpClinico = (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
    $('#modalAdminExt').html(html);
    $('#modalFormExpediente').modal('show');
    setTimeout(() => {
-      FormAntecedentesFamiliares(idPaciente, nomPaciente, idDoctor, nomDoctor);
+      FormAntecedentesGenerales(idPaciente, nomPaciente, idDoctor, nomDoctor);
    }, 100);
-}
-
-const toggleOtroAntecedent = (valor) => {
-   const inputOtro = document.getElementById('otroAntecedenteFamiliar');
-
-   if(valor === 'Otro') {
-      inputOtro.disabled = false;
-      inputOtro.focus();
-   }
-   else {
-      inputOtro.disabled = true;
-      inputOtro.value = '';
-   }
-}
-
-const cargar_antecedentes_familiares = (containerId) => {
-   const contenedor = document.getElementById(containerId);
-   
-   // Datos de ejemplo para la demo
-   const antecedentes = [
-      { id: '1', familiar: 'Abuelo Paterno', padecimiento: 'Diabetes' },
-      { id: '2', familiar: 'Abuelo Paterno', padecimiento: 'Dolores reumáticos' },
-      { id: '3', familiar: 'Abuela Paterna', padecimiento: 'Hipertensión' }
-   ];
-
-   let html = `
-   <div class="row">`;
-      antecedentes.forEach(row => {
-         html += `
-         <div class="col-md-4 col-sm-4 col-12">
-            <div class="card shadow-sm">
-               <div class="card-body">
-                  <i class="bi bi-person-circle fs-4 text-muted"></i> 
-                  <div class="fw-bold">${row.familiar}</div>
-                  <div class="text-secondaty mt-2"><i class="bi bi-prescription2"></i> ${row.padecimiento}</div>
-                  <div class="text-end">
-                     <button class="btn btn-outline-danger btn-redondo" title="Eliminar"><i class="bi bi-trash"></i></button>
-                  </div>
-               </div>
-            </div>
-         </div>`;
-      });
-      html += `
-   </div>`;
-   contenedor.innerHTML = html;
 }
 
 const ModalVerExpedientePdf = (key_query) => {
@@ -256,6 +199,5 @@ window.ModalFormExpClinico               = ModalFormExpClinico;
 window.ModalVerExpedientePdf             = ModalVerExpedientePdf;
 
 window.fn_muestra_expediente             = fn_muestra_expediente;
-window.toggleOtroAntecedent              = toggleOtroAntecedent;
 window.fn_elige_modal_expediente         = fn_elige_modal_expediente;
 window.fn_doctor_seleccionado_expediente = fn_doctor_seleccionado_expediente;

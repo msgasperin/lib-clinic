@@ -76,9 +76,9 @@ const FormAntecedentesGinecoObstetra = () => {
             <strong>Resultado</strong>
             <input type="text" name="resultadoPapanicolaou" id="resultadoPapanicolaou" class="form-control fs-8" maxlength="100" />
          </div>
-         <div class="col-12 mt-3 text-center">
+         <div class="col-12 mt-3 text-end">
             <br>
-            <button type="button" class="btn btn-dark btn-lib btn-redondo w-25">
+            <button type="button" class="btn btn-dark btn-lib btn-redondo fs-6">
                Guardar
             </button>
          </div>
@@ -92,10 +92,8 @@ const FormAntecedentesGinecoObstetra = () => {
    $('#antecedente_no_patologico').html(html);
    $('#antecedente_no_patologico').show();
 
-   $('#antecedente_heredo_familiar').hide();
+   $('#antecedente_general').hide();
    $('#antecedente_patologico').hide();
-   $('#antecedente_cronico_degenerativo').hide();
-   $('#antecedente_cardiovascular').hide();
    $('#antecedente_gineco_obstetrico').hide();
 }
 

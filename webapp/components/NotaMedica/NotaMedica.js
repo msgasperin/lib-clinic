@@ -37,14 +37,21 @@ const ModalListarNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita
             <div class="modal-body bg-light">
                <div class="row">
                   
-                  <div class="col-6 col-md-3">
+                  <div class="col-4 col-md-4">
                      <div class="input-group">
                         <input type="date" name="inpBusquedaNota" id="inpBusquedaNota" class="form-control border-end-0" onchange="fn_buscar_nota();">
+                     </div>
+                  </div>
+                  <div class="col-4 col-md-4">
+                     <div class="input-group">
+                        <button type="button" class="btn btn-outline-secondary fs-7 btn-redondo no-display" id="btnImprimirNotasMedicas" onclick="fn_imprimir_notas_medicas();">
+                           <i class="bi bi-file-earmark-pdf text-danger"></i> Imprimir notas
+                        </button>
                      </div>
                   </div>`;
                   if(parseInt(perfilUs) == 3 && parseInt(idCita) > 0) {
                      html+=`
-                     <div class="col-6 col-md-9 text-end">
+                     <div class="col-4 col-md-4 text-end">
                         <button class="btn btn-dark btn-lib btn-redondo fs-6" type="button" id="btnNuevaNotaMedica" onclick="ModalFormNotaMedica(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${doctor}', ${idCita}, 0);">
                            <i class="bi bi-plus-lg"></i> Nueva nota
                         </button>
@@ -127,6 +134,7 @@ const pintar_listado_notas_medicas = (containerId, data) => {
    let html         = '';
    
    if(data.length > 0) {
+      $('#btnImprimirNotasMedicas').show();
       html = `
       <div class="row mt-4">`;
          data.forEach(row => {
@@ -148,8 +156,8 @@ const pintar_listado_notas_medicas = (containerId, data) => {
             if(row.mapa == 1)     sol_mapa     = `<span class="badge bg-light shadow-sm text-dark border me-1 mb-1"><small>M.A.P.A</small></span>`;
 
             html += `
-            <div class="col-12 mt-2" id="cardNotMedica${row.id_nota_medica}">
-               <div class="card border rounded-3 shadow-sm">
+            <div class="col-12 mt-4" id="cardNotMedica${row.id_nota_medica}">
+               <div class="card border rounded-3 shadow border-secondary border-0 border-start border-5">
                   <div class="card-body px-4 py-3">
                      <div class="row mb-2">
                         <div class="col-8">
@@ -157,7 +165,7 @@ const pintar_listado_notas_medicas = (containerId, data) => {
                            <small class="text-muted">Doctor</small>
                         </div>
                         <div class="col-4 text-end">
-                           <div class="badge text-bg-primary rounded-pill fw-normal p-1">Cita # ${row.id_cita_fk}</div>
+                           <div class="badge text-bg-primary rounded-pill fw-normal p-1">Nota # ${row.id_nota_medica}</div>
                            <div class="text-muted fs-8 mt-1">${fecha}</i></div>
                         </div>
                      </div>
@@ -185,16 +193,16 @@ const pintar_listado_notas_medicas = (containerId, data) => {
                      </div>
                      <div class="row mt-2">
                         <div class="col-12 text-end">
-                           <button type="button" class="btn btn-secondary btnAccNotaMedica btn-redondo" title="Ver nota" onclick="fn_ver_nota_medica(${row.id_nota_medica});">
-                              <i class="bi bi-file-earmark-break"></i>
+                           <button type="button" class="btn btn-outline-secondary btnAccNotaMedica btn-redondo" title="Ver nota" onclick="fn_ver_nota_medica(${row.id_nota_medica});">
+                              <i class="bi bi-file-earmark-pdf"></i>
                            </button>
-                           <button type="button" class="btn btn-secondary btnAccNotaMedica btn-redondo ms-1" title="Adjuntar" onclick="ModalFormSubirAdjuntoNota(${row.id_nota_medica}, ${row.id_cita_fk}, '${row.doctor}' ,'${row.paciente}', 2);">
+                           <button type="button" class="btn btn-outline-secondary btnAccNotaMedica btn-redondo ms-1" title="Adjuntar" onclick="ModalFormSubirAdjuntoNota(${row.id_nota_medica}, ${row.id_cita_fk}, ${row.id_doctor_fk}, '${row.doctor}' ,'${row.paciente}', 2);">
                               <i class="bi bi-cloud-arrow-up"></i>
                            </button>`;
 
                            if(perfilUs == 3 && idUser == row.id_doctor_fk) {
                               html+=`
-                              <button type="button" class="btn btn-secondary btnAccNotaMedica btn-redondo ms-1" title="Editar" onclick="ModalFormNotaMedica(${row.id_paciente_fk}, '${row.paciente}', ${row.id_doctor_fk}, '${row.doctor}', ${row.id_cita_fk}, ${row.id_nota_medica});">
+                              <button type="button" class="btn btn-outline-secondary btnAccNotaMedica btn-redondo ms-1" title="Editar" onclick="ModalFormNotaMedica(${row.id_paciente_fk}, '${row.paciente}', ${row.id_doctor_fk}, '${row.doctor}', ${row.id_cita_fk}, ${row.id_nota_medica});">
                                  <i class="bi bi-pencil-square"></i>
                               </button>
                               <button type="button" class="btn btn-outline-danger ms-1 btnAccNotaMedica btn-redondo" title="Eliminar" onclick="fn_eliminar_nota(${row.id_nota_medica}, ${row.id_cita_fk}, '${row.paciente}');">
@@ -213,6 +221,7 @@ const pintar_listado_notas_medicas = (containerId, data) => {
       </div>`;
    }
    else {
+      $('#btnImprimirNotasMedicas').hide();
       html = 
       `<div class="text-center py-5">
          <img src="assets/images/no_encontrado.png" class="img-fluid mb-3">
@@ -717,11 +726,39 @@ const fn_ver_nota_medica = (idNota) => {
    });
 }
 
+const fn_imprimir_notas_medicas = () => {
+
+   fetch('reportes/notas_medicas_pdf.php', {
+      method: 'POST',
+      headers: {
+         'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(arrNotaMedica)
+   })
+   .then(res => res.blob())
+   .then(pdf => {
+
+      const url = window.URL.createObjectURL(pdf);
+
+      window.open(url, '_blank');
+
+      // liberar memoria después
+      setTimeout(() => {
+         window.URL.revokeObjectURL(url);
+      }, 1000);
+
+   })
+   .catch(error => {
+      console.error(error);
+   });
+
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ADJUNTOS NOTA MÉDICA ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-const ModalFormSubirAdjuntoNota = (idNota, idCita, nomDoctor, nomPaciente, origen) => {
+const ModalFormSubirAdjuntoNota = (idNota, idCita, idDoctor, nomDoctor, nomPaciente, origen) => {
    let html = `
    <div class="modal fade modal-superior-blur" id="modalFormSubirAdjuntoNota" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-      <div class="modal-dialog modal-fullscreen-md-down">
+      <div class="modal-dialog modal-lg modal-fullscreen-md-down">
          <div class="modal-content border-0 sombra-modal">
             
             <!-- Encabezado Clínico Principal -->
@@ -749,17 +786,17 @@ const ModalFormSubirAdjuntoNota = (idNota, idCita, nomDoctor, nomPaciente, orige
 
             <div class="modal-body bg-light p-4">
                <div class="row">
-                  <div class="col-12 col-sm-6 fs-8">
+                  <div class="col-12 col-sm-6 fs-7">
                      <b>Nombre del archivo *</b>
-                     <input type="text" name="nomAdjuntoAdmin" id="nomAdjuntoAdmin" class="form-control fs-8" maxlength="50">
+                     <input type="text" name="nomAdjuntoAdmin" id="nomAdjuntoAdmin" class="form-control fs-7" maxlength="50">
                   </div>
-                  <div class="col-12 col-sm-4 fs-8">
+                  <div class="col-12 col-sm-4 fs-7">
                      <b>Archivo *</b>
-                     <input type="file" name="archivoAdjuntoAdmin" id="archivoAdjuntoAdmin" class="form-control fs-8" accept=".pdf">
+                     <input type="file" name="archivoAdjuntoAdmin" id="archivoAdjuntoAdmin" class="form-control fs-7" accept=".pdf">
                   </div>
-                  <div class="col-12 col-sm-2 fs-8">
+                  <div class="col-12 col-sm-2 fs-7">
                      <br>
-                     <button type="button" class="btn btn-dark btn-lib btn-redondo w-100 fs-8" onclick="fn_subir_adjunto_nota(${idNota}, ${idCita}, ${origen})" title="Subir archivo">
+                     <button type="button" class="btn btn-dark btn-lib btn-redondo w-100 fs-7" onclick="fn_subir_adjunto_nota(${idNota}, ${idCita}, ${origen}, ${idDoctor})" title="Subir archivo">
                          <i class="bi bi-cloud-arrow-up"></i>
                      </button>
                   </div>
@@ -794,7 +831,7 @@ const ModalFormSubirAdjuntoNota = (idNota, idCita, nomDoctor, nomPaciente, orige
    }, 500);
 }
 
-const fn_subir_adjunto_nota = async (idNota, idCita, origen) => {
+const fn_subir_adjunto_nota = async (idNota, idCita, origen, idDoctor) => {
    
    let nomAdjuntoNota;
    let file0;
@@ -803,7 +840,7 @@ const fn_subir_adjunto_nota = async (idNota, idCita, origen) => {
    let campoArchivo;   
    let campoNombre;
 
-   if(origen == 1) {
+   if(origen == 1) { // Petición desde la nota médica
       campoNombre    = 'nomAdjuntoNota';
       campoArchivo   = 'adjuntoNota';
       nomAdjuntoNota = $('#nomAdjuntoNota').val().trim();
@@ -818,6 +855,7 @@ const fn_subir_adjunto_nota = async (idNota, idCita, origen) => {
       file0          = document.getElementById('archivoAdjuntoAdmin');
       file           = file0.files[0];
       containerId    = 'ver_adjuntos_nota_admin';
+      idDoctor       = 0;
    }
    else {
       ToastColor.fire({
@@ -827,7 +865,7 @@ const fn_subir_adjunto_nota = async (idNota, idCita, origen) => {
       return;
    }
 
-   if (idNota <= 0 || idCita <= 0) {
+   if (idNota <= 0 || idCita <= 0 || idDoctor < 0) {
       ToastColor.fire({
          text: '¡Faltaron parámetros importantes, actualiza y vuelve a intentarlo',
          icon: 'warning'
@@ -864,6 +902,7 @@ const fn_subir_adjunto_nota = async (idNota, idCita, origen) => {
    objArchivo.append('func', 'subir_adjunto_nota');
    objArchivo.append('idNota', idNota); 
    objArchivo.append('idCita', idCita);
+   objArchivo.append('idDoctor', idDoctor);
    objArchivo.append('origen', origen);
    objArchivo.append('nomAdjuntoNota', nomAdjuntoNota);
    objArchivo.append('documento', file);
@@ -932,7 +971,9 @@ const listar_adjuntos_notas = async (containerId, idNota, origen = 1) => {
 
 const pintar_listado_adjuntos_notas = (containerId, data) => {
    const contenedor = document.getElementById(containerId);
-   let html = '';
+   let perfilUs     = $('#perfilUs').val().trim();
+   let idUserUs     = $('#idUserUs').val().trim();
+   let html         = '';
    
    if(data.length > 0) {
       html = `<div class="row row-cols-1 row-cols-md-2 g-2 mt-2">`;
@@ -947,13 +988,17 @@ const pintar_listado_adjuntos_notas = (containerId, data) => {
                <div class="d-flex align-items-center text-truncate me-2 fs-8 pointer" onclick="fn_ver_adjunto('${row.key_query}')">
                   <i class="bi bi-file-earmark-pdf-fill text-danger fs-6 me-2 flex-shrink-0"></i>
                   <span class="text-truncate fw-medium text-dark" title="${row.nom_archivo}.pdf">
-                     ${row.nom_archivo}.pdf
+                     ${row.nom_archivo}.pdf - ${row.origen}
                   </span>
-               </div>               
-               <!-- Botón de eliminar en formato circular pequeño para encajar en la píldora -->
-               <button type="button" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center p-0 text-muted btn-outline-danger border-0 opacity-75 opacity-100-hover" style="width: 24px; height: 24px; min-width: 24px;" title="Eliminar adjunto" onclick="fn_eliminar_adjunto_nota(${row.id}, '${row.nom_archivo}', '${row.archivo}', ${row.id_nota_fk}, ${row.id_cita_fk});">
-                  <i class="bi bi-x fs-5"></i>
-               </button>
+               </div>`;
+
+               if( (row.origen == 1 && parseInt(row.id_doctor_fk) == parseInt(idUserUs)) || (row.origen == 2 && perfilUs == 1) ) {
+                  html+=`
+                  <button type="button" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center p-0 text-muted btn-outline-danger border-0 opacity-75 opacity-100-hover" style="width: 24px; height: 24px; min-width: 24px;" title="Eliminar adjunto" onclick="fn_eliminar_adjunto_nota(${row.id}, '${row.nom_archivo}', '${row.archivo}', ${row.id_nota_fk}, ${row.id_cita_fk});">
+                     <i class="bi bi-x fs-5"></i>
+                  </button>`;
+               }
+               html+=`
             </div>
          </div>`;
       });
@@ -1016,6 +1061,7 @@ window.fn_subir_adjunto_nota     = fn_subir_adjunto_nota;
 window.listar_adjuntos_notas     = listar_adjuntos_notas;
 window.fn_eliminar_adjunto_nota  = fn_eliminar_adjunto_nota;
 window.fn_ver_adjunto            = fn_ver_adjunto;
+window.fn_imprimir_notas_medicas = fn_imprimir_notas_medicas;
 
 window.ModalFormSubirAdjuntoNota = ModalFormSubirAdjuntoNota;
 

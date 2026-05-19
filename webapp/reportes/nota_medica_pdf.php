@@ -193,6 +193,7 @@
 
       <header>
         <h1>LIB Laboratorios - Nota Médica</h1>
+        Nota # '.$data["id_nota_medica"].'
         <p>Generado el '.date('d/m/Y H:i:s').'</p>
       </header>
 
@@ -342,13 +343,19 @@
 
   $dompdf->loadHtml($html);
 
-  // Tamaño carta, vertical
   $dompdf->setPaper('letter', 'portrait');
 
   $dompdf->render();
 
-  // Descarga directa en el navegador
-  $dompdf->stream('documento.pdf', [
-    'Attachment' => false   // false = abre en el navegador, true = descarga
-  ]);
+  $pdf = $dompdf->output();
+
+  header('Content-Type: application/pdf');
+  header('Content-Disposition: inline; filename="notas_medicas.pdf"');
+  header('Cache-Control: private, max-age=0, must-revalidate');
+  header('Pragma: public');
+  header('Content-Length: ' . strlen($pdf));
+
+  ob_end_clean();
+  echo $pdf;
+  exit;
   

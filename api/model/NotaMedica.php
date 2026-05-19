@@ -158,14 +158,14 @@
       return $res;
     }
 
-    public function inserta_documento_nota(string $nom_documento, string $archivo, int $id_nota, int $id_cita, int $origen) {
+    public function inserta_documento_nota(string $nom_documento, string $archivo, int $id_nota, int $id_doctor, int $id_cita, int $origen) {
       $estatus = 500;
       $mensaje = 'Error al intentar insertar documento en BD';
       $data    = [];
 			try {        		
         $key_query = date('ydmhis').$id_nota.$id_cita.$this->generarCadena(20);
-				$sql = $this->dbh->prepare("INSERT INTO nota_adjuntos (id_cita_fk, id_nota_fk, nom_archivo, archivo, origen, key_query) VALUES (?,?,?,?,?,?)");
-				$ok = $sql->execute([$id_cita, $id_nota, $nom_documento, $archivo, $origen, $key_query]);
+				$sql = $this->dbh->prepare("INSERT INTO nota_adjuntos (id_cita_fk, id_nota_fk, id_doctor_fk, nom_archivo, archivo, origen, key_query) VALUES (?,?,?,?,?,?,?)");
+				$ok = $sql->execute([$id_cita, $id_nota, $id_doctor, $nom_documento, $archivo, $origen, $key_query]);
         if($ok) {
           $estatus = 200;
           $mensaje = 'ok';
@@ -185,7 +185,7 @@
     public function obtiene_adjuntos_nota(int $id_nota, int $id_origen) {
       try {
         $res = [];
-        $sql = $this->dbh->prepare("SELECT id, id_cita_fk, id_nota_fk, nom_archivo, archivo, key_query FROM nota_adjuntos WHERE id_nota_fk = ? AND origen = ?");
+        $sql = $this->dbh->prepare("SELECT id, id_cita_fk, id_nota_fk, nom_archivo, archivo, key_query, origen FROM nota_adjuntos WHERE id_nota_fk = ? AND origen = ?");
         $sql->execute([$id_nota, $id_origen]);
         $res = $sql->fetchAll(PDO::FETCH_ASSOC);        
         

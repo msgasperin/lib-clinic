@@ -102,7 +102,7 @@
           }
 
           if(move_uploaded_file($tmp_archivo, $archivador)) {
-            $res = $v->inserta_documento_nota($_POST["nomAdjuntoNota"], $nomFile, $_POST["idNota"], $_POST["idCita"], $_POST["origen"]);
+            $res = $v->inserta_documento_nota($_POST["nomAdjuntoNota"], $nomFile, $_POST["idNota"], $_POST["idDoctor"], $_POST["idCita"], $_POST["origen"]);
             if($res["estatus"] == 200) {
               echo json_encode(['estatus' => 200, 'mensaje' => 'ok', 'data' => []]);
             }

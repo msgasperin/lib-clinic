@@ -159,22 +159,25 @@ const FormAntecedentesPatologicos = () => {
           </div>
         </div>
 
-        <div class="col-12 col-sm-3 mt-2">
+        <div class="col-12 col-sm-6 mt-2">
           <strong>¿Biomasa?</strong>
           <div class="row">
-            <div class="col-12 mt-2">
+            <div class="col-sm-3 col-12 mt-2">
               <div class="btn-group" role="group">
                 <input type="radio" class="btn-check fs-8" name="option_biomasa" id="biomasa_si" autocomplete="off">
                 <label class="btn btn-outline-danger fs-8" for="biomasa_si">Sí</label>
                 <input type="radio" class="btn-check fs-8" name="option_biomasa" id="biomasa_no" autocomplete="off">
                 <label class="btn btn-outline-secondary fs-8" for="biomasa_no">No</label>
               </div>
-            </div>          
+            </div>
+            <div class="col-sm-9 col-12 mt-2">
+              <input type="text" name="infoBiomasa" id="infoBiomasa" class="form-control fs-8" placeholder="Información adicional biomasa" maxlength="100" />
+            </div>
           </div>
         </div>
-        <div class="col-12 col-sm-3 mt-2 text-end">
+        <div class="col-12 mt-2 text-end">
           <br>
-          <button type="button" class="btn btn-dark btn-lib btn-redondo fs-7">
+          <button type="button" class="btn btn-dark btn-lib btn-redondo fs-6">
             Guardar
           </button>
         </div>
@@ -184,10 +187,8 @@ const FormAntecedentesPatologicos = () => {
    $('#antecedente_patologico').html(html);
    $('#antecedente_patologico').show();
 
-   $('#antecedente_heredo_familiar').hide();
+   $('#antecedente_general').hide();
    $('#antecedente_no_patologico').hide();
-   $('#antecedente_cronico_degenerativo').hide();
-   $('#antecedente_cardiovascular').hide();
    $('#antecedente_gineco_obstetrico').hide();
 }
 

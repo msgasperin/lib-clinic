@@ -230,6 +230,7 @@ const ModalFormUsuario = (idUsuario, nomUsuario) => {
    let celular     = "";
    let correo      = "";
    let perfil      = 0;
+   let disabled    = '';
 
    if(idUsuario > 0) {
       titulo      = 'Editar Usuario: '+ nomUsuario;
@@ -238,6 +239,7 @@ const ModalFormUsuario = (idUsuario, nomUsuario) => {
       celular     = usuarioSeleccionado[0].celular;
       correo      = usuarioSeleccionado[0].correo;
       perfil      = usuarioSeleccionado[0].perfil;
+      disabled    = 'disabled';
    }
    else {
       titulo = 'Registrar Nuevo Usuario';
@@ -249,7 +251,7 @@ const ModalFormUsuario = (idUsuario, nomUsuario) => {
          <div class="modal-content sombra-modal">
             <div class="modal-header modal-head-per">
                <h1 class="modal-title fs-5">${titulo}</h1>
-               <button type="button" class="btn btn-outline-dark btn-sm" data-bs-dismiss="modal" aria-label="Close">
+               <button type="button" class="btn btn-outline-light btn-sm" data-bs-dismiss="modal" aria-label="Close">
                   <i class="bi bi-x-lg"></i>
                </button>
             </div>
@@ -261,7 +263,7 @@ const ModalFormUsuario = (idUsuario, nomUsuario) => {
                   </div>
                   <div class="col-12 mt-3">
                      <b>Usuario *</b>
-                     <input type="text" name="usuario" id="usuario" class="form-control" maxlength="50" value="${usuario}"/>
+                     <input type="text" name="usuario" id="usuario" class="form-control" maxlength="50" value="${usuario}" ${disabled}/>
                   </div>
                   <div class="col-12 mt-3">
                      <b>Contraseña *</b>

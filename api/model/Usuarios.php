@@ -89,18 +89,31 @@
 
 				if($post["contrasenia"] == '') {
 					$sql = $this->dbh->prepare("UPDATE cat_usuarios SET nombre = ?, celular = ?, correo = ?, perfil = ?, user_cap = ?, fec_cap = ? WHERE id = ?");
-					if($sql->execute(array($post["nomUsuario"], $post["celUsuario"], $post["mailUsuario"], $post["perfilUsuario"], $user_cap, date('Y-m-d H:i:s'), $post["idUsuario"]))) {				
+					$sql->execute(array($post["nomUsuario"], $post["celUsuario"], $post["mailUsuario"], $post["perfilUsuario"], $user_cap, date('Y-m-d H:i:s'), $post["idUsuario"]));
+					if($sql->rowCount() > 0) {
 						$estatus = 200;
 						$data    = [$post["idUsuario"]];
 						$mensaje = 'ok';
 					}
+					else {
+						$estatus = 500;
+						$data    = [$post["idUsuario"]];
+						$mensaje = 'No se encontró una coincidencia para actualizar';
+					}
 				}
 				else {
 					$sql = $this->dbh->prepare("UPDATE cat_usuarios SET nombre = ?, contrasenia = AES_ENCRYPT(?,?), celular = ?, correo = ?, perfil = ?, user_cap = ?, fec_cap = ? WHERE id = ?");
-					if($sql->execute(array($post["nomUsuario"], $post["contrasenia"], $this->key, $post["celUsuario"], $post["mailUsuario"], $post["perfilUsuario"], $user_cap, date('Y-m-d H:i:s'), $post["idUsuario"]))) {				
+					$sql->execute(array($post["nomUsuario"], $post["contrasenia"], $this->key, $post["celUsuario"], $post["mailUsuario"], $post["perfilUsuario"], $user_cap, date('Y-m-d H:i:s'), $post["idUsuario"]));
+
+					if($sql->rowCount() > 0) {
 						$estatus = 200;
 						$data    = [$post["idUsuario"]];
 						$mensaje = 'ok';
+					}
+					else {
+						$estatus = 500;
+						$data    = [$post["idUsuario"]];
+						$mensaje = 'No se encontró una coincidencia para actualizar';
 					}
 				}
 			} 

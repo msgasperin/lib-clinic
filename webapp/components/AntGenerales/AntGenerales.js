@@ -1,9 +1,9 @@
-import { obtiene_antecedentes_familiares, agregar_antecedente_familiar, eliminar_antecedente_familiar } from "./AntFamiliaresServices.js";
+import { obtiene_antecedentes_familiares, agregar_antecedente_familiar, eliminar_antecedente_familiar } from "./AntGeneralesServices.js";
 
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ANTECEDENTES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ANTECEDENTES FAMILIARES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 let arrAntecedentesFamiliares = [];
 
-const FormAntecedentesFamiliares = (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
+const FormAntecedentesGenerales = (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
    let html = 
    `<div class="card p-3 border-0 shadow">
       <div class="row">
@@ -20,22 +20,60 @@ const FormAntecedentesFamiliares = (idPaciente, nomPaciente, idDoctor, nomDoctor
             </div>            
          </div>
          <div class="col-12 mt-2">
-            <textarea name="infoPadecimientoFamiliar" id="infoPadecimientoFamiliar" class="form-control fs-8" rows="5">Ingresa aquí la información adicional</textarea>
+            <textarea name="infoPadecimientoFamiliar" id="infoPadecimientoFamiliar" class="form-control fs-8" rows="5" maxlength="500">Ingresa aquí la información adicional</textarea>
          </div>
+      </div>
+
+      
+      <div class="row mt-4">
+         <div class="col-12 fs-6 fw-bold">
+            <i class="bi bi-activity me-1"></i>Antecedentes Crónico / Degenerativos
+         </div>
+         <div class="col-12 mt-2 fs-8">
+            <div class="mb-2 fw-bold">¿Tienes alguna enfermedad crónico degenerativa?</div>
+            <div class="btn-group" role="group">
+               <input type="radio" class="btn-check fs-8" name="option_cronico" id="cronico_si" autocomplete="off">
+               <label class="btn btn-outline-danger fs-8" for="cronico_si">Sí</label>
+               <input type="radio" class="btn-check fs-8" name="option_cronico" id="cronico_no" autocomplete="off">
+               <label class="btn btn-outline-secondary fs-8" for="cronico_no">No</label>
+            </div>            
+         </div>
+         <div class="col-12 mt-2">
+            <textarea name="infoCronica" id="infoCronica" class="form-control fs-8" rows="5" maxlength="500">Ingresa aquí la información adicional</textarea>
+         </div>
+      </div>
+      
+      <div class="row mt-4">
+         <div class="col-12 fs-6 fw-bold">
+            <i class="bi bi-heart-pulse me-1"></i>Antecedentes Cardio-Nefro-Metabólicos
+         </div>
+         <div class="col-12 mt-2 fs-8">
+            <div class="mb-2 fw-bold">¿Presentas alguna enfermedad Cardio-Nefro-Metabólica?</div>
+            <div class="btn-group" role="group">
+               <input type="radio" class="btn-check fs-8" name="option_cardio" id="cardio_si" autocomplete="off">
+               <label class="btn btn-outline-danger fs-8" for="cardio_si">Sí</label>
+               <input type="radio" class="btn-check fs-8" name="option_cardio" id="cardio_no" autocomplete="off">
+               <label class="btn btn-outline-secondary fs-8" for="cardio_no">No</label>
+            </div>            
+         </div>
+         <div class="col-12 mt-2">
+            <textarea name="infoCardio" id="infoCardio" class="form-control fs-8" rows="5" maxlength="500">Ingresa aquí la información adicional</textarea>
+         </div>
+      </div>
+
+      <div class="row mt-4">
          <div class="col-12 mt-3 text-end">
-            <button type="button" class="btn btn-dark btn-lib fs-7 btn-redondo">
+            <button type="button" class="btn btn-dark btn-lib fs-6 btn-redondo">
                Guardar
             </button>
          </div>
       </div>
    </div>`;
-   $('#antecedente_heredo_familiar').html(html);
-   $('#antecedente_heredo_familiar').show();
+   $('#antecedente_general').html(html);
+   $('#antecedente_general').show();
 
    $('#antecedente_no_patologico').hide();
    $('#antecedente_patologico').hide();
-   $('#antecedente_cronico_degenerativo').hide();
-   $('#antecedente_cardiovascular').hide();
    $('#antecedente_gineco_obstetrico').hide();
 }
 
@@ -196,7 +234,7 @@ const fn_eliminar_antecedente_familiar = async (idAntecedente, familiar, padecim
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-window.FormAntecedentesFamiliares       = FormAntecedentesFamiliares;
+window.FormAntecedentesGenerales        = FormAntecedentesGenerales;
 window.fn_agregar_antecedente_familiar  = fn_agregar_antecedente_familiar;
 window.fn_eliminar_antecedente_familiar = fn_eliminar_antecedente_familiar;
 
