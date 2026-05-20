@@ -471,7 +471,7 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
                                           <input type="file" name="adjuntoNota" id="adjuntoNota" class="form-control fs-8" accept=".pdf">
                                        </div>
                                        <div class="col-2" align="right">
-                                          <button type="button" id="btnAdjuntarNota" class="btn btn-dark btn-lib btn-redondo fs-8" title="Adjuntar archivo" onclick="fn_subir_adjunto_nota(${idNota}, ${idCita}, 1);">
+                                          <button type="button" id="btnAdjuntarNota" class="btn btn-dark btn-lib btn-redondo fs-8" title="Adjuntar archivo" onclick="fn_subir_adjunto_nota(${idNota}, ${idCita}, 1,0);">
                                              <i class="bi bi-cloud-arrow-up"></i>
                                           </button>
                                        </div>
@@ -847,6 +847,7 @@ const fn_subir_adjunto_nota = async (idNota, idCita, origen, idDoctor) => {
       file0          = document.getElementById('adjuntoNota');
       file           = file0.files[0];
       containerId    = 'ver_adjuntos_nota';
+      idDoctor       = $('#idUserUs').val().trim();
    }
    else if(origen == 2) {
       campoNombre    = 'nomAdjuntoAdmin';
@@ -988,11 +989,11 @@ const pintar_listado_adjuntos_notas = (containerId, data) => {
                <div class="d-flex align-items-center text-truncate me-2 fs-8 pointer" onclick="fn_ver_adjunto('${row.key_query}')">
                   <i class="bi bi-file-earmark-pdf-fill text-danger fs-6 me-2 flex-shrink-0"></i>
                   <span class="text-truncate fw-medium text-dark" title="${row.nom_archivo}.pdf">
-                     ${row.nom_archivo}.pdf - ${row.origen}
+                     ${row.nom_archivo}.pdf
                   </span>
                </div>`;
 
-               if( (row.origen == 1 && parseInt(row.id_doctor_fk) == parseInt(idUserUs)) || (row.origen == 2 && perfilUs == 1) ) {
+               if( (parseInt(row.id_doctor_fk) == parseInt(idUserUs)) || (row.origen == 2 && perfilUs == 1) ) {
                   html+=`
                   <button type="button" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center p-0 text-muted btn-outline-danger border-0 opacity-75 opacity-100-hover" style="width: 24px; height: 24px; min-width: 24px;" title="Eliminar adjunto" onclick="fn_eliminar_adjunto_nota(${row.id}, '${row.nom_archivo}', '${row.archivo}', ${row.id_nota_fk}, ${row.id_cita_fk});">
                      <i class="bi bi-x fs-5"></i>

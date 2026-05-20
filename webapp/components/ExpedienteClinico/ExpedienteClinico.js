@@ -5,7 +5,7 @@ let arrAntNoPatologicos      = [];
 let arrAntPatologicos        = [];
 let arrAntGineco             = [];
 
-const ModalFormExpClinico = (idPaciente, nomPaciente) => {
+const ModalFormExpClinico = (idPaciente, nomPaciente, sexo) => {
    let html = `
    <div class="modal fade modal-superior-blur" id="modalFormExpediente" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
       <div class="modal-dialog modal-fullscreen">
@@ -43,12 +43,16 @@ const ModalFormExpClinico = (idPaciente, nomPaciente) => {
                         <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesPatologicos(${idPaciente}, '${nomPaciente}');">
                            <i class="bi bi-virus me-1"></i>Patológicos
                         </button>
-                     </li>
-                     <li class="nav-item" role="presentation">
-                        <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesGinecoObstetra();">
-                           <i class="bi bi-gender-female me-1"></i> Gineco-Obstétrico
-                        </button>
-                     </li>
+                     </li>`;
+                     if(sexo == 'Mujer') {
+                        html+=`
+                        <li class="nav-item" role="presentation">
+                           <button class="nav-link py-3 text-nowrap" data-bs-toggle="tab" onclick="FormAntecedentesGinecoObstetra(${idPaciente}, '${nomPaciente}');">
+                              <i class="bi bi-gender-female me-1"></i> Gineco-Obstétrico
+                           </button>
+                        </li>`;
+                     }
+                     html+=`
                   </ul>
                </div>
             </div>
@@ -72,7 +76,7 @@ const ModalFormExpClinico = (idPaciente, nomPaciente) => {
    $('#modalFormExpediente').modal('show');
    setTimeout(() => {
       // Obtiene los antecedentes del paciente
-      fn_obtiene_antecedentes(idPaciente, nomPaciente);      
+      fn_obtiene_antecedentes(idPaciente, nomPaciente, sexo);      
    }, 100);
 }
 

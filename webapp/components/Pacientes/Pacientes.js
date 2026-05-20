@@ -412,7 +412,7 @@ const pinta_listado_pacientes = (containerId, data) => {
                   <td class="text-center">${row.correo}</td>
                   <td>${row.direccion}</td>
                   <td class="text-center">
-                     <button class="btn btn-dark btn-lib fs-7 btnBloqTabpac ms-1" title="Expediente Clínico" onclick="ModalFormExpClinico(${row.id_paciente}, '${row.nombre} ${row.ap_paterno} ${row.ap_materno}');">
+                     <button class="btn btn-dark btn-lib fs-7 btnBloqTabpac ms-1" title="Expediente Clínico" onclick="ModalFormExpClinico(${row.id_paciente}, '${row.nombre} ${row.ap_paterno} ${row.ap_materno}', '${row.sexo}');">
                         <i class="bi bi-person-rolodex"></i>
                      </button>
                      <button class="btn btn-outline-dark fs-7 btnBloqTabpac" title="Editar" onclick="ModalFormPaciente(${row.id_paciente}, '${row.nombre} ${row.ap_paterno} ${row.ap_materno}', 1);">

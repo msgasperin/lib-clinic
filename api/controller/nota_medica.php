@@ -14,7 +14,7 @@
       switch ($_POST['func']) {
        
         case 'obtiene_notas_medicas':
-          if($_POST["idPaciente"] == '' || $_POST["idDoctor"] == '') {
+          if(empty($_POST["idPaciente"])) {
             echo json_encode(["estatus" => 500, "mensaje" => 'Faltaron parámetros importantes', "data" => []]);
             break;
           }

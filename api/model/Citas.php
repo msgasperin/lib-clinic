@@ -10,11 +10,11 @@
       try {
         $res = [];
         if($perfil == 3) { // Doctor
-          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, id_doctor_fk, doctor, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, DATE_FORMAT(hora, '%H:%i') AS hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format, tipo_consulta, tipo_visita, sol_esfuerzo, sol_mapa, sol_holter FROM citas WHERE id_doctor_fk = ? AND fecha >= ? AND fecha <= ? ORDER BY fecha, hora ASC");
+          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, id_doctor_fk, doctor, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, DATE_FORMAT(hora, '%H:%i') AS hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format, motivo_cancela, tipo_consulta, tipo_visita, sol_esfuerzo, sol_mapa, sol_holter FROM citas WHERE id_doctor_fk = ? AND fecha >= ? AND fecha <= ? ORDER BY fecha, hora ASC");
           $sql->execute([$id_usuario, $fecha_inicial, $fecha_final]);
         }
         else {
-          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, id_doctor_fk, doctor, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, DATE_FORMAT(hora, '%H:%i') AS hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format, tipo_consulta, tipo_visita, sol_esfuerzo, sol_mapa, sol_holter FROM citas WHERE fecha >= ? AND fecha <= ? ORDER BY fecha, hora ASC");
+          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, id_doctor_fk, doctor, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, DATE_FORMAT(hora, '%H:%i') AS hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format, motivo_cancela, tipo_consulta, tipo_visita, sol_esfuerzo, sol_mapa, sol_holter FROM citas WHERE fecha >= ? AND fecha <= ? ORDER BY fecha, hora ASC");
           $sql->execute([$fecha_inicial, $fecha_final]);
         }
         $res = $sql->fetchAll(PDO::FETCH_ASSOC);				

@@ -185,7 +185,7 @@
     public function obtiene_adjuntos_nota(int $id_nota, int $id_origen) {
       try {
         $res = [];
-        $sql = $this->dbh->prepare("SELECT id, id_cita_fk, id_nota_fk, nom_archivo, archivo, key_query, origen FROM nota_adjuntos WHERE id_nota_fk = ? AND origen = ?");
+        $sql = $this->dbh->prepare("SELECT id, id_cita_fk, id_nota_fk, id_doctor_fk, nom_archivo, archivo, key_query, origen FROM nota_adjuntos WHERE id_nota_fk = ? AND origen = ?");
         $sql->execute([$id_nota, $id_origen]);
         $res = $sql->fetchAll(PDO::FETCH_ASSOC);        
         

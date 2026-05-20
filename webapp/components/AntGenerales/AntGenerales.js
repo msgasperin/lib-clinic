@@ -1,6 +1,7 @@
 import { obtiene_antecedentes_generales, guardar_antecedentes_generales } from "./AntGeneralesServices.js";
 import { obtiene_antecedentes_no_patologicos } from "../AntNoPatologicos/AntNoPatologicosServices.js";
 import { obtiene_antecedentes_patologicos } from "../AntPatologicos/AntPatologicosServices.js";
+import { obtiene_antecedentes_ginecologicos } from "../AntGineco/AntGinecoServices.js";
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ANTECEDENTES GENERALES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 const FormAntecedentesGenerales = (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
@@ -101,7 +102,7 @@ const FormAntecedentesGenerales = (idPaciente, nomPaciente, idDoctor, nomDoctor)
    $('#antecedente_gineco_obstetrico').hide();
 }
 
-const fn_obtiene_antecedentes = async (idPaciente, nomPaciente) => {
+const fn_obtiene_antecedentes = async (idPaciente, nomPaciente, sexo) => {
    
    arrAntecedentesGenerales = [];
 
@@ -117,15 +118,16 @@ const fn_obtiene_antecedentes = async (idPaciente, nomPaciente) => {
 
    let resAntGenerales      = await obtiene_antecedentes_generales(idPaciente);
    let resAntNoPatologicos  = await obtiene_antecedentes_no_patologicos(idPaciente);
-   let resAntPatologicos    = await obtiene_antecedentes_patologicos(idPaciente);
-   //let resAntGineco         = await obtiene_antecedentes_gineco(idPaciente);
+   let resAntPatologicos    = await obtiene_antecedentes_patologicos(idPaciente); 
 
    arrAntecedentesGenerales = resAntGenerales.data;
    arrAntNoPatologicos      = resAntNoPatologicos.data;
    arrAntPatologicos        = resAntPatologicos.data;
-   //arrAntGineco             = resAntGineco.data;
 
-   console.log(arrAntPatologicos);
+   if(sexo == 'Mujer') {
+      let resAntGineco         = await obtiene_antecedentes_ginecologicos(idPaciente);
+      arrAntGineco             = resAntGineco.data;
+   }   
 
    if(resAntGenerales.estatus == 403) {
       fnNoSesion();

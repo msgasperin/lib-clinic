@@ -492,7 +492,7 @@ const pintar_listado_citas = (containerId, data) => {
             <div class="alert alert-danger p-2 m-0 fs-8">
                <small class="d-block text-truncate"><strong>Por:</strong> ${cita.user_cancela ?? ''}</small>
                <small class="d-block text-muted"><strong>Fecha:</strong> ${cita.fecha_cancela_format ?? ''}</small>
-               <div class="text-dark border-top mt-1 pt-1"><em>"${cita.motivo ?? ''}"</em></div>
+               <div class="text-dark border-top mt-1 pt-1"><em>"${cita.motivo_cancela ?? ''}"</em></div>
             </div>
          </div>`;
       }               

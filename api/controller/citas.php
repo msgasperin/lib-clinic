@@ -66,7 +66,7 @@
         break;
 
         case 'cancelar_cita':            
-            $res = $v->cancelar_cita($_POST["idCita"], $_POST["motivo"], $_SESSION["nombre"]);
+            $res = $v->cancelar_cita($_POST["idCita"], $_SESSION["nombre"], $_POST["motivo"]);
             if($res["estatus"] == 200) {
                $g->bitacora('Cita cancelada del paciente '.$_POST["nomPaciente"], $_POST["idCita"] , $_SESSION["id_usuario"], $_SESSION["nombre"]);
             }            

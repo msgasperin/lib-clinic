@@ -106,7 +106,7 @@
         }
       } 
       catch (Exception $error) {
-        error_log($error->getMessage());
+        error_log($error->getMessage());        
       }
             
       $res = array('estatus' => $estatus, 'mensaje' => $mensaje, 'data' => $data);
