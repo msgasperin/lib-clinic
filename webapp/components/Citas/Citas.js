@@ -500,7 +500,7 @@ const pintar_listado_citas = (containerId, data) => {
       // Maquetación de la Card (col-xl-3 = 4 por fila, col-md-4 = 3 por fila)
       html += `
       <div class="col-xl-3 col-md-4 col-sm-6" id="cardCita${cita.id_cita}">
-         <div class="card h-100 shadow-sm border-0 rounded-3 position-relative overflow-hidden transition-card">
+         <div class="card h-100 shadow border-0 rounded-3 position-relative overflow-hidden transition-card">
             
             <!-- Línea de color superior según el estatus -->
             <div class="border-top border-5 border-${color}"></div>

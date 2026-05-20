@@ -15,7 +15,7 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title>:: Lib Clinic ::</title>
+		<title>:: LIB-Clinic ::</title>
 		<!-- CSS -->
 		<link rel="shortcut icon" href="assets/images/favicon.png"/>
 		<link rel="stylesheet" type="text/css" href="assets/lib/sweetAlert2/sweetalert2.min.css"/>
@@ -31,7 +31,7 @@
 		<link rel="stylesheet" type="text/css" href="assets/css/styles.css?x=<?php echo time();?>" />
 		<link rel="stylesheet" type="text/css" href="assets/css/menu.css?x=<?php echo time();?>" />
 	</head>
-	<body onload="opcionActive('opcionCitas'), TabCitas();">
+	<body onload="opcionActive('opcionPacientes'), TabPacientes();">
 		<?php require("menu.php")	?>
 		<div class="container-main">
 			<div id="containerMain"></div>

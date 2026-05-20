@@ -1,9 +1,26 @@
-import { obtiene_antecedentes_familiares, agregar_antecedente_familiar, eliminar_antecedente_familiar } from "./AntGeneralesServices.js";
+import { obtiene_antecedentes_generales, guardar_antecedentes_generales } from "./AntGeneralesServices.js";
+import { obtiene_antecedentes_no_patologicos } from "../AntNoPatologicos/AntNoPatologicosServices.js";
+import { obtiene_antecedentes_patologicos } from "../AntPatologicos/AntPatologicosServices.js";
 
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ANTECEDENTES FAMILIARES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-let arrAntecedentesFamiliares = [];
-
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ANTECEDENTES GENERALES  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 const FormAntecedentesGenerales = (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
+
+   let ant_familiar;
+   let info_ant_familiar          = '';
+   let enfermedad_cronica;
+   let info_enfermedad_cronica    = '';
+   let enfermedad_cardiovascular;
+   let info_enfermedad_cardio     = '';
+
+   if(arrAntecedentesGenerales.length > 0) {
+      ant_familiar              = arrAntecedentesGenerales[0].ant_familiar;
+      info_ant_familiar         = arrAntecedentesGenerales[0].info_ant_familiar;
+      enfermedad_cronica        = arrAntecedentesGenerales[0].enfermedad_cronica;
+      info_enfermedad_cronica   = arrAntecedentesGenerales[0].info_enfermedad_cronica;
+      enfermedad_cardiovascular = arrAntecedentesGenerales[0].enfermedad_cardiovascular;
+      info_enfermedad_cardio    = arrAntecedentesGenerales[0].info_enfermedad_cardio;
+   }
+
    let html = 
    `<div class="card p-3 border-0 shadow">
       <div class="row">
@@ -13,33 +30,33 @@ const FormAntecedentesGenerales = (idPaciente, nomPaciente, idDoctor, nomDoctor)
          <div class="col-12 mt-2 fs-8">
             <div class="mb-2 fw-bold">¿Algún familiar con algún padecimiento?</div>
             <div class="btn-group" role="group">
-               <input type="radio" class="btn-check fs-8" name="option_biomasa" id="biomasa_si" autocomplete="off">
-               <label class="btn btn-outline-danger fs-8" for="biomasa_si">Sí</label>
-               <input type="radio" class="btn-check fs-8" name="option_biomasa" id="biomasa_no" autocomplete="off">
-               <label class="btn btn-outline-secondary fs-8" for="biomasa_no">No</label>
+               <input type="radio" class="btn-check fs-8" name="ant_fam" id="ant_fam_si" autocomplete="off" value="1">
+               <label class="btn btn-outline-danger fs-8" for="ant_fam_si">Sí</label>
+               <input type="radio" class="btn-check fs-8" name="ant_fam" id="ant_fam_no" autocomplete="off" value="0">
+               <label class="btn btn-outline-secondary fs-8" for="ant_fam_no">No</label>
             </div>            
          </div>
          <div class="col-12 mt-2">
-            <textarea name="infoPadecimientoFamiliar" id="infoPadecimientoFamiliar" class="form-control fs-8" rows="5" maxlength="500">Ingresa aquí la información adicional</textarea>
+            <textarea name="infoPadecimientoFamiliar" id="infoPadecimientoFamiliar" class="form-control fs-8" rows="5" maxlength="500" placeholder="Ingresa aquí la información adicional">${info_ant_familiar}</textarea>
          </div>
       </div>
 
       
       <div class="row mt-4">
          <div class="col-12 fs-6 fw-bold">
-            <i class="bi bi-activity me-1"></i>Antecedentes Crónico / Degenerativos
+            <i class="bi bi-activity me-1"></i>Antecedentes Crónico No Transmisibles
          </div>
          <div class="col-12 mt-2 fs-8">
-            <div class="mb-2 fw-bold">¿Tienes alguna enfermedad crónico degenerativa?</div>
+            <div class="mb-2 fw-bold">¿Tienes alguna enfermedad crónica no transmisible?</div>
             <div class="btn-group" role="group">
-               <input type="radio" class="btn-check fs-8" name="option_cronico" id="cronico_si" autocomplete="off">
+               <input type="radio" class="btn-check fs-8" name="option_cronico" id="cronico_si" autocomplete="off" value="1">
                <label class="btn btn-outline-danger fs-8" for="cronico_si">Sí</label>
-               <input type="radio" class="btn-check fs-8" name="option_cronico" id="cronico_no" autocomplete="off">
+               <input type="radio" class="btn-check fs-8" name="option_cronico" id="cronico_no" autocomplete="off" value="0">
                <label class="btn btn-outline-secondary fs-8" for="cronico_no">No</label>
             </div>            
          </div>
          <div class="col-12 mt-2">
-            <textarea name="infoCronica" id="infoCronica" class="form-control fs-8" rows="5" maxlength="500">Ingresa aquí la información adicional</textarea>
+            <textarea name="infoCronica" id="infoCronica" class="form-control fs-8" rows="5" maxlength="500" placeholder="Ingresa aquí la información adicional">${info_enfermedad_cronica}</textarea>
          </div>
       </div>
       
@@ -50,37 +67,45 @@ const FormAntecedentesGenerales = (idPaciente, nomPaciente, idDoctor, nomDoctor)
          <div class="col-12 mt-2 fs-8">
             <div class="mb-2 fw-bold">¿Presentas alguna enfermedad Cardio-Nefro-Metabólica?</div>
             <div class="btn-group" role="group">
-               <input type="radio" class="btn-check fs-8" name="option_cardio" id="cardio_si" autocomplete="off">
+               <input type="radio" class="btn-check fs-8" name="option_cardio" id="cardio_si" autocomplete="off" value="1">
                <label class="btn btn-outline-danger fs-8" for="cardio_si">Sí</label>
-               <input type="radio" class="btn-check fs-8" name="option_cardio" id="cardio_no" autocomplete="off">
+               <input type="radio" class="btn-check fs-8" name="option_cardio" id="cardio_no" autocomplete="off" value="0">
                <label class="btn btn-outline-secondary fs-8" for="cardio_no">No</label>
             </div>            
          </div>
          <div class="col-12 mt-2">
-            <textarea name="infoCardio" id="infoCardio" class="form-control fs-8" rows="5" maxlength="500">Ingresa aquí la información adicional</textarea>
+            <textarea name="infoCardio" id="infoCardio" class="form-control fs-8" rows="5" maxlength="500" placeholder="Ingresa aquí la información adicional">${info_enfermedad_cardio}</textarea>
          </div>
       </div>
 
       <div class="row mt-4">
          <div class="col-12 mt-3 text-end">
-            <button type="button" class="btn btn-dark btn-lib fs-6 btn-redondo">
+            <button type="button" class="btn btn-dark btn-lib fs-6 btn-redondo" id="btnAntGenerales" onclick="fn_guardar_antecedentes_generales(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${nomDoctor}');">
                Guardar
             </button>
          </div>
       </div>
    </div>`;
+
    $('#antecedente_general').html(html);
    $('#antecedente_general').show();
+
+   setTimeout(() => {
+      $('input[name="ant_fam"][value="' + ant_familiar + '"]').prop('checked', true);
+      $('input[name="option_cronico"][value="' + enfermedad_cronica + '"]').prop('checked', true);
+      $('input[name="option_cardio"][value="' + enfermedad_cardiovascular + '"]').prop('checked', true);
+   }, 100);
 
    $('#antecedente_no_patologico').hide();
    $('#antecedente_patologico').hide();
    $('#antecedente_gineco_obstetrico').hide();
 }
 
-const fn_obtiene_antecedente_familiares = async (containerId, idPaciente, nomPaciente, idDoctor, nomDoctor) => {
-   arrAntecedentesFamiliares = [];
+const fn_obtiene_antecedentes = async (idPaciente, nomPaciente) => {
+   
+   arrAntecedentesGenerales = [];
 
-   if(idPaciente == 0 || idDoctor == 0) {
+   if(idPaciente == 0) {
       ToastColor.fire({
          text: '¡Atención! Faltan parámetros importantes, actualiza y vuelve a intentar',
          icon: 'warning',
@@ -90,151 +115,110 @@ const fn_obtiene_antecedente_familiares = async (containerId, idPaciente, nomPac
       return;
    }
 
-   let objAntecedente = { func: 'obtiene_antecedentes_familiares', idPaciente, nomPaciente, idDoctor, nomDoctor };
+   let resAntGenerales      = await obtiene_antecedentes_generales(idPaciente);
+   let resAntNoPatologicos  = await obtiene_antecedentes_no_patologicos(idPaciente);
+   let resAntPatologicos    = await obtiene_antecedentes_patologicos(idPaciente);
+   //let resAntGineco         = await obtiene_antecedentes_gineco(idPaciente);
 
-   let respuesta = await obtiene_antecedentes_familiares(objAntecedente);
-   if(respuesta.estatus == 403) {
+   arrAntecedentesGenerales = resAntGenerales.data;
+   arrAntNoPatologicos      = resAntNoPatologicos.data;
+   arrAntPatologicos        = resAntPatologicos.data;
+   //arrAntGineco             = resAntGineco.data;
+
+   console.log(arrAntPatologicos);
+
+   if(resAntGenerales.estatus == 403) {
       fnNoSesion();
    }
-   else if(respuesta.estatus != 200) {
-      showMessageSwalTimer('Ocurrio un error: ', respuesta.mensaje, 'error', 2500);
-      closeLoad();
+   else if(resAntGenerales.estatus != 200) {
+      showMessageSwalTimer('Ocurrio un error: ', resAntGenerales.mensaje, 'error', 2500);
       return;
    }
-   else if(respuesta.data.length == 0) {
-      let html = 
-      `<div class="text-center py-5">
-         <img src="assets/images/no_encontrado.png" class="img-fluid mb-3">
-         <p class="text-muted">No se encontraron antecedentes familiares registrados</p>
-      </div>`;
-      $('#'+containerId).html(html);
-   }
    else {
-      arrAntecedentesFamiliares = await respuesta.data;
-      pintar_antecedentes_familiares(containerId, arrAntecedentesFamiliares);
+      FormAntecedentesGenerales(idPaciente, nomPaciente);
    }
 }
 
-const pintar_antecedentes_familiares = (containerId, data) => {
+const fn_guardar_antecedentes_generales = async (idPaciente, nomPaciente) => {
 
-   const contenedor = document.getElementById(containerId);
-   
-   let html = `
-   <div class="row">`;
-      data.forEach(row => {
-         html += `
-         <div class="col-md-3 col-sm-4 col-12" id="cardAntFam${row.id_antecedente}">
-            <div class="card shadow-sm">
-               <div class="card-body">
-                  <i class="bi bi-person-circle fs-4 text-muted"></i> 
-                  <div class="fw-bold">${row.familiar}</div>
-                  <div class="text-secondaty mt-2"><i class="bi bi-prescription2"></i> ${row.padecimiento}</div>
-                  <div class="text-end">
-                     <button class="btn btn-outline-danger btn-redondo btnEliminarAntFam" title="Eliminar" onclick="fn_eliminar_antecedente_familiar(${row.id_antecedente}, '${row.familiar}', '${row.padecimiento}', ${row.id_paciente_fk}, '${row.paciente_hist}');">
-                        <i class="bi bi-trash"></i>
-                     </button>
-                  </div>
-               </div>
-            </div>
-         </div>`;
-      });
-      html += `
-   </div>`;
-
-   contenedor.innerHTML = html;
-}
-
-const fn_agregar_antecedente_familiar = async (idPaciente, nomPaciente, idDoctor, nomDoctor) => {
-
-   let familiar         = $('#tipoFamiliar').val();
-   let padecimiento     = $('#padecimientoFamiliar').val().trim();
-
-   if (idPaciente == 0 || idDoctor == 0) {
+   let antecedente_familiar = document.querySelector('input[name="ant_fam"]:checked')?.value;
+   let infoFamiliar         = $('#infoPadecimientoFamiliar').val().trim();
+   let antecedente_cronico  = document.querySelector('input[name="option_cronico"]:checked')?.value;
+   let infoCronico          = $('#infoCronica').val().trim();
+   let antecedente_cardio   = document.querySelector('input[name="option_cardio"]:checked')?.value;
+   let infoCardio           = $('#infoCardio').val().trim();
+      
+   if (idPaciente == 0) {
       ToastColor.fire({
          text: '¡Atención! Faltaron parámetros importantes',
          icon: 'warning'
       });
       return;
    }
-   else if (familiar == 'NA') {
+   else if (typeof(antecedente_familiar) == 'undefined') {
       ToastColor.fire({
-         text: '¡Atención! Debes seleccionar un familiar',
+         text: '¡Atención! Debes indicar si tiene algún familiar con antecedentes',
          icon: 'warning'
       });
-      $('#tipoFamiliar').focus();
+      $('#cardio_no').focus();
       return;
    }
-   else if (padecimiento == '') {
+   else if (typeof(antecedente_cronico) == 'undefined') {
       ToastColor.fire({
-         text: '¡Atención! Debes seleccionar un padecimiento',
+         text: '¡Atención! Debes indicar si el paciente tiene algún padecimiento crónico no transmisible',
          icon: 'warning'
       });
-      $('#padecimientoFamiliar').focus();
+      $('#cronico_no').focus();
       return;
    }
-     
-   let objAntecedente = { func: 'agregar_antecedente_familiar', idPaciente, nomPaciente, idDoctor, nomDoctor, familiar, padecimiento };
+   else if (typeof(antecedente_cardio) == 'undefined') {
+      ToastColor.fire({
+         text: '¡Atención! Debes indicar si el paciente tiene algún padecimiento Cardio-Nefro-Metabólico',
+         icon: 'warning'
+      });
+      $('#cardio_no').focus();
+      return;
+   }
 
-   const res = await showMessageSwalQuestion('¿Estás seguro?', 'El antecedente familiar: '+ padecimiento +' será agregado', 'question', 'Sí, agregar', 'Cancelar');
+   let objAntecedente = { func: 'guardar_antecedentes_generales', idPaciente, nomPaciente, antecedente_familiar, infoFamiliar, antecedente_cronico, infoCronico, antecedente_cardio, infoCardio };
+
+   const res = await showMessageSwalQuestion('¿Estás seguro?', 'Los antecedentes generales del paciente: '+ nomPaciente +' serán guardados', 'question', 'Sí, guardar', 'Cancelar');
 
    if (!res.result) {
-      $('#btnAgregarAntFamiliar').prop('disabled', false);
+      $('#btnAntGenerales').prop('disabled', false);
       return;
    }
 
-   $('#btnAgregarAntFamiliar').prop('disabled', true);
-   let respuesta = await agregar_antecedente_familiar(objAntecedente);
+   $('#btnAntGenerales').prop('disabled', true);
+   let respuesta = await guardar_antecedentes_generales(objAntecedente);
    if(respuesta.estatus == 403) {
       fnNoSesion();
    }
    else if(respuesta.estatus == 200) {
-      showMessageSwalTimer('¡Agregado!', '', 'success', 1500);
-      $('#tipoFamiliar').val('NA');
-      $('#padecimientoFamiliar').val('');
-      fn_obtiene_antecedente_familiares('listado_antecedentes_familiares', idPaciente, nomPaciente, idDoctor, nomDoctor);
+      showMessageSwalTimer('¡Guardado!', '', 'success', 1500);
+      $('#btnAntGenerales').prop('disabled', false);
+      arrAntecedentesGenerales = [];
+      arrAntecedentesGenerales = [{
+         id_paciente_fk            : idPaciente,
+         paciente_hist             : nomPaciente,
+         ant_familiar              : antecedente_familiar,
+         info_ant_familiar         : infoFamiliar,
+         enfermedad_cronica        : antecedente_cronico,
+         info_enfermedad_cronica   : infoCronico,
+         enfermedad_cardiovascular : antecedente_cardio,
+         info_enfermedad_cardio    : infoCardio
+      }];
    }
    else {
       showMessageSwal('Ocurrio un error: ', respuesta.mensaje, 'error');
-      $('#btnAgregarAntFamiliar').prop('disabled', false);
-      return;
-   }
-}
-
-const fn_eliminar_antecedente_familiar = async (idAntecedente, familiar, padecimiento, idPaciente, paciente) => {
-
-   if (idAntecedente == '' || familiar == '' || padecimiento == '' || paciente == '') {
-      ToastColor.fire({
-         text: '¡Atención! Faltaron parámetros importantes, actualiza y vuelve a intentarlo',
-         icon: 'warning'
-      });
-      return;
-   }  
-     
-   let objAntecedente = { func: 'eliminar_antecedente_familiar', idAntecedente, familiar, padecimiento, idPaciente, paciente };
-
-   const res = await showMessageSwalQuestion('¿Estás seguro?', 'El padecimiento: ' + padecimiento + ' será eliminado del expediente', 'question', 'Sí, eliminar', 'Cancelar');
-
-   if (!res.result) {
-      return;
-   }
-
-   let respuesta = await eliminar_antecedente_familiar(objAntecedente);
-   if(respuesta.estatus == 403) {
-      fnNoSesion();
-   }
-   else if(respuesta.estatus == 200) {
-      $('#cardAntFam'+idAntecedente).remove();
-      showMessageSwalTimer('Cita marcada como atendida correctamente!', '', 'success', 2500);
-   }
-   else {
-      showMessageSwal('Ocurrio un error: ', respuesta.mensaje, 'error');
+      $('#btnAntGenerales').prop('disabled', false);
       return;
    }
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ DECLARACIÓN DE FUNCIONES  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-window.FormAntecedentesGenerales        = FormAntecedentesGenerales;
-window.fn_agregar_antecedente_familiar  = fn_agregar_antecedente_familiar;
-window.fn_eliminar_antecedente_familiar = fn_eliminar_antecedente_familiar;
+window.FormAntecedentesGenerales         = FormAntecedentesGenerales;
+window.fn_guardar_antecedentes_generales = fn_guardar_antecedentes_generales;
+window.fn_obtiene_antecedentes           = fn_obtiene_antecedentes;
 
