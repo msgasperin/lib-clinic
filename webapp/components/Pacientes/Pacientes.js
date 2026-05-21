@@ -31,6 +31,7 @@ const ModalFormPaciente = (idPaciente, nomPaciente, origen) => {
    let ap_paterno   = '';
    let ap_materno   = '';
    let fec_nac      = '';
+   let edad         = '';
    let sexo         = 'NA';
    let estado_civil = 'NA';
    let escolaridad  = 'NA';
@@ -55,6 +56,7 @@ const ModalFormPaciente = (idPaciente, nomPaciente, origen) => {
       ap_paterno   = pacienteSelect[0].ap_paterno;
       ap_materno   = pacienteSelect[0].ap_materno;
       fec_nac      = pacienteSelect[0].fecha_nac;
+      edad         = pacienteSelect[0].edad;
       sexo         = pacienteSelect[0].sexo;
       estado_civil = pacienteSelect[0].estado_civil;
       escolaridad  = pacienteSelect[0].escolaridad;
@@ -96,8 +98,12 @@ const ModalFormPaciente = (idPaciente, nomPaciente, origen) => {
                      <input type="text" name="amPaciente" id="amPaciente" class="form-control" maxlength="70" value="${ap_materno}">
                   </div>
                   <div class="col-md-3 col-sm-6 col-6 mt-3">
-                     <b>Fecha de nacimiento *</b>
+                     <b>Fecha de nacimiento</b>
                      <input type="date" name="fechaNacimiento" id="fechaNacimiento" class="form-control" value="${fec_nac}">
+                  </div>
+                  <div class="col-md-3 col-sm-6 col-6 mt-3">
+                     <b>Edad *</b>
+                     <input type="number" inputmode="numeric" name="edadPaciente" id="edadPaciente" class="form-control" value="${edad}" maxlength="3" onkeypress="return fnValidaNumeros(event);" maxlength="10">
                   </div>
                   <div class="col-md-3 col-sm-6 col-6 mt-3">
                      <b>Sexo</b>
@@ -118,7 +124,7 @@ const ModalFormPaciente = (idPaciente, nomPaciente, origen) => {
                         <option value="Concubinato">Concubinato</option>
                      </select>
                   </div>
-                  <div class="col-md-3 col-sm-6 col-6 mt-3">
+                  <div class="col-md-2 col-sm-6 col-6 mt-3">
                      <b>Escolaridad</b>
                      <select name="escolaridadPaciente" id="escolaridadPaciente" class="form-select">
                         <option value="NA">Seleccionar</option>
@@ -134,7 +140,7 @@ const ModalFormPaciente = (idPaciente, nomPaciente, origen) => {
                      <b>Ocupación</b>
                      <input type="text" name="ocupacion" id="ocupacion" class="form-control" maxlength="150" value="${ocupacion}">
                   </div>
-                  <div class="col-md-4 col-sm-6 col-12 mt-3">
+                  <div class="col-md-2 col-sm-6 col-12 mt-3">
                      <b>Teléfono *</b>
                      <input type="tel" name="telefono" id="telefono" class="form-control" onkeypress="return fnValidaNumeros(event);" maxlength="10" value="${telefono}">
                   </div>
@@ -143,11 +149,11 @@ const ModalFormPaciente = (idPaciente, nomPaciente, origen) => {
                      <input type="email" name="correoPaciente" id="correoPaciente" class="form-control" maxlength="150" value="${correo}">
                   </div>
                   <div class="col-12 mt-3">
-                     <b>Dirección *</b>
+                     <b>Dirección</b>
                      <input type="text" name="direccionPaciente" id="direccionPaciente" class="form-control" maxlength="200" value="${direccion}">
                   </div>
                   <div class="col-md-4 col-sm-6 col-12 mt-3">
-                     <b>Colonia *</b>
+                     <b>Colonia</b>
                      <input type="text" name="coloniaPaciente" id="coloniaPaciente" class="form-control" maxlength="100" value="${colonia}">
                   </div>
                   <div class="col-md-4 col-sm-6 col-12 mt-3">
@@ -202,6 +208,7 @@ const fn_guardar_paciente = async (idPaciente, origen) => {
    let apPaciente          = $('#apPaciente').val().trim();
    let amPaciente          = $('#amPaciente').val().trim();
    let fechaNacimiento     = $('#fechaNacimiento').val();
+   let edad                = $('#edadPaciente').val();
    let sexoPaciente        = $('#sexoPaciente').val();
    let estadoCivilPaciente = $('#estadoCivilPaciente').val();
    let escolaridadPaciente = $('#escolaridadPaciente').val();
@@ -231,12 +238,12 @@ const fn_guardar_paciente = async (idPaciente, origen) => {
       $('#apPaciente').focus();
       return;
    }
-   else if (fechaNacimiento == '') {
+   else if (edad == '') {
       ToastColor.fire({
-         text: '¡Atención! Debes ingresar una fecha de nacimiento',
+         text: '¡Atención! Debes ingresar la edad del paciente',
          icon: 'warning'
       });
-      $('#fechaNacimiento').focus();
+      $('#edadPaciente').focus();
       return;
    }
    else if (telefono == '') {
@@ -247,24 +254,9 @@ const fn_guardar_paciente = async (idPaciente, origen) => {
       $('#telefono').focus();
       return;
    }
-   else if (direccionPaciente == '') {
-      ToastColor.fire({
-         text: '¡Atención! Debes ingresar una dirección',
-         icon: 'warning'
-      });
-      $('#direccionPaciente').focus();
-      return;
-   }
-   else if (coloniaPaciente == '') {
-      ToastColor.fire({
-         text: '¡Atención! Debes ingresar una colonia',
-         icon: 'warning'
-      });
-      $('#colonia').focus();
-      return;
-   }
+   
      
-   let objPaciente = { func: 'guardar_paciente', idPaciente, nomPaciente, apPaciente, amPaciente, fechaNacimiento, sexoPaciente, estadoCivilPaciente, escolaridadPaciente, ocupacion, telefono, correoPaciente, direccionPaciente, coloniaPaciente, municipioPaciente, entidadPaciente, religionPaciente, aseguradoraPaciente };
+   let objPaciente = { func: 'guardar_paciente', idPaciente, nomPaciente, apPaciente, amPaciente, fechaNacimiento, edad, sexoPaciente, estadoCivilPaciente, escolaridadPaciente, ocupacion, telefono, correoPaciente, direccionPaciente, coloniaPaciente, municipioPaciente, entidadPaciente, religionPaciente, aseguradoraPaciente };
 
    const res = await showMessageSwalQuestion('¿Estás seguro?', 'El paciente: ' + nomPaciente + ' será registrado', 'question', 'Sí, guardar', 'Cancelar');
 
@@ -284,6 +276,7 @@ const fn_guardar_paciente = async (idPaciente, origen) => {
       $('#apPaciente').val('');
       $('#amPaciente').val('');
       $('#fechaNacimiento').val('');
+      $('#edadPaciente').val('');
       $('#sexoPaciente').val('NA');
       $('#estadoCivilPaciente').val('NA');
       $('#escolaridadPaciente').val('NA');      
@@ -379,6 +372,7 @@ const pinta_listado_pacientes = (containerId, data) => {
    const contenedor = document.getElementById(containerId); 
    
    let perfilUs = $('#perfilUs').val().trim();
+   let edad;
 
    let html = `
    <div class="table-responsive mt-4">
@@ -386,16 +380,18 @@ const pinta_listado_pacientes = (containerId, data) => {
          <thead class="bg-light">
             <tr>
                <th>ID</th>
-               <th class="py-3 text-secondary" width="17%">Paciente</th>
-               <th class="py-3 text-secondary" width="10%">Fecha nacimiento</th>
+               <th class="py-3 text-secondary" width="25%">Paciente</th>
+               <th class="py-3 text-secondary" width="15%">Edad</th>
                <th class="py-3 text-secondary" width="10%">Teléfono</th>
-               <th class="py-3 text-secondary" width="15%">Correo</th>
                <th class="py-3 text-secondary" width="25%">Dirección</th>
-               <th class="py-3 text-center text-secondary" width="23%">Acciones</th>
+               <th class="py-3 text-center text-secondary" width="25%">Acciones</th>
             </tr>
          </thead>
          <tbody>`;
             data.forEach(row => {
+
+               (row.edad) ? edad = row.edad + ' años<br>' : edad = '';
+
                html += `
                <tr id="trPaciente${row.id_paciente}">
                   <td>${row.id_paciente}</td>
@@ -407,9 +403,11 @@ const pinta_listado_pacientes = (containerId, data) => {
                         <span class="text-dark fw-medium">${row.nombre} ${row.ap_paterno} ${row.ap_materno ?? ''}</span>
                      </div>
                   </td>
-                  <td class="text-center">${row.fecha_nac_format}</td>
+                  <td class="text-center">
+                     ${edad}
+                     <span class="text-muted fs-8">${row.fecha_nac_format ?? ''}</span>
+                  </td>
                   <td class="text-center">${row.telefono}</td>
-                  <td class="text-center">${row.correo}</td>
                   <td>${row.direccion}</td>
                   <td class="text-center">
                      <button class="btn btn-dark btn-lib fs-7 btnBloqTabpac ms-1" title="Expediente Clínico" onclick="ModalFormExpClinico(${row.id_paciente}, '${row.nombre} ${row.ap_paterno} ${row.ap_materno}', '${row.sexo}');">

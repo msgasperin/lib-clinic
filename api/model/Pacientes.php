@@ -10,7 +10,7 @@
 			try {
 				$res = [];
 				if($perfil == 3) { // Doctor 
-					$sql = $this->dbh->prepare("SELECT id_paciente, ap_paterno, ap_materno, nombre, fecha_nac, DATE_FORMAT(fecha_nac,'%d-%m-%Y') AS fecha_nac_format, sexo, estado_civil,
+					$sql = $this->dbh->prepare("SELECT id_paciente, ap_paterno, ap_materno, nombre, fecha_nac, DATE_FORMAT(fecha_nac,'%d-%m-%Y') AS fecha_nac_format, edad, sexo, estado_civil,
 						escolaridad, ocupacion, telefono, correo, direccion, colonia, municipio, entidad_fed, religion, aseguradora, key_query 
 						FROM citas AS C
 						INNER JOIN cat_pacientes AS P ON P.id_paciente = C.id_paciente_fk
@@ -20,7 +20,7 @@
 					$sql->execute([$id_usuario]);
 				}
 				else {
-					$sql = $this->dbh->prepare("SELECT id_paciente, ap_paterno, ap_materno, nombre, fecha_nac, DATE_FORMAT(fecha_nac,'%d-%m-%Y') AS fecha_nac_format, sexo, estado_civil, escolaridad, ocupacion, telefono, correo, direccion, colonia, municipio, entidad_fed, religion, aseguradora, key_query FROM cat_pacientes WHERE activo = 1"
+					$sql = $this->dbh->prepare("SELECT id_paciente, ap_paterno, ap_materno, nombre, fecha_nac, DATE_FORMAT(fecha_nac,'%d-%m-%Y') AS fecha_nac_format, edad, sexo, estado_civil, escolaridad, ocupacion, telefono, correo, direccion, colonia, municipio, entidad_fed, religion, aseguradora, key_query FROM cat_pacientes WHERE activo = 1"
 					);
 					$sql->execute();
 				}
@@ -37,13 +37,20 @@
 			$data    = [0];
 			$mensaje = 'Error al intentar insertar';
 
-			try {        		
-				$sql = $this->dbh->prepare("INSERT INTO cat_pacientes (ap_paterno, ap_materno, nombre, fecha_nac, sexo, estado_civil, escolaridad, ocupacion, telefono, correo, direccion, colonia, municipio, entidad_fed, religion, aseguradora, key_query, user_cap) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			try {
+
+				$fecha_nac = $post["fechaNacimiento"];
+				if(empty($post["fechaNacimiento"])) {
+					$fecha_nac = null;
+				}				
+
+				$sql = $this->dbh->prepare("INSERT INTO cat_pacientes (ap_paterno, ap_materno, nombre, fecha_nac, edad, sexo, estado_civil, escolaridad, ocupacion, telefono, correo, direccion, colonia, municipio, entidad_fed, religion, aseguradora, key_query, user_cap) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 				$ok  = $sql->execute(array(
 					$post["apPaciente"], 
 					$post["amPaciente"], 
 					$post["nomPaciente"], 
-					$post["fechaNacimiento"], 
+					$fecha_nac, 
+					$post["edad"], 
 					$post["sexoPaciente"], 
 					$post["estadoCivilPaciente"], 
 					$post["escolaridadPaciente"], 
@@ -75,7 +82,7 @@
 				}
 			} 
 			catch (Exception $error) {
-						error_log($error->getMessage());
+				error_log($error->getMessage());
 			}
 					
 			$res = array('estatus' => $estatus, 'mensaje' => $mensaje, 'data' => $data);
@@ -87,12 +94,19 @@
 			$data    = [];
 			$mensaje = 'Error al intentar actualizar';
 			try {
-				$sql = $this->dbh->prepare("UPDATE cat_pacientes SET ap_paterno = ?, ap_materno = ?, nombre = ?, fecha_nac = ?, sexo = ?, estado_civil = ?, escolaridad = ?, ocupacion = ?, telefono = ?, correo = ?, direccion = ?, colonia = ?, municipio = ?, entidad_fed = ?, religion = ?, aseguradora = ?, user_cap = ? WHERE id_paciente = ?");
+
+				$fecha_nac = $post["fechaNacimiento"];
+				if(empty($post["fechaNacimiento"])) {
+					$fecha_nac = null;
+				}	
+
+				$sql = $this->dbh->prepare("UPDATE cat_pacientes SET ap_paterno = ?, ap_materno = ?, nombre = ?, fecha_nac = ?, edad = ?, sexo = ?, estado_civil = ?, escolaridad = ?, ocupacion = ?, telefono = ?, correo = ?, direccion = ?, colonia = ?, municipio = ?, entidad_fed = ?, religion = ?, aseguradora = ?, user_cap = ? WHERE id_paciente = ?");
 				$ok  = $sql->execute(array(
 					$post["apPaciente"], 
 					$post["amPaciente"], 
 					$post["nomPaciente"], 
-					$post["fechaNacimiento"], 
+					$fecha_nac, 
+					$post["edad"], 
 					$post["sexoPaciente"], 
 					$post["estadoCivilPaciente"], 
 					$post["escolaridadPaciente"], 
