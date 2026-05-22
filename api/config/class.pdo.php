@@ -3,7 +3,7 @@
 	ini_set('session.cookie_httponly', 1);   // no accesible desde JS
 	ini_set('session.cookie_samesite', 'Strict'); // bloquea CSRF adicional
 	session_start();
-	date_default_timezone_set("America/Mexico_City"); 
+	date_default_timezone_set("America/Mazatlan"); 
 
 	class SafePDO extends PDO {
 		public static function exception_handler($exception) {	
