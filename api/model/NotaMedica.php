@@ -21,7 +21,7 @@
     public function obtiene_notas_medicas(int $id_paciente) {
       try {
         $res = [];
-        $sql = $this->dbh->prepare("SELECT id_nota_medica, id_cita_fk, id_paciente_fk, paciente, id_doctor_fk, doctor, ta, oxigenacion, temperatura, glucosa, fr, fc, peso, estatura, padecimiento, exploracion, tratamiento, diagnostico_principal, diagnostico_secundario, analisis_clinicos, estudios_gabinete, esfuerzo, mapa, holter, receta, user_cap, fecha_cap, DATE_FORMAT(fecha_cap, '%Y-%m-%d') AS fecha_cap_fil, DATE_FORMAT(fecha_cap, '%d-%m-%Y') AS fecha_cap_format FROM nota_medica WHERE estatus = 1 AND id_paciente_fk = ? ORDER BY fecha_cap DESC");
+        $sql = $this->dbh->prepare("SELECT id_nota_medica, id_cita_fk, id_paciente_fk, paciente, edad_hist, sexo_hist, id_doctor_fk, doctor, cedula_hist, registro_especial_hist, ta, oxigenacion, temperatura, glucosa, fr, fc, peso, estatura, motivo_valoracion, padecimiento, res_analisis_gabinete, exploracion, tratamiento, diagnostico_principal, diagnostico_secundario, analisis_clinicos, estudios_gabinete, esfuerzo, mapa, holter, pronostico, receta, user_cap, fecha_cap, DATE_FORMAT(fecha_cap, '%Y-%m-%d') AS fecha_cap_fil, DATE_FORMAT(fecha_cap, '%d-%m-%Y') AS fecha_cap_format FROM nota_medica WHERE estatus = 1 AND id_paciente_fk = ? ORDER BY fecha_cap DESC");
         $sql->execute([$id_paciente]);
         $res = $sql->fetchAll(PDO::FETCH_ASSOC);        
         
@@ -37,13 +37,17 @@
       $data    = [0];
       $mensaje = 'Error al intentar insertar';
       try {        		
-        $sql = $this->dbh->prepare("INSERT INTO nota_medica (id_cita_fk, id_paciente_fk, paciente, id_doctor_fk, doctor, ta, oxigenacion, temperatura, glucosa, fr, fc, peso, estatura, padecimiento, exploracion, tratamiento, diagnostico_principal, diagnostico_secundario, analisis_clinicos, estudios_gabinete, esfuerzo, mapa, holter, receta, user_cap) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        $sql = $this->dbh->prepare("INSERT INTO nota_medica (id_cita_fk, id_paciente_fk, paciente, edad_hist, sexo_hist, id_doctor_fk, doctor, cedula_hist, registro_especial_hist, ta, oxigenacion, temperatura, glucosa, fr, fc, peso, estatura, motivo_valoracion, padecimiento, res_analisis_gabinete, exploracion, tratamiento, diagnostico_principal, diagnostico_secundario, analisis_clinicos, estudios_gabinete, esfuerzo, mapa, holter, pronostico, receta, user_cap) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         $ok  = $sql->execute(array(
           $post["idCita"], 
           $post["idPaciente"],
-          $post["nomPaciente"], 
+          $post["nomPaciente"],
+          $post["edadPaciente"],
+          $post["sexoPaciente"],
           $post["idDoctor"], 
           $post["nomDoctor"], 
+          $post["cedula"], 
+          $post["registroEspecial"], 
           $post["ta"],
           $post["oxigenacion"],
           $post["temperatura"],
@@ -52,7 +56,9 @@
           $post["fc"],
           $post["peso"],
           $post["estatura"],
+          $post["valoracion"],
           $post["padecimiento"],
+          $post["resAnalisisGabinete"],
           $post["exploracion"],
           $post["tratamiento"],
           $post["diagnosticoPrincipal"],
@@ -62,6 +68,7 @@
           $post["esfuerzo"],
           $post["mapa"],
           $post["holter"],
+          $post["pronostico"],
           $post["receta"],
           $user_cap)
         );
@@ -81,7 +88,7 @@
         }
       } 
       catch (Exception $error) {
-        error_log($error->getMessage());        
+        error_log($error->getMessage());
       }
             
       $res = array('estatus' => $estatus, 'mensaje' => $mensaje, 'data' => $data);
@@ -93,13 +100,17 @@
       $data    = [];
       $mensaje = 'Error al intentar actualizar';
       try {
-        $sql = $this->dbh->prepare("UPDATE nota_medica SET id_cita_fk = ?, id_paciente_fk = ?, paciente = ?, id_doctor_fk = ?, doctor = ?, ta = ?, oxigenacion = ?, temperatura = ?, glucosa = ?, fr = ?, fc = ?, peso = ?, estatura = ?, padecimiento = ?, exploracion = ?, tratamiento = ?, diagnostico_principal = ?, diagnostico_secundario = ?, analisis_clinicos = ?, estudios_gabinete = ?, esfuerzo = ?, mapa = ?, holter = ?, receta = ?, user_cap = ? WHERE id_nota_medica = ?");
+        $sql = $this->dbh->prepare("UPDATE nota_medica SET id_cita_fk = ?, id_paciente_fk = ?, paciente = ?, edad_hist = ?, sexo_hist = ?, id_doctor_fk = ?, doctor = ?, cedula_hist = ?, registro_especial_hist = ?, ta = ?, oxigenacion = ?, temperatura = ?, glucosa = ?, fr = ?, fc = ?, peso = ?, estatura = ?, motivo_valoracion = ?, padecimiento = ?, res_analisis_gabinete = ?, exploracion = ?, tratamiento = ?, diagnostico_principal = ?, diagnostico_secundario = ?, analisis_clinicos = ?, estudios_gabinete = ?, esfuerzo = ?, mapa = ?, holter = ?, pronostico = ?, receta = ?, user_cap = ? WHERE id_nota_medica = ?");
         $ok  = $sql->execute(array(
           $post["idCita"], 
           $post["idPaciente"],
-          $post["nomPaciente"], 
+          $post["nomPaciente"],
+          $post["edadPaciente"],
+          $post["sexoPaciente"],
           $post["idDoctor"], 
-          $post["nomDoctor"], 
+          $post["nomDoctor"],
+          $post["cedula"],
+          $post["registroEspecial"], 
           $post["ta"],
           $post["oxigenacion"],
           $post["temperatura"],
@@ -108,7 +119,9 @@
           $post["fc"],
           $post["peso"],
           $post["estatura"],
+          $post["valoracion"],
           $post["padecimiento"],
+          $post["resAnalisisGabinete"],
           $post["exploracion"],
           $post["tratamiento"],
           $post["diagnosticoPrincipal"],
@@ -118,6 +131,7 @@
           $post["esfuerzo"],
           $post["mapa"],
           $post["holter"],
+          $post["pronostico"],
           $post["receta"],
           $user_cap,
           $post["idNota"])

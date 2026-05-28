@@ -225,21 +225,25 @@ const ModalFormUsuario = (idUsuario, nomUsuario) => {
    let usuarioSeleccionado = arrUsuarios.filter(usuario => usuario.id == idUsuario);
 
    let titulo;
-   let nombre      = "";
-   let usuario     = "";
-   let celular     = "";
-   let correo      = "";
-   let perfil      = 0;
-   let disabled    = '';
+   let nombre       = "";
+   let usuario      = "";
+   let celular      = "";
+   let correo       = "";
+   let cedula       = "";
+   let reg_especial = "";
+   let perfil       = 0;
+   let disabled     = '';
 
    if(idUsuario > 0) {
-      titulo      = 'Editar Usuario: '+ nomUsuario;
-      nombre      = usuarioSeleccionado[0].nombre;
-      usuario     = usuarioSeleccionado[0].usuario;
-      celular     = usuarioSeleccionado[0].celular;
-      correo      = usuarioSeleccionado[0].correo;
-      perfil      = usuarioSeleccionado[0].perfil;
-      disabled    = 'disabled';
+      titulo       = 'Editar Usuario: '+ nomUsuario;
+      nombre       = usuarioSeleccionado[0].nombre;
+      usuario      = usuarioSeleccionado[0].usuario;
+      celular      = usuarioSeleccionado[0].celular;
+      correo       = usuarioSeleccionado[0].correo;
+      cedula       = usuarioSeleccionado[0].cedula ?? '';
+      reg_especial = usuarioSeleccionado[0].registro_especial ?? '';
+      perfil       = usuarioSeleccionado[0].perfil;
+      disabled     = 'disabled';
    }
    else {
       titulo = 'Registrar Nuevo Usuario';
@@ -261,11 +265,11 @@ const ModalFormUsuario = (idUsuario, nomUsuario) => {
                      <b>Nombre del usuario *</b>
                      <input type="text" name="nomUsuario" id="nomUsuario" class="form-control" maxlength="250" value="${nombre}"/>
                   </div>
-                  <div class="col-12 mt-3">
+                  <div class="col-12 col-sm-6 mt-3">
                      <b>Usuario *</b>
                      <input type="text" name="usuario" id="usuario" class="form-control" maxlength="50" value="${usuario}" ${disabled}/>
                   </div>
-                  <div class="col-12 mt-3">
+                  <div class="col-12 col-sm-6 mt-3">
                      <b>Contraseña *</b>
                      <input type="text" name="contrasenia" id="contrasenia" class="form-control" maxlength="50" />
                   </div>
@@ -276,6 +280,14 @@ const ModalFormUsuario = (idUsuario, nomUsuario) => {
                   <div class="col-12 mt-3">
                      <b>Correo</b>
                      <input type="email" name="mailUsuario" id="mailUsuario" class="form-control" value="${correo}"/>
+                  </div>
+                  <div class="col-12 col-sm-6 mt-3">
+                     <b>Cédula Profesional</b>
+                     <input type="text" name="cedula" id="cedula" class="form-control" maxlength="50" value="${cedula}"/>
+                  </div>
+                  <div class="col-12 col-sm-6 mt-3">
+                     <b>Registro especial</b>
+                     <input type="text" name="registro_especial" id="registro_especial" class="form-control" maxlength="100" value="${reg_especial}" />
                   </div>
                   <div class="col-12 mt-3">
                      <b>Perfil *</b>
@@ -352,6 +364,7 @@ const pinta_listado_usuario = (data) => {
                      <div class="mt-1"><b>${row.nombre}</b></div>
                      <div class="mt-1">${row.celular ? '<i class="bi bi-phone"></i>'+ row.celular : ''}</div>
                      <div class="mt-1">${row.correo}</div>
+                     <div class="mt-1">${row.cedula ?? ''}</div>
                   </div>
                </div>
             </div>
@@ -374,12 +387,14 @@ const pinta_listado_usuario = (data) => {
 
 const fn_guardar_usuario = async (idUsuario) => {
 
-   let nomUsuario    = $('#nomUsuario').val().trim();
-   let usuario       = $('#usuario').val().trim();
-   let contrasenia   = $('#contrasenia').val().trim();
-   let celUsuario    = $('#celUsuario').val().trim();
-   let mailUsuario   = $('#mailUsuario').val().trim();
-   let perfilUsuario = $('#perfilUsuario').val().trim();
+   let nomUsuario        = $('#nomUsuario').val().trim();
+   let usuario           = $('#usuario').val().trim();
+   let contrasenia       = $('#contrasenia').val().trim();
+   let celUsuario        = $('#celUsuario').val().trim();
+   let mailUsuario       = $('#mailUsuario').val().trim();
+   let cedula            = $('#cedula').val().trim();
+   let registro_especial = $('#registro_especial').val().trim();
+   let perfilUsuario     = $('#perfilUsuario').val().trim();
 
    if (nomUsuario == '') {
       ToastColor.fire({
@@ -424,7 +439,7 @@ const fn_guardar_usuario = async (idUsuario) => {
       return;
    }
 
-   const objUser = { func: 'guardar', idUsuario, nomUsuario, usuario, contrasenia, celUsuario, mailUsuario, perfilUsuario };
+   const objUser = { func: 'guardar', idUsuario, nomUsuario, usuario, contrasenia, celUsuario, mailUsuario, cedula, registro_especial, perfilUsuario };
 
    const res = await showMessageSwalQuestion('¿Estás seguro?', 'El usuario ' + nomUsuario + ' será registrado', 'question', 'Sí, guardar', 'Cancelar');
    if (!res.result) {

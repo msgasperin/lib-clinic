@@ -6,9 +6,6 @@
 
   $data = json_decode(file_get_contents("php://input"), true);
   
-  //print_r($data);
-
-  $html = 'Hola';
   header('Content-Type: application/pdf');
   header('Content-Disposition: inline; filename="expediente.pdf"');
   header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
@@ -129,13 +126,13 @@
         .field{
           display:inline-block;
           vertical-align:top;
-          width:20%;
-          padding:8px 11px;
+          width:10%;
+          padding:6px 9px;
         }
 
         .field-full{
           width:100%;
-          padding:8px 11px;
+          padding:6px 9px;
         }
 
         .field label{
@@ -143,7 +140,7 @@
           font-size:9px;
           text-transform:uppercase;
           color:#888;
-          margin-bottom:4px;
+          margin-bottom:2px;
         }
 
         .field span{
@@ -160,20 +157,20 @@
         }
 
         .text-block{
-          padding:15px;
+          padding:10px;
           border-bottom:1px solid #eee;
         }
 
         .text-block label{
           display:block;
-          font-size:10px;
+          font-size:9px;
           color:#888;
           text-transform:uppercase;
-          margin-bottom:8px;
+          margin-bottom:4px;
         }
 
         .text-block p{
-          font-size:12px;
+          font-size:11px;
           line-height:1.6;
           text-align:justify;
         }
@@ -183,6 +180,39 @@
           padding:10px 15px;
           font-size:10px;
           color:#777;
+        }
+
+        .container-doctor {
+          margin-top: 50px; 
+          padding: 15px;
+          text-align: right;
+          width: 90%;
+        }
+
+        .body-doctor {
+          display: inline-block;
+          text-align: right;
+          min-width: 250px;
+          border-top: 1px solid #ddd;
+          padding-top: 10px;
+        }
+
+        .p-doctor {
+          font-size: 13px;
+          font-weight: bold; color: #1C307E;
+          margin-bottom: 2px;
+        }
+
+        .p-cedula {
+          font-size: 10px; 
+          color: #666; 
+          margin-bottom: 2px;
+        }
+
+        .p-registro {
+          font-size: 10px; 
+          color: #888; 
+          font-style: italic;
         }
 
       </style>
@@ -201,7 +231,7 @@
         
         <div class="card">
           <div class="card-header">
-            <h3>Paciente: '.htmlspecialchars($data['paciente']).'</h3>
+            <h3>Paciente: '.htmlspecialchars($data['paciente']).' - '.$data['edad_hist'].' años - '.$data['sexo_hist'].' </h3>
             <p>Atendido por '.$data['doctor'].'</p>
           </div>
         </div>
@@ -212,8 +242,8 @@
 
           <div class="row">
             <div class="field">
-              <label>Tensión arterial</label>
-              <span>'.$data['ta'].'</span>
+              <label>T. arterial</label>
+              <span>'.$data['ta'].' mmHg</span>
             </div>
 
             <div class="field">
@@ -227,22 +257,13 @@
             </div>
 
             <div class="field">
-              <label>Frecuencia cardiaca</label>
+              <label>F.a cardiaca</label>
               <span>'.$data['fc'].' lpm</span>
             </div>
 
-          </div>
-
-          <div class="row">          
-
             <div class="field">
-              <label>Frecuencia respiratoria</label>
+              <label>F. respiratoria</label>
               <span>'.$data['fr'].' rpm</span>
-            </div>
-
-            <div class="field">
-              <label>Glucosa</label>
-              <span>'.$data['glucosa'].' mg/dL</span>
             </div>
 
             <div class="field">
@@ -250,12 +271,12 @@
               <span>'.$data['peso'].' kg</span>
             </div>
 
-             <div class="field">
+            <div class="field">
               <label>Estatura</label>
               <span>'.$data['estatura'].' cm</span>
             </div>
-
           </div>
+
 
           <div class="row">
             <div class="field-full">
@@ -272,7 +293,12 @@
           </div>
 
           <div class="section-title">
-            Nota clínica
+            Nota médica
+          </div>
+
+          <div class="text-block">
+            <label>Motivo de valoración</label>
+            <p>'.nl2br(htmlspecialchars($data['motivo_valoracion'])).'</p>
           </div>
 
           <div class="text-block">
@@ -286,6 +312,11 @@
           </div>
 
           <div class="text-block">
+            <label>Resultados de Laboratorio y Gabinete</label>
+            <p>'.nl2br(htmlspecialchars($data['res_analisis_gabinete'])).'</p>
+          </div>
+
+          <div class="text-block">
             <label>Diagnóstico principal</label>
             <p>'.nl2br(htmlspecialchars($data['diagnostico_principal'])).'</p>
           </div>
@@ -296,18 +327,13 @@
           </div>
 
           <div class="text-block">
-            <label>Tratamiento</label>
+            <label>Plan y tratamiento</label>
             <p>'.nl2br(htmlspecialchars($data['tratamiento'])).'</p>
           </div>
 
           <div class="text-block">
-            <label>Análisis clínicos solicitados</label>
-            <p>'.nl2br(htmlspecialchars($data['analisis_clinicos'])).'</p>
-          </div>
-
-          <div class="text-block">
-            <label>Estudios de gabinete</label>
-            <p>'.nl2br(htmlspecialchars($data['estudios_gabinete'])).'</p>
+            <label>Pronóstico</label>
+            <p>'.nl2br(htmlspecialchars($data['pronostico'])).'</p>
           </div>
 
           <div class="text-block">
@@ -315,19 +341,26 @@
             <p>'.nl2br(htmlspecialchars($data['receta'])).'</p>
           </div>
 
-          <!--
-          <div class="footer-card">
-            Elaboró: '.$data['user_cap'].' <br>
-            Fecha: '.$data['fecha_cap_format'].'
+          <div class="container-doctor">
+            <div class="body-doctor">
+              <p class="p-doctor">
+                '.htmlspecialchars($data['doctor']).'
+              </p>
+              <p class="p-cedula">
+                Cédula Profesional: '.htmlspecialchars($data['cedula_hist']).'
+              </p>
+              <p class="p-registro">
+                '.htmlspecialchars($data['registro_especial_hist']).'
+              </p>              
+            </div>
           </div>
-          -->
-        
+                  
         </div>
 
       </main>
 
       <footer>
-        Nota médica clínica
+        LIB Laboratorios - Nota Médica
       </footer>
     </body>
   </html>';

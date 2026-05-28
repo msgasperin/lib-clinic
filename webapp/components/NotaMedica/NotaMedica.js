@@ -10,7 +10,7 @@ const fn_buscar_nota = () => {
    pintar_listado_notas_medicas('listado_notas_medicas', filtrado);
 }
 
-const ModalListarNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita) => {
+const ModalListarNotaMedica = (idPaciente, nomPaciente, edadPaciente, sexoPaciente, idDoctor, doctor, cedula, registroEspecial, idCita) => {
 
    let perfilUs = $('#perfilUs').val().trim();
 
@@ -52,7 +52,7 @@ const ModalListarNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita
                   if(parseInt(perfilUs) == 3 && parseInt(idCita) > 0) {
                      html+=`
                      <div class="col-4 col-md-4 text-end">
-                        <button class="btn btn-dark btn-lib btn-redondo fs-6" type="button" id="btnNuevaNotaMedica" onclick="ModalFormNotaMedica(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${doctor}', ${idCita}, 0);">
+                        <button class="btn btn-dark btn-lib btn-redondo fs-6" type="button" id="btnNuevaNotaMedica" onclick="ModalFormNotaMedica(${idPaciente}, '${nomPaciente}', '${edadPaciente}', '${sexoPaciente}', ${idDoctor}, '${doctor}', '${cedula}', '${registroEspecial}', ${idCita}, 0);">
                            <i class="bi bi-plus-lg"></i> Nueva nota
                         </button>
                      </div>`;
@@ -202,7 +202,7 @@ const pintar_listado_notas_medicas = (containerId, data) => {
 
                            if(perfilUs == 3 && idUser == row.id_doctor_fk) {
                               html+=`
-                              <button type="button" class="btn btn-outline-secondary btnAccNotaMedica btn-redondo ms-1" title="Editar" onclick="ModalFormNotaMedica(${row.id_paciente_fk}, '${row.paciente}', ${row.id_doctor_fk}, '${row.doctor}', ${row.id_cita_fk}, ${row.id_nota_medica});">
+                              <button type="button" class="btn btn-outline-secondary btnAccNotaMedica btn-redondo ms-1" title="Editar" onclick="ModalFormNotaMedica(${row.id_paciente_fk}, '${row.paciente}', '${row.edad_hist}', '${row.sexo_hist}', ${row.id_doctor_fk}, '${row.doctor}', '${row.cedula_hist}', '${row.registro_especial_hist}', ${row.id_cita_fk}, ${row.id_nota_medica});">
                                  <i class="bi bi-pencil-square"></i>
                               </button>
                               <button type="button" class="btn btn-outline-danger ms-1 btnAccNotaMedica btn-redondo" title="Eliminar" onclick="fn_eliminar_nota(${row.id_nota_medica}, ${row.id_cita_fk}, '${row.paciente}');">
@@ -231,7 +231,7 @@ const pintar_listado_notas_medicas = (containerId, data) => {
    contenedor.innerHTML = html;
 }
 
-const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, idNota) => {  
+const ModalFormNotaMedica = (idPaciente, nomPaciente, edad, sexo, idDoctor, doctor, cedula, registroEspecial, idCita, idNota) => {  
    
    let text_boton             = '';
    let ta                     = '';
@@ -242,13 +242,16 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
    let fc                     = '';
    let peso                   = '';
    let estatura               = '';
+   let valoracion             = '';
    let padecimiento           = '';
+   let res_analisis_gabinete  = '';
    let exploracion            = '';
    let tratamiento            = '';
    let diagnostico_principal  = '';
    let diagnostico_secundario = '';
    let analisis_clinicos      = '';
    let estudios_gabinete      = '';
+   let pronostico             = '';
    let receta                 = '';
    let checkMapa              = '';
    let checkHolter            = '';
@@ -270,7 +273,9 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
       fc                     = notaSelected[0].fc;
       peso                   = notaSelected[0].peso;
       estatura               = notaSelected[0].estatura;
+      valoracion             = notaSelected[0].motivo_valoracion;
       padecimiento           = notaSelected[0].padecimiento;
+      res_analisis_gabinete  = notaSelected[0].res_analisis_gabinete;
       exploracion            = notaSelected[0].exploracion;
       tratamiento            = notaSelected[0].tratamiento;
       diagnostico_principal  = notaSelected[0].diagnostico_principal;
@@ -278,6 +283,7 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
       analisis_clinicos      = notaSelected[0].analisis_clinicos;
       estudios_gabinete      = notaSelected[0].estudios_gabinete;
       receta                 = notaSelected[0].receta;
+      pronostico             = notaSelected[0].pronostico;
 
       notaSelected[0].mapa == 1 ? checkMapa = 'checked' : checkMapa;
       notaSelected[0].holter == 1 ? checkHolter = 'checked' : checkHolter;
@@ -376,8 +382,20 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
                               </div>
 
                               <div class="mb-3">
+                                 <label for="motivo_valoracion" class="form-label fw-bold text-secondary mb-1 fs-7">
+                                 <i class="bi bi-journal-plus me-1"></i>Motivo de Valoración <span class="text-danger">*</span></label>
+                                 <textarea name="motivoValoracion" id="motivoValoracion" class="form-control border-secondary border-opacity-25 fs-8" rows="4" maxlength="500" placeholder="Describa los motivos de la visita..." required>${valoracion}</textarea>
+                              </div>
+
+                              <div class="mb-3">
                                  <label for="padecimiento" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-virus2 me-1"></i>Padecimiento Actual <span class="text-danger">*</span></label>
                                  <textarea name="padecimiento" id="padecimiento" class="form-control border-secondary border-opacity-25 fs-8" rows="4" maxlength="500" placeholder="Describa los síntomas y estado actual del paciente..." required>${padecimiento}</textarea>
+                              </div>
+                              
+
+                              <div class="mb-3">
+                                 <label for="resultado_analisis_gabinete" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-moisture me-1"></i>Resultados análisis / gabinete</label>
+                                 <textarea name="resAnalisisGabinete" id="resAnalisisGabinete" class="form-control border-secondary border-opacity-25 fs-8" rows="3" maxlength="500" placeholder="Resultados obtenidos de estudios realizados...">${res_analisis_gabinete}</textarea>
                               </div>
 
                               <div class="mb-3">
@@ -451,6 +469,11 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
                               </div>
 
                               <div class="mt-auto">
+                                 <label for="pronostico" class="form-label fw-bold text-dark mb-1 fs-7"><i class="bi bi-body-text me-1"></i>Pronóstico <span class="text-danger">*</span></label>
+                                 <textarea name="pronostico" id="pronostico" class="form-control border-success border-opacity-50 p-3 bg-light fw-medium fs-8" rows="4" placeholder="Conclusión de la consulta médica" maxlength="500" required>${pronostico}</textarea>
+                              </div>
+
+                              <div class="mt-3">
                                  <label for="recetaMedica" class="form-label fw-bold text-dark mb-1 fs-7"><i class="bi bi-printer me-1"></i>Especificación de Receta Médica <span class="text-danger">*</span></label>
                                  <textarea name="recetaMedica" id="recetaMedica" class="form-control border-primary border-opacity-50 p-3 bg-light fw-medium fs-8" rows="4" placeholder="Medicamento - Dosis - Frecuencia - Duración&#10;Ejemplo: Paracetamol 500mg, 1 tab cada 8 horas por 5 días." maxlength="500" required>${receta}</textarea>
                               </div>`;
@@ -499,7 +522,7 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
                      <button type="button" class="btn btn-outline-secondary px-4 fw-medium btn-redondo" data-bs-dismiss="modal">
                         Cerrar Nota
                      </button>
-                     <button type="submit" form="formNotaMedica" class="btn btn-dark btn-lib px-4 fw-bold shadow-sm btn-redondo ms-1" id="btnGuardarNotaMedica" onclick="event.preventDefault(); fn_guardar_nota_medica(${idPaciente}, '${nomPaciente}', ${idDoctor}, '${doctor}', ${idCita}, ${idNota});">
+                     <button type="submit" form="formNotaMedica" class="btn btn-dark btn-lib px-4 fw-bold shadow-sm btn-redondo ms-1" id="btnGuardarNotaMedica" onclick="event.preventDefault(); fn_guardar_nota_medica(${idPaciente}, '${nomPaciente}', '${edad}', '${sexo}', ${idDoctor}, '${doctor}', '${cedula}', '${registroEspecial}', ${idCita}, ${idNota});">
                         ${text_boton}
                      </button>
                   </div>
@@ -519,7 +542,7 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, idDoctor, doctor, idCita, 
    }, 500);
 }
 
-const fn_guardar_nota_medica = async (idPaciente, nomPaciente, idDoctor, nomDoctor, idCita, idNota) => {
+const fn_guardar_nota_medica = async (idPaciente, nomPaciente, edadPaciente, sexoPaciente, idDoctor, nomDoctor, cedula, registroEspecial, idCita, idNota) => {
 
    let holter                = 0;
    let mapa                  = 0;
@@ -532,7 +555,9 @@ const fn_guardar_nota_medica = async (idPaciente, nomPaciente, idDoctor, nomDoct
    let fc                    = $('#fcMedica').val().trim();
    let peso                  = $('#pesoMedica').val().trim();
    let estatura              = $('#estaturaMedica').val().trim();
+   let valoracion            = $('#motivoValoracion').val().trim();
    let padecimiento          = $('#padecimiento').val().trim();
+   let resAnalisisGabinete   = $('#resAnalisisGabinete').val().trim();
    let exploracion           = $('#exploracionFisica').val().trim();
    let tratamiento           = $('#tratamiento').val().trim();
    let diagnosticoPrincipal  = $('#diagnosticoPrincipal').val().trim();
@@ -540,6 +565,7 @@ const fn_guardar_nota_medica = async (idPaciente, nomPaciente, idDoctor, nomDoct
    let analisisClinicos      = $('#analisisClinicos').val().trim();
    let estudiosGabinete      = $('#estudiosGabinete').val().trim();
    let receta                = $('#recetaMedica').val().trim();
+   let pronostico            = $('#pronostico').val().trim();
 
    $('#holterNota').prop('checked') ? holter = 1 : holter;
    $('#mapaNota').prop('checked') ? mapa = 1 : mapa;
@@ -600,12 +626,28 @@ const fn_guardar_nota_medica = async (idPaciente, nomPaciente, idDoctor, nomDoct
       $('#estaturaMedica').focus();
       return;
    }
+   else if (valoracion == '') {
+      ToastColor.fire({
+         text: '¡Atención! Debes ingresar un motivo de valoración',
+         icon: 'warning'
+      });
+      $('#motivoValoracion').focus();
+      return;
+   }
    else if (padecimiento == '') {
       ToastColor.fire({
          text: '¡Atención! Debes ingresar un padecimiento al paciente',
          icon: 'warning'
       });
       $('#padecimiento').focus();
+      return;
+   }
+   else if (diagnosticoPrincipal == '') {
+      ToastColor.fire({
+         text: '¡Atención! Debes ingresar un diagnóstico al paciente',
+         icon: 'warning'
+      });
+      $('#diagnosticoPrincipal').focus();
       return;
    }
    else if (tratamiento == '') {
@@ -616,12 +658,12 @@ const fn_guardar_nota_medica = async (idPaciente, nomPaciente, idDoctor, nomDoct
       $('#tratamiento').focus();
       return;
    }
-   else if (diagnosticoPrincipal == '') {
+   else if (pronostico == '') {
       ToastColor.fire({
-         text: '¡Atención! Debes ingresar un diagnóstico al paciente',
+         text: '¡Atención! Debes ingresar un pronóstico',
          icon: 'warning'
       });
-      $('#diagnosticoPrincipal').focus();
+      $('#pronostico').focus();
       return;
    }
    else if (receta == '') {
@@ -633,7 +675,7 @@ const fn_guardar_nota_medica = async (idPaciente, nomPaciente, idDoctor, nomDoct
       return;
    }
      
-   let objNota = { func: 'guardar_nota_medica', idPaciente, nomPaciente, idDoctor, nomDoctor, idCita, idNota, ta, oxigenacion, temperatura, glucosa, fr, fc, peso, estatura, padecimiento, exploracion, tratamiento, diagnosticoPrincipal, diagnosticoSecundario, analisisClinicos, estudiosGabinete, receta, holter, mapa, esfuerzo };
+   let objNota = { func: 'guardar_nota_medica', idPaciente, nomPaciente, edadPaciente, sexoPaciente, idDoctor, nomDoctor, cedula, registroEspecial, idCita, idNota, ta, oxigenacion, temperatura, glucosa, fr, fc, peso, estatura, valoracion, padecimiento, resAnalisisGabinete, exploracion, tratamiento, diagnosticoPrincipal, diagnosticoSecundario, analisisClinicos, estudiosGabinete, pronostico, receta,  holter, mapa, esfuerzo };
 
    const res = await showMessageSwalQuestion('¿Estás seguro?', 'La nota médica para: ' + nomPaciente + ' será registrada', 'question', 'Sí, guardar', 'Cancelar');
 
@@ -649,22 +691,6 @@ const fn_guardar_nota_medica = async (idPaciente, nomPaciente, idDoctor, nomDoct
    }
    else if(respuesta.estatus == 200) {
       showMessageSwalTimer('Nota médica guardada correctamente', '', 'success', 2500);
-      $('#taMedica').val('');
-      $('#spoMedica').val('');
-      $('#tempMedica').val('');
-      $('#glucosaMedica').val('');
-      $('#frMedica').val('');
-      $('#fcMedica').val('');
-      $('#pesoMedica').val('');
-      $('#estaturaMedica').val('');
-      $('#padecimiento').val('');
-      $('#exploracionFisica').val('');
-      $('#tratamiento').val('');
-      $('#diagnosticoPrincipal').val('');
-      $('#diagnosticoSecundario').val('');
-      $('#analisisClinicos').val('');
-      $('#estudiosGabinete').val('');
-      $('#receta').val('');
       $('#modalFormNotaMedica').modal('hide');
       listar_notas_medicas('listado_notas_medicas', idPaciente, idDoctor);
    }

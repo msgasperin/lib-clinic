@@ -3,7 +3,7 @@ import { obtiene_pacientes } from "../Pacientes/PacientesServices.js";
 import { obtiene_doctores } from "../Usuarios/UsuariosServices.js";
 
 const combo_doctores = async (containerId) => {
-   let comboDoctores = '<option value="0">Seleccionar</option>';
+   let comboDoctores = '<option value="0" data-cedula="" data-registro="">Seleccionar</option>';
    let respuesta     = await obtiene_doctores();
    if(respuesta.estatus == 403) {
       fnNoSesion();
@@ -17,7 +17,7 @@ const combo_doctores = async (containerId) => {
       if(res.length > 0) {
          res.map((row) => {
             comboDoctores +=`
-            <option value="${row.id}">
+            <option value="${row.id}" data-cedula="${row.cedula}" data-registro="${row.registro_especial}">
                ${row.nombre}
             </option>`;
          });
@@ -27,7 +27,7 @@ const combo_doctores = async (containerId) => {
 }
 
 const combo_pacientes = async (containerId) => {
-   let comboPacientes = '<option value="0">Seleccionar</option>';
+   let comboPacientes = '<option value="0" data-edad="" data-sexo="">Seleccionar</option>';
    let respuesta     = await obtiene_pacientes();
    if(respuesta.estatus == 403) {
       fnNoSesion();
@@ -41,7 +41,7 @@ const combo_pacientes = async (containerId) => {
       if(res.length > 0) {
          res.map((row) => {
             comboPacientes +=`
-            <option value="${row.id_paciente}">
+            <option value="${row.id_paciente}" data-edad="${row.edad}" data-sexo="${row.sexo}">
                ${row.nombre} ${row.ap_paterno} ${row.ap_materno}
             </option>`;
          });
@@ -156,9 +156,11 @@ const ModalFormCita = (idCita) => {
       citaSelected[0].sol_mapa == 1 ? solMapa = 'checked' : solMapa
    }
 
+   /*
    if(perfilUs == 3) {
       optionDoctor = `<option value="${idUser}">${user}</option>`;
    }
+   */
    
    let html = `
    <div class="modal fade modal-superior-blur" id="modalFormCita" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
@@ -264,13 +266,14 @@ const ModalFormCita = (idCita) => {
    });
    setTimeout(() => {
       combo_pacientes('pacienteCita');
+      combo_doctores('doctorCita');
       
-      if(perfilUs != 3) {
-         combo_doctores('doctorCita');
-      }
-      else {
-         $('#doctorCita').prop('disabled', true);
-         $('#doctorCita').trigger('change');
+      if(perfilUs == 3) {
+         setTimeout(() => {
+            $('#doctorCita').val(idUser);
+            $('#doctorCita').prop('disabled', true);
+            $('#doctorCita').trigger('change');
+         }, 200);
       }
 
       if(idCita > 0) {
@@ -287,21 +290,30 @@ const ModalFormCita = (idCita) => {
 
 const fn_guardar_cita = async (idCita) => {
 
-   let solEsfuerzo  = 0;
-   let solHolter    = 0;
-   let solMapa      = 0;
-   let fechaActual  = fnFechaActual();
-   let pacSelected  = document.getElementById("pacienteCita");
-   let nomPaciente  = pacSelected.options[pacSelected.selectedIndex].text;
-   let idPaciente   = $('#pacienteCita').val().trim();
-   let docSelected  = document.getElementById("doctorCita");
-   let nomDoctor    = docSelected.options[docSelected.selectedIndex].text;
-   let idDoctor     = $('#doctorCita').val().trim();
-   let tipoConsulta = $('#tipoConsulta').val();
-   let tipoVisita   = $('#tipoVisita').val();
-   let fechaCita    = $('#fechaCita').val().trim();
-   let horaCita     = $('#horaCita').val();
-   let obsCita      = $('#obsCita').val();
+   let solEsfuerzo       = 0;
+   let solHolter         = 0;
+   let solMapa           = 0;
+   let fechaActual       = fnFechaActual();
+   
+   let pacSelected       = document.getElementById("pacienteCita");
+   let optionSelected    = pacSelected.options[pacSelected.selectedIndex];
+   let nomPaciente       = pacSelected.options[pacSelected.selectedIndex].text;
+   let idPaciente        = $('#pacienteCita').val().trim();
+   let edad              = optionSelected.dataset.edad;
+   let sexo              = optionSelected.dataset.sexo;
+
+   let docSelected       = document.getElementById("doctorCita");
+   let nomDoctor         = docSelected.options[docSelected.selectedIndex].text;
+   let optionDocSelected = docSelected.options[docSelected.selectedIndex];
+   let idDoctor          = $('#doctorCita').val().trim();
+   let cedula            = optionDocSelected.dataset.cedula;
+   let registroEspecial  = optionDocSelected.dataset.registro;
+
+   let tipoConsulta      = $('#tipoConsulta').val();
+   let tipoVisita        = $('#tipoVisita').val();
+   let fechaCita         = $('#fechaCita').val().trim();
+   let horaCita          = $('#horaCita').val();
+   let obsCita           = $('#obsCita').val();
    
    $('#pEsfuerzo').prop('checked') ? solEsfuerzo = 1 : solEsfuerzo;
    $('#holter').prop('checked') ? solHolter = 1 : solHolter;
@@ -356,7 +368,7 @@ const fn_guardar_cita = async (idCita) => {
       return;
    }  
      
-   let objCita = { func: 'guardar_cita', idCita, idPaciente, nomPaciente, idDoctor, nomDoctor, tipoConsulta, tipoVisita, fechaCita, horaCita, obsCita, solEsfuerzo, solHolter, solMapa };
+   let objCita = { func: 'guardar_cita', idCita, idPaciente, nomPaciente, edad, sexo, idDoctor, nomDoctor, cedula, registroEspecial, tipoConsulta, tipoVisita, fechaCita, horaCita, obsCita, solEsfuerzo, solHolter, solMapa };
 
    const res = await showMessageSwalQuestion('¿Estás seguro?', 'La cita para: ' + nomPaciente + '  con fecha ' + fechaCita + ' en horario ' + horaCita + ' será registrado', 'question', 'Sí, guardar', 'Cancelar');
 
@@ -580,7 +592,7 @@ const pintar_listado_citas = (containerId, data) => {
                }
                if(cita.estatus == 1 || cita.estatus == 2) {
                   html += `
-                  <button class="btn btn-sm btn-outline-secondary" title="Nota médica" onclick="ModalListarNotaMedica(${cita.id_paciente_fk}, '${cita.paciente}', ${cita.id_doctor_fk}, '${cita.doctor}', ${cita.id_cita});">
+                  <button class="btn btn-sm btn-outline-secondary" title="Nota médica" onclick="ModalListarNotaMedica(${cita.id_paciente_fk}, '${cita.paciente}', '${cita.edad_hist}', '${cita.sexo_hist}', ${cita.id_doctor_fk}, '${cita.doctor}', '${cita.cedula_hist}', '${cita.registro_hist}', ${cita.id_cita});">
                      <i class="bi bi-clipboard-plus"></i>
                   </button>`;
                }

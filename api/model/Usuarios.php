@@ -9,7 +9,7 @@
 		public function obtiene_doctores() {
 			$res = [];
 			try {				
-				$sql = $this->dbh->prepare("SELECT id, nombre, usuario, celular, correo, foto, perfil FROM cat_usuarios WHERE estatus = 1 AND perfil = 3");
+				$sql = $this->dbh->prepare("SELECT id, nombre, usuario, celular, correo, cedula, registro_especial, foto, perfil FROM cat_usuarios WHERE estatus = 1 AND perfil = 3");
 				$sql->execute();				
 				$res = $sql->fetchAll(PDO::FETCH_ASSOC);
 			} catch (Exception $error) {
@@ -22,21 +22,8 @@
 		public function obtiene_usuarios() {
 			$res = [];
 			try {				
-				$sql = $this->dbh->prepare("SELECT id, nombre, usuario, celular, correo, foto, perfil FROM cat_usuarios WHERE estatus = 1");
+				$sql = $this->dbh->prepare("SELECT id, nombre, usuario, celular, correo, cedula, registro_especial, foto, perfil FROM cat_usuarios WHERE estatus = 1");
 				$sql->execute();				
-				$res = $sql->fetchAll(PDO::FETCH_ASSOC);
-			} catch (Exception $error) {
-        		error_log($error->getMessage());
-			}
-			
-			return $res;
-		}
-
-		public function obtiene_datos_usuario(int $id_usuario) {
-			$res = [];
-			try {				
-				$sql = $this->dbh->prepare("SELECT id, nombre, celular, correo, foto, usuario, AES_DECRYPT(contrasenia,?) AS contrasenia FROM cat_usuarios WHERE id = ?");
-				$sql->execute(array($this->key, $id_usuario));				
 				$res = $sql->fetchAll(PDO::FETCH_ASSOC);
 			} catch (Exception $error) {
         		error_log($error->getMessage());
@@ -66,8 +53,8 @@
 			$data    = [];
 			$mensaje = 'Error al intentar guardar el usuario';
 			try {
-				$sql = $this->dbh->prepare("INSERT INTO cat_usuarios (nombre, usuario, contrasenia, celular, correo, perfil, user_cap) VALUES (?,?,AES_ENCRYPT(?,?),?,?,?,?)");
-				if($sql->execute(array($post["nomUsuario"], $post["usuario"], $post["contrasenia"], $this->key, $post["celUsuario"], $post["mailUsuario"], $post["perfilUsuario"], $user_cap))) {
+				$sql = $this->dbh->prepare("INSERT INTO cat_usuarios (nombre, usuario, contrasenia, celular, correo, cedula, registro_especial, perfil, user_cap) VALUES (?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?)");
+				if($sql->execute(array($post["nomUsuario"], $post["usuario"], $post["contrasenia"], $this->key, $post["celUsuario"], $post["mailUsuario"], $post["cedula"], $post["registro_especial"], $post["perfilUsuario"], $user_cap))) {
 					$estatus = 200;
 					$data    = [$this->dbh->lastInsertId()];
 					$mensaje = 'ok';
@@ -88,8 +75,8 @@
 			try {
 
 				if($post["contrasenia"] == '') {
-					$sql = $this->dbh->prepare("UPDATE cat_usuarios SET nombre = ?, celular = ?, correo = ?, perfil = ?, user_cap = ?, fec_cap = ? WHERE id = ?");
-					$sql->execute(array($post["nomUsuario"], $post["celUsuario"], $post["mailUsuario"], $post["perfilUsuario"], $user_cap, date('Y-m-d H:i:s'), $post["idUsuario"]));
+					$sql = $this->dbh->prepare("UPDATE cat_usuarios SET nombre = ?, celular = ?, correo = ?, cedula = ?, registro_especial = ?, perfil = ?, user_cap = ?, fec_cap = ? WHERE id = ?");
+					$sql->execute(array($post["nomUsuario"], $post["celUsuario"], $post["mailUsuario"],  $post["cedula"], $post["registro_especial"], $post["perfilUsuario"], $user_cap, date('Y-m-d H:i:s'), $post["idUsuario"]));
 					if($sql->rowCount() > 0) {
 						$estatus = 200;
 						$data    = [$post["idUsuario"]];

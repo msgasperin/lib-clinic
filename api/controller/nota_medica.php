@@ -31,7 +31,7 @@
             break;
           }
 
-          if($_POST["idPaciente"] == "" || $_POST["idDoctor"] == "" || $_POST["idCita"] == "" || $_POST["ta"] == "" || $_POST["oxigenacion"] == "" || $_POST["temperatura"] == "" || $_POST["fc"] == "" || $_POST["peso"] == "" || $_POST["estatura"] == "" || $_POST["padecimiento"] == "" || $_POST["tratamiento"] == "" || $_POST["diagnosticoPrincipal"] == "" || $_POST["receta"] == "") {
+          if($_POST["idPaciente"] == "" || $_POST["idDoctor"] == "" || $_POST["idCita"] == "" || $_POST["ta"] == "" || $_POST["oxigenacion"] == "" || $_POST["temperatura"] == "" || $_POST["fc"] == "" || $_POST["peso"] == "" || $_POST["estatura"] == "" || $_POST["valoracion"] == "" || $_POST["padecimiento"] == "" || $_POST["tratamiento"] == "" || $_POST["diagnosticoPrincipal"] == "" || $_POST["pronostico"] == "" ||  $_POST["receta"] == "") {
             echo json_encode(["estatus" => 500, "mensaje" => 'Faltaron parámetros importantes', "data" => []]);
             break;
           }

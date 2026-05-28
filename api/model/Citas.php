@@ -10,11 +10,11 @@
       try {
         $res = [];
         if($perfil == 3) { // Doctor
-          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, id_doctor_fk, doctor, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, DATE_FORMAT(hora, '%H:%i') AS hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format, motivo_cancela, tipo_consulta, tipo_visita, sol_esfuerzo, sol_mapa, sol_holter FROM citas WHERE id_doctor_fk = ? AND fecha >= ? AND fecha <= ? ORDER BY fecha, hora ASC");
+          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, edad_hist, sexo_hist, id_doctor_fk, doctor, cedula_hist, registro_hist, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, DATE_FORMAT(hora, '%H:%i') AS hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format, motivo_cancela, tipo_consulta, tipo_visita, sol_esfuerzo, sol_mapa, sol_holter FROM citas WHERE id_doctor_fk = ? AND fecha >= ? AND fecha <= ? ORDER BY fecha, hora ASC");
           $sql->execute([$id_usuario, $fecha_inicial, $fecha_final]);
         }
         else {
-          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, id_doctor_fk, doctor, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, DATE_FORMAT(hora, '%H:%i') AS hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format, motivo_cancela, tipo_consulta, tipo_visita, sol_esfuerzo, sol_mapa, sol_holter FROM citas WHERE fecha >= ? AND fecha <= ? ORDER BY fecha, hora ASC");
+          $sql = $this->dbh->prepare("SELECT id_cita, id_paciente_fk, paciente, edad_hist, sexo_hist, id_doctor_fk, doctor, cedula_hist, registro_hist, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha_format, DATE_FORMAT(hora, '%H:%i') AS hora, observacion, estatus, user_cap, DATE_FORMAT(fecha_cap,'%d-%m-%Y %H:%i:%s') AS fecha_cap_format, user_cancela, DATE_FORMAT(fecha_cancela,'%d-%m-%Y %H:%i:%s') AS fecha_cancela_format, motivo_cancela, tipo_consulta, tipo_visita, sol_esfuerzo, sol_mapa, sol_holter FROM citas WHERE fecha >= ? AND fecha <= ? ORDER BY fecha, hora ASC");
           $sql->execute([$fecha_inicial, $fecha_final]);
         }
         $res = $sql->fetchAll(PDO::FETCH_ASSOC);				
@@ -47,12 +47,16 @@
       $data    = [0];
       $mensaje = 'Error al intentar insertar';
       try {        		
-        $sql = $this->dbh->prepare("INSERT INTO citas (id_paciente_fk, paciente, id_doctor_fk, doctor, tipo_consulta, tipo_visita, fecha, hora, observacion, sol_esfuerzo, sol_mapa, sol_holter, user_cap) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        $sql = $this->dbh->prepare("INSERT INTO citas (id_paciente_fk, paciente, edad_hist, sexo_hist, id_doctor_fk, doctor, cedula_hist, registro_hist, tipo_consulta, tipo_visita, fecha, hora, observacion, sol_esfuerzo, sol_mapa, sol_holter, user_cap) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         $ok  = $sql->execute(array(
           $post["idPaciente"], 
           $post["nomPaciente"],
+          $post["edad"],
+          $post["sexo"],
           $post["idDoctor"], 
           $post["nomDoctor"], 
+          $post["cedula"], 
+          $post["registroEspecial"], 
           $post["tipoConsulta"], 
           $post["tipoVisita"], 
           $post["fechaCita"], 
@@ -91,12 +95,16 @@
       $data    = [];
       $mensaje = 'Error al intentar actualizar';
       try {
-        $sql = $this->dbh->prepare("UPDATE citas SET id_paciente_fk = ?, paciente = ?, id_doctor_fk = ?, doctor = ?, tipo_consulta = ?, tipo_visita = ?, fecha = ?, hora = ?, observacion = ?, sol_esfuerzo = ?, sol_mapa = ?, sol_holter = ?, user_cap = ? WHERE id_cita = ?");
+        $sql = $this->dbh->prepare("UPDATE citas SET id_paciente_fk = ?, paciente = ?, edad_hist = ?, sexo_hist = ?, id_doctor_fk = ?, doctor = ?, cedula_hist = ?, registro_hist = ?, tipo_consulta = ?, tipo_visita = ?, fecha = ?, hora = ?, observacion = ?, sol_esfuerzo = ?, sol_mapa = ?, sol_holter = ?, user_cap = ? WHERE id_cita = ?");
         $ok  = $sql->execute(array(
           $post["idPaciente"], 
           $post["nomPaciente"],
+          $post["edad"],
+          $post["sexo"],
           $post["idDoctor"], 
           $post["nomDoctor"], 
+          $post["cedula"], 
+          $post["registroEspecial"], 
           $post["tipoConsulta"], 
           $post["tipoVisita"], 
           $post["fechaCita"], 
@@ -119,7 +127,7 @@
         error_log($error->getMessage());
       }
       
-        $res = array('estatus' => $estatus, 'data' => $data, 'mensaje' => $mensaje);
+      $res = array('estatus' => $estatus, 'data' => $data, 'mensaje' => $mensaje);
       return $res;
     }
 
