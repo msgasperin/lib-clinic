@@ -89,8 +89,16 @@
       break;  
 
       case 'cerrar_sesion':
-        $id_usuario = $_SESSION["id_usuario"];
-        $nombre     = $_SESSION["nombre"];
+
+        if(isset($_SESSION["id_usuario"])) {
+          $id_usuario = $_SESSION["id_usuario"];
+          $nombre     = $_SESSION["nombre"];
+        }
+        else {
+          $id_usuario = 0;
+          $nombre     = 'Sesión caducada';
+        }
+        
         if(session_destroy()){
           $g->bitacora('Cierre de sesión', $id_usuario, $id_usuario, $nombre);
           echo json_encode(['estatus'=> 200, 'mensaje' => '', 'data' => []]);
