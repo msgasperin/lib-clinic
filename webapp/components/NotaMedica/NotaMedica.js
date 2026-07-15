@@ -384,23 +384,23 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, edad, sexo, idDoctor, doct
                               <div class="mb-3">
                                  <label for="motivo_valoracion" class="form-label fw-bold text-secondary mb-1 fs-7">
                                  <i class="bi bi-journal-plus me-1"></i>Motivo de Valoración <span class="text-danger">*</span></label>
-                                 <textarea name="motivoValoracion" id="motivoValoracion" class="form-control border-secondary border-opacity-25 fs-8" rows="4" maxlength="500" placeholder="Describa los motivos de la visita..." required>${valoracion}</textarea>
+                                 <textarea name="motivoValoracion" id="motivoValoracion" class="form-control border-secondary border-opacity-25 fs-8" rows="4" placeholder="Describa los motivos de la visita..." required>${valoracion}</textarea>
                               </div>
 
                               <div class="mb-3">
                                  <label for="padecimiento" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-virus2 me-1"></i>Padecimiento Actual <span class="text-danger">*</span></label>
-                                 <textarea name="padecimiento" id="padecimiento" class="form-control border-secondary border-opacity-25 fs-8" rows="4" maxlength="500" placeholder="Describa los síntomas y estado actual del paciente..." required>${padecimiento}</textarea>
+                                 <textarea name="padecimiento" id="padecimiento" class="form-control border-secondary border-opacity-25 fs-8" rows="4"  placeholder="Describa los síntomas y estado actual del paciente..." required>${padecimiento}</textarea>
                               </div>
                               
 
                               <div class="mb-3">
                                  <label for="resultado_analisis_gabinete" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-moisture me-1"></i>Resultados análisis / gabinete</label>
-                                 <textarea name="resAnalisisGabinete" id="resAnalisisGabinete" class="form-control border-secondary border-opacity-25 fs-8" rows="3" maxlength="500" placeholder="Resultados obtenidos de estudios realizados...">${res_analisis_gabinete}</textarea>
+                                 <textarea name="resAnalisisGabinete" id="resAnalisisGabinete" class="form-control border-secondary border-opacity-25 fs-8" rows="3"  placeholder="Resultados obtenidos de estudios realizados...">${res_analisis_gabinete}</textarea>
                               </div>
 
                               <div class="mb-3">
                                  <label for="exploracionFisica" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-person-arms-up me-1"></i>Exploración Física</label>
-                                 <textarea name="exploracionFisica" id="exploracionFisica" class="form-control border-secondary border-opacity-25 fs-8" rows="3" maxlength="500" placeholder="Hallazgos de la exploración médica general o segmental...">${exploracion}</textarea>
+                                 <textarea name="exploracionFisica" id="exploracionFisica" class="form-control border-secondary border-opacity-25 fs-8" rows="3"  placeholder="Hallazgos de la exploración médica general o segmental...">${exploracion}</textarea>
                               </div>
 
                               <div class="mb-4">
@@ -429,17 +429,17 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, edad, sexo, idDoctor, doct
 
                               <div class="mb-3">
                                  <label for="tratamiento" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-capsule me-1"></i>Plan de Manejo y Tratamiento General <span class="text-danger">*</span></label>
-                                 <textarea name="tratamiento" id="tratamiento" class="form-control border-secondary border-opacity-25 fs-8" rows="3" maxlength="500" placeholder="Indicaciones generales, dieta, recomendaciones..." required>${tratamiento}</textarea>
+                                 <textarea name="tratamiento" id="tratamiento" class="form-control border-secondary border-opacity-25 fs-8" rows="3" placeholder="Indicaciones generales, dieta, recomendaciones..." required>${tratamiento}</textarea>
                               </div>
 
                               <div class="row g-3 mb-3">
                                  <div class="col-md-6">
                                     <label for="analisisClinicos" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-droplet me-1"></i>Análisis Clínicos Solicitados</label>
-                                    <textarea name="analisisClinicos" id="analisisClinicos" class="form-control border-secondary border-opacity-25 fs-8" rows="3" maxlength="500" placeholder="Laboratorios (Biometría, Química, etc.)">${analisis_clinicos}</textarea>
+                                    <textarea name="analisisClinicos" id="analisisClinicos" class="form-control border-secondary border-opacity-25 fs-8" rows="3" placeholder="Laboratorios (Biometría, Química, etc.)">${analisis_clinicos}</textarea>
                                  </div>
                                  <div class="col-md-6">
                                     <label for="estudiosGabinete" class="form-label fw-bold text-secondary mb-1 fs-7"><i class="bi bi-clipboard2-pulse me-1"></i>Estudios de Gabinete</label>
-                                    <textarea name="estudiosGabinete" id="estudiosGabinete" class="form-control border-secondary border-opacity-25 fs-8" rows="3" maxlength="500" placeholder="Rayos X, Ultrasonido, TAC, etc.">${estudios_gabinete}</textarea>
+                                    <textarea name="estudiosGabinete" id="estudiosGabinete" class="form-control border-secondary border-opacity-25 fs-8" rows="3" placeholder="Rayos X, Ultrasonido, TAC, etc.">${estudios_gabinete}</textarea>
                                  </div>
                               </div>
 
@@ -470,12 +470,12 @@ const ModalFormNotaMedica = (idPaciente, nomPaciente, edad, sexo, idDoctor, doct
 
                               <div class="mt-auto">
                                  <label for="pronostico" class="form-label fw-bold text-dark mb-1 fs-7"><i class="bi bi-body-text me-1"></i>Pronóstico <span class="text-danger">*</span></label>
-                                 <textarea name="pronostico" id="pronostico" class="form-control border-success border-opacity-50 p-3 bg-light fw-medium fs-8" rows="4" placeholder="Conclusión de la consulta médica" maxlength="500" required>${pronostico}</textarea>
+                                 <textarea name="pronostico" id="pronostico" class="form-control border-success border-opacity-50 p-3 bg-light fw-medium fs-8" rows="4" placeholder="Conclusión de la consulta médica" required>${pronostico}</textarea>
                               </div>
 
                               <div class="mt-3">
                                  <label for="recetaMedica" class="form-label fw-bold text-dark mb-1 fs-7"><i class="bi bi-printer me-1"></i>Especificación de Receta Médica <span class="text-danger">*</span></label>
-                                 <textarea name="recetaMedica" id="recetaMedica" class="form-control border-primary border-opacity-50 p-3 bg-light fw-medium fs-8" rows="4" placeholder="Medicamento - Dosis - Frecuencia - Duración&#10;Ejemplo: Paracetamol 500mg, 1 tab cada 8 horas por 5 días." maxlength="500" required>${receta}</textarea>
+                                 <textarea name="recetaMedica" id="recetaMedica" class="form-control border-primary border-opacity-50 p-3 bg-light fw-medium fs-8" rows="4" placeholder="Medicamento - Dosis - Frecuencia - Duración&#10;Ejemplo: Paracetamol 500mg, 1 tab cada 8 horas por 5 días." required>${receta}</textarea>
                               </div>`;
 
                               if(idNota > 0) {
