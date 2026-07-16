@@ -222,9 +222,9 @@
     <body>
 
       <header>
-        <h1>LIB Laboratorios - Nota Médica</h1>
-        Nota # '.$data["id_nota_medica"].'
-        <p>Generado el '.date('d/m/Y H:i:s').'</p>
+        <h1>LIB Laboratorios</h1>
+        <h3>Unidad Y Gabinete Especializado</h3>
+        <h5>Nota médica</h5>
       </header>
 
       <main>
@@ -347,7 +347,7 @@
                 '.htmlspecialchars($data['doctor']).'
               </p>
               <p class="p-cedula">
-                Cédula Profesional: '.htmlspecialchars($data['cedula_hist']).'
+                '.htmlspecialchars($data['cedula_hist']).'
               </p>
               <p class="p-registro">
                 '.htmlspecialchars($data['registro_especial_hist']).'
@@ -360,7 +360,7 @@
       </main>
 
       <footer>
-        LIB Laboratorios - Nota Médica
+        LIB Laboratorios - Unidad Y Gabinete Especializado - Nota Médica
       </footer>
     </body>
   </html>';

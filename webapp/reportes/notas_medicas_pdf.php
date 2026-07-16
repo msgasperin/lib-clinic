@@ -169,9 +169,10 @@ $html = '
    <body>
 
       <header>
-         <h3>LIB Laboratorios - Notas Médicas</h3>
+         <h1>LIB Laboratorios</h1>
+         <h3>Unidad Y Gabinete Especializado</h3>
+         <h5>Nota médica</h5>
          Paciente: '.htmlspecialchars($data[0]['paciente']).'
-         <p>Generado el '.date('d/m/Y H:i:s').'</p>
       </header>
 
       <footer>
