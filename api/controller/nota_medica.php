@@ -37,7 +37,7 @@
           }
                     
           if($_POST["idNota"] == '0') {
-            $res = $v->guardar_nota_medica($_POST, $_SESSION["nombre"]);
+            $res = $v->guardar_nota_medica($_POST, $_SESSION["nombre"], $_SESSION["cedula"], $_SESSION["registro_especial"]);
             $id_nota = $res["data"][0];
             $mensaje_bitacora = 'Nota médica registrada: '.$id_nota.' del paciente: '.$_POST["nomPaciente"];
           } 

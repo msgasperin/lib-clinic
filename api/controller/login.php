@@ -68,13 +68,15 @@
             }
             
             // ───
-            $_SESSION["login_lib_clinic"] = "SI";
-            $_SESSION["id_usuario"]       = $res["data"]["id_usuario"];
-            $_SESSION["usuario"]          = $res["data"]["usuario"];
-            $_SESSION["nombre"]           = $res["data"]["nombre"];
-            $_SESSION["perfil"]           = $res["data"]["perfil"];
-            $_SESSION["nom_perfil"]       = $nom_perfil;
-            $_SESSION["foto"]             = $res["data"]["foto"];
+            $_SESSION["login_lib_clinic"]  = "SI";
+            $_SESSION["id_usuario"]        = $res["data"]["id_usuario"];
+            $_SESSION["usuario"]           = $res["data"]["usuario"];
+            $_SESSION["nombre"]            = $res["data"]["nombre"];
+            $_SESSION["perfil"]            = $res["data"]["perfil"];
+            $_SESSION["nom_perfil"]        = $nom_perfil;
+            $_SESSION["foto"]              = $res["data"]["foto"];
+            $_SESSION["cedula"]            = $res["data"]["cedula"];
+            $_SESSION["registro_especial"] = $res["data"]["registro_especial"];
 
             $g->bitacora('Inicio de sesión', $res["data"]["id_usuario"], $res["data"]["id_usuario"], $res["data"]["nombre"]);
             echo json_encode(['estatus' => $res["estatus"], 'mensaje' => 'ok', 'data' => []]);

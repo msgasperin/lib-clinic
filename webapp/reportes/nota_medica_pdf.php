@@ -32,32 +32,39 @@
 
       <style>
 
-        *{
-          margin:0;
-          padding:0;
-          box-sizing:border-box;
-        }
-
         body{
           font-family: Helvetica, sans-serif;
           font-size:12px;
           color:#333;
         }
 
-        header{
+        @page {
+          margin-top: 100px;      
+          margin-bottom: 20px; 
+          margin-left: 15px;
+          margin-right: 15px;
+        }
+
+        header {
           position: fixed;
-          top:0px;
-          left:0;
-          right:0;
-          height:40px;
-          background:#1C307E;
-          border-bottom:4px solid #FBB635;
-          color:#fff;
-          padding:15px 20px;
+          top: -100px;            /* Sube al área del margen superior */
+          left: -15px;
+          right: -15px;
+          height: 70px;          /* Se ajustó la altura para dar cabida a los títulos */
+          background: #1C307E;
+          border-bottom: 4px solid #FBB635;
+          color: #fff;
+          padding: 10px 20px;
         }
 
         header h1{
           font-size:18px;
+        }
+
+        header h1, header h4, header h5 {
+          margin: 0;
+          padding: 0;
+          line-height: 1.5;
         }
 
         header p{
@@ -65,46 +72,32 @@
           margin-top:4px;
         }
 
-        footer{
+        footer {
           position: fixed;
-          bottom:-15px;
-          left:0;
-          right:0;
-          height:35px;
-          background:#f3f3f3;
-          border-top:1px solid #ddd;
-          text-align:center;
-          font-size:10px;
-          color:#666;
-          padding-top:10px;
+          bottom: -20px;         /* Baja al área del margen inferior */
+          left: -15;
+          right: -15px;
+          height: 20px;
+          background: #f3f3f3;
+          border-top: 1px solid #ddd;
+          text-align: center;
+          font-size: 10px;
+          color: #666;
+          padding-top: 10px;
         }
 
-        main{
-          margin-top:90px;
-          margin-bottom:45px;
-          padding:0 15px;
+        main {
+          margin-top: 10px;      /* Se reduce porque @page ya hace el trabajo pesado */
+          margin-bottom: 10px;
+          padding: 0 15px;
         }
 
         .card{
           border:1px solid #ddd;
           border-radius:6px;
-          overflow:hidden;
-        }
-
-        .card-header{
+          padding:5px;
           background:#233da5;
           color:#fff;
-          padding:15px;
-        }
-
-        .card-header h2{
-          font-size:18px;
-          margin-bottom:5px;
-        }
-
-        .card-header p{
-          font-size:11px;
-          color:#d7def8;
         }
 
         .section-title{
@@ -157,7 +150,6 @@
         }
 
         .text-block{
-          padding:10px;
           border-bottom:1px solid #eee;
         }
 
@@ -223,17 +215,19 @@
 
       <header>
         <h1>LIB Laboratorios</h1>
-        <h3>Unidad Y Gabinete Especializado</h3>
+        <h4>Unidad Y Gabinete Especializado</h4>
         <h5>Nota médica</h5>
       </header>
+
+      <footer>
+        LIB Laboratorios - Unidad Y Gabinete Especializado - Nota Médica
+      </footer>
 
       <main>
         
         <div class="card">
-          <div class="card-header">
-            <h3>Paciente: '.htmlspecialchars($data['paciente']).' - '.$data['edad_hist'].' años - '.$data['sexo_hist'].' </h3>
-            <p>Atendido por '.$data['doctor'].'</p>
-          </div>
+          <h4>Paciente: '.htmlspecialchars($data['paciente']).' - '.$data['edad_hist'].' años - '.$data['sexo_hist'].' </h4>
+          Atendido por '.$data['doctor'].'
         </div>
 
         <div class="section-title">
@@ -359,9 +353,6 @@
 
       </main>
 
-      <footer>
-        LIB Laboratorios - Unidad Y Gabinete Especializado - Nota Médica
-      </footer>
     </body>
   </html>';
 

@@ -32,7 +32,7 @@
       return $res;
     }
   
-    public function guardar_nota_medica(array $post, string $user_cap) {
+    public function guardar_nota_medica(array $post, string $user_cap, string $cedula, string $registro_especial) {
       $estatus = 500;
       $data    = [0];
       $mensaje = 'Error al intentar insertar';
@@ -46,8 +46,8 @@
           $post["sexoPaciente"],
           $post["idDoctor"], 
           $post["nomDoctor"], 
-          $post["cedula"], 
-          $post["registroEspecial"], 
+          $cedula, 
+          $registro_especial, 
           $post["ta"],
           $post["oxigenacion"],
           $post["temperatura"],
@@ -100,7 +100,7 @@
       $data    = [];
       $mensaje = 'Error al intentar actualizar';
       try {
-        $sql = $this->dbh->prepare("UPDATE nota_medica SET id_cita_fk = ?, id_paciente_fk = ?, paciente = ?, edad_hist = ?, sexo_hist = ?, id_doctor_fk = ?, doctor = ?, cedula_hist = ?, registro_especial_hist = ?, ta = ?, oxigenacion = ?, temperatura = ?, glucosa = ?, fr = ?, fc = ?, peso = ?, estatura = ?, motivo_valoracion = ?, padecimiento = ?, res_analisis_gabinete = ?, exploracion = ?, tratamiento = ?, diagnostico_principal = ?, diagnostico_secundario = ?, analisis_clinicos = ?, estudios_gabinete = ?, esfuerzo = ?, mapa = ?, holter = ?, pronostico = ?, receta = ?, user_cap = ? WHERE id_nota_medica = ?");
+        $sql = $this->dbh->prepare("UPDATE nota_medica SET id_cita_fk = ?, id_paciente_fk = ?, paciente = ?, edad_hist = ?, sexo_hist = ?, id_doctor_fk = ?, doctor = ?, ta = ?, oxigenacion = ?, temperatura = ?, glucosa = ?, fr = ?, fc = ?, peso = ?, estatura = ?, motivo_valoracion = ?, padecimiento = ?, res_analisis_gabinete = ?, exploracion = ?, tratamiento = ?, diagnostico_principal = ?, diagnostico_secundario = ?, analisis_clinicos = ?, estudios_gabinete = ?, esfuerzo = ?, mapa = ?, holter = ?, pronostico = ?, receta = ?, user_cap = ? WHERE id_nota_medica = ?");
         $ok  = $sql->execute(array(
           $post["idCita"], 
           $post["idPaciente"],
@@ -109,8 +109,6 @@
           $post["sexoPaciente"],
           $post["idDoctor"], 
           $post["nomDoctor"],
-          $post["cedula"],
-          $post["registroEspecial"], 
           $post["ta"],
           $post["oxigenacion"],
           $post["temperatura"],

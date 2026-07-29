@@ -1,7 +1,19 @@
 <?php
 	//ini_set('session.cookie_secure', 1);     // solo HTTPS
-	ini_set('session.cookie_httponly', 1);   // no accesible desde JS
-	ini_set('session.cookie_samesite', 'Strict'); // bloquea CSRF adicional
+	$lifetime = 8 * 60 * 60; // 8 horas
+
+	// Mantener los archivos de sesión por 8 horas
+	ini_set('session.gc_maxlifetime', $lifetime);
+
+	// La cookie también durará 8 horas
+	session_set_cookie_params([
+		'lifetime' => $lifetime,
+		'path'     => '/',
+		'httponly' => true,
+		'secure'   => isset($_SERVER['HTTPS']),
+		'samesite' => 'Strict'
+	]);
+
 	session_start();
 	date_default_timezone_set("America/Mazatlan"); 
 
