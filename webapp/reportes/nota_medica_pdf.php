@@ -217,6 +217,7 @@
         <h1>LIB Laboratorios</h1>
         <h4>Unidad Y Gabinete Especializado</h4>
         <h5>Nota médica</h5>
+        <h5>'.$data["fecha_cap_format"].'</h5>
       </header>
 
       <footer>
